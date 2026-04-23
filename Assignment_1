@@ -1,0 +1,368 @@
+Module 1 & 2: Hardware and its Components
+1)What is an input device?
+=>An input device sends data or instructions from the user into the computer. Examples: keyboard, mouse, scanner, microphone.
+2)What are output devices?
+=>Output devices display or present processed data from the computer to the user. Examples: monitor/display, printer, speakers/headphones, projector.
+3)What is CPU?
+=>The CPU (Central Processing Unit) is the "brain" of the computer. It performs calculations, executes instructions from programs, and controls other hardware components.
+4)What are the types of CPU?
+=>By manufacturer: Intel (e.g., Core i3/i5/i7/i9) and AMD (e.g., Ryzen series).
+  By architecture: Desktop CPUs, mobile/laptop CPUs, server CPUs.
+  Older classifications: Single-core, dual-core, quad-core, multi-core
+5)What do we need to keep the CPU healthy?
+=>Proper cooling (heatsink + fan or liquid cooler).
+o	High-quality thermal paste between CPU and heatsink.
+o	Clean dust from fans/heatsink regularly (every 3–6 months).
+o	Good airflow in the PC case.
+o	Stable power supply (avoid voltage fluctuations).
+o	Monitor temperatures with software; reapply thermal paste every 1–3 years.
+o	Avoid overclocking without proper cooling.
+6)Practical: Remove processor, apply thermal paste, and reinstall
+==>
+i)Power off, unplug, and ground yourself (anti-static wrist strap).
+ii)Open case, disconnect CPU fan power.
+iii)Release socket lever, lift heatsink/fan carefully.
+iv)Gently lift CPU out of socket.
+v)Clean old thermal paste from CPU and heatsink with isopropyl alcohol and lint-free cloth.
+vi)Apply pea-sized dot of new thermal paste to center of CPU.
+vii)Reinsert CPU (align triangle/notch), lower lever to lock.
+viii)Reattach heatsink/fan, reconnect power.
+ix)Close case and test boot.
+
+7)Practical: Identify CPU and its sockets
+=>Look at the CPU (usually under the heatsink): Check markings (e.g., Intel Core i5-12400 or AMD Ryzen 5).
+Socket types: LGA (Land Grid Array – pins on motherboard), PGA (Pin Grid Array – pins on CPU, or BGA.
+8)What is memory?
+=>Memory (primarily RAM) is temporary storage that holds data and instructions the CPU is actively using. It allows fast read/write access for running programs.
+
+9)What are the types of memory?
+=>
+Primary memory: RAM (volatile – loses data when powered off) and ROM (non-volatile – retains data).
+RAM subtypes: DRAM (main system memory), SRAM (faster, used in cache).
+ROM subtypes: PROM, EPROM, EEPROM (used for firmware like BIOS).
+Secondary memory: HDD, SSD, USB drives, optical discs (non-volatile, for long-term storage).
+Cache memory
+
+10)Practical: Identify memory types
+=>Open the case or laptop panel. Look for long, thin modules in DIMM/SODIMM slots. Check labels: DDR4, DDR5. Desktop uses DIMM; laptops use SODIMM.
+
+11)Do a practical to install memories in system 
+=> Power off and unplug.
+   Open slots.
+   Align notch on RAM with slot key.
+   Press firmly until clips snap.
+   For dual-channel, install in matching colored slots.
+   Boot and check in BIOS or Windows.
+12)Do a practical to identify main memory frequencies.
+=>  Task Manager > Performance > Memory.
+   Common frequencies: DDR4-3200, DDR5-6000, etc.
+
+13)What is bios?
+BIOS (Basic Input/Output System) is firmware stored on a chip on the motherboard. It initializes hardware during boot, performs POST (Power-On Self-Test), and loads the OS.
+
+14)Describe working process of BIOS. 
+=> Power on → BIOS runs POST (checks CPU, RAM, storage, etc.).
+   Initializes hardware (keyboard, display, drives).
+   Looks for bootable device (per boot order).
+   Loads bootloader → hands control to OS.
+   
+15)Do a practical of Hard resetting the BIOS.
+=> Press Delete/F12 while powering on.
+   Select Load Setup Defaults before exiting.
+
+16)Practical: Identifying BIOS chip from the motherboard
+=> Look for a rectangular or square chip labeled with "BIOS", "UEFI", or manufacturer name.
+   It's usually near the battery or edge of the board.
+   
+17)What is CMOS?
+=> CMOS (Complementary Metal-Oxide-Semiconductor) is a small battery-powered memory chip that stores BIOS/UEFI settings (date/time, boot order, hardware config). It loses data without the battery.
+
+
+18)What is motherboard?
+=>The motherboard is the main circuit board that connects all hardware components (CPU,         
+  RAM, storage, expansion cards, etc.) and allows them to communicate.
+
+19)Describe types of motherboard
+=> PC-Tx: used in old traditional CPUs
+   AT: advanced technology
+   ATX: advanced technology extended(Types: Standard, pico, nano, etc)
+   ITX: Information Technology Extended
+   BTX: Balanced Technology Extended 
+
+20)Practical: Identifying parts of motherboard
+=>CPU socket, RAM (DIMM) slots, PCIe slots (for GPU), SATA ports (storage), chipset            
+  (Northbridge/Southbridge or integrated), I/O ports (USB, HDMI), power connectors (24-pin  
+  ATX, 8-pin CPU), BIOS chip, CMOS battery, front panel connectors.
+
+21)Do a practical by removing all removable parts from the motherboard.
+=>Power off/unplug. Remove: CPU + cooler, RAM sticks, GPU/expansion cards, storage drives (SATA/M.2), all cables (power, data), CMOS, processor.
+
+22)What is system bus?
+  The system bus (or front-side bus in older systems) is the communication pathway between      
+  CPU, memory, and other components. It includes address, data, and control buses.
+
+23)What is chipset and types of chipset?
+=>The chipset is a set of chips managing data flow on the motherboard. Traditional types:
+  Northbridge — Handles high-speed communication (CPU to RAM, GPU).
+  Southbridge — Handles lower-speed I/O (USB, storage, audio, BIOS).
+  Modern chipsets are often integrated into a single chip
+
+24)Describe how does the Northbridge chipset work what is SMPS? And its
+purpose DO a practical to install SMPS. 
+=> NorthBridge connects the CPU directly to high-bandwidth components like RAM andgraphics. It acts as the "memory controller hub" for fast data transfer. SMPS is Switched-Mode-Power-Supply.It converts high-voltage AC from the wall to low-voltage DC (e.g., 3.3V, 5V, 12V) needed by components.
+ Practical: Connect 24-pin motherboard power, 8-pin CPU power, SATA/Molex for drives, PCIe for GPU. Secure with screws. 
+
+25)How to check smps?
+=>To check if an SMPS is working, first perform a visual inspection for burnt components, loose connections, or bulged capacitors, and ensure the input voltage matches the specifications using a digital multimeter. 
+
+26) List out the types of storage devices.
+=>Storage Devices: 
+	IDE/PATA: Integrated DEvice Electronic/Parallel Advanced technology attachment
+	SATA: Serial Advanced technology attachment
+	SCSI: Small Computer System Interface 
+	SATA SSD: Solid State Drive
+	NVME: Non-volatile Memory
+
+27)Describe the working process of storage devices.
+=>HDD: Spinning platters + read/write heads magnetically store data. SSD: Flash memory chips store data electronically (no moving parts).
+28) Do a practical to Remove storage devices and reinstall it and make a gpt disk.
+=>	Disconnect SATA/power cables. 
+	  Remove drive from bay. 
+    Reinstall and reconnect. 
+  	In Disk Management (Windows): Initialize as GPT (for modern UEFI systems >2TB support), create partitions, format NTFS.
+
+29) What is SATA?
+=> SATA (Serial ATA) is a standard interface for connecting storage devices (HDD/SSD) to the motherboard. It replaced older PATA.
+
+30) Describe the working of SATA
+=> It transfers data serially over a thin cable. Supports hot-swapping in some cases; speeds: SATA II (3Gbps), SATA III (6Gbps).
+
+31) Do a practical to install SATA.
+=>Connect SATA data cable from motherboard port to drive, then SATA power from SMPS.
+
+32) What is SCSI storage and types of SCSI? 
+=>SCSI (Small Computer System Interface) is a parallel interface for high-performance storage (older servers). Types: Narrow/Wide, Fast SCSI
+
+33) List out the I/O ports available. Do a practical to identify the I/O port.
+=> USB (2.0/3.0/3.1/C), HDMI/DisplayPort/VGA (video), Ethernet (RJ45), Audio jacks (3.5mm), PS/2 (old keyboard/mouse), Thunderbolt, eSATA.
+
+Practical: Check rear panel of motherboard/case and front panel.
+
+34) What is Boot Process?
+ Sequence: Power on → BIOS/UEFI POST → Detect hardware → Load bootloader from storage → Load OS kernel → User login.
+
+35) Describe the boot process in Linux?
+ Similar to Windows but uses GRUB bootloader. BIOS/UEFI → GRUB menu → Load kernel → Init system (systemd) starts services → Login.
+
+35) List out the types of display? 
+=>CRT (old), LCD, LED, OLED, IPS, TN panels. Resolutions: HD, Full HD, 4K, etc. Interfaces: HDMI, DisplayPort, VGA.
+
+36) What is printer? And type of printer?
+=> A printer outputs text/images on paper. Types: Inkjet (color, home use), Laser (fast, black/white or color for offices), Dot-matrix (impact, old), 3D printers.
+
+37) Do a practical to install the printer.
+=>Connect via USB/network, install drivers from manufacturer or Windows Add Printer wizard. Set as default.
+
+38) Do a practical to Troubleshoot the improper printing.
+Check: Paper/ink/toner levels, connections, drivers, print queue (clear jams), test page. Run troubleshooter in Windows.
+
+39) What are the parts of a laptop? 
+=>Screen, keyboard/touchpad, battery, motherboard, RAM, storage (SSD), CPU/GPU, cooling fan, hinges, ports, webcam, speakers.
+
+40) Do a practical to disassemble the laptop.
+=>Remove battery, bottom screws/panel. Disconnect internals carefully (trackpad, keyboard, display cable). Remove components like RAM, SSD, fan.
+
+
+MODULE-3
+1)What is user management?
+=>Managing user accounts, permissions, and access rights in the OS.
+
+2) Where can we access the user management? 
+=>In Windows: lusrmgr.msc (Local Users and Groups) or Settings > Accounts. In Linux: useradd/usermod commands or GUI tools.
+
+3) Why is user management needed?
+=> For security (separate admin/standard users), multi-user environments, access control, and auditing.
+
+4) Do a practical to create a user from user management
+=>Windows: Run lusrmgr.msc > Users > New User > Enter details > Add to groups if needed.
+
+5) Do a practical to change the password of the administrator from the user management What is file folder permission?---sharing and ntfs What is the use of file and folder permission?
+=>In lusrmgr.msc, right-click Administrator account > Set Password.
+=>Permissions control who can read/write/execute files/folders. NTFS (Windows) permissions are detailed; Sharing permissions apply over network.
+=>To protect data, prevent unauthorized access/modification, and enforce security policies.
+
+6) Write down the steps to give a folder read-only permission
+1.	Right-click folder > Properties > Security tab > Edit.
+2.	Select user/group > Check "Read" under Allow, uncheck Write/Modify.
+3.	Apply to subfolders/files if needed.
+
+7) Write a step to give a file only admin permission.
+=>Right-click file > Properties > Security > Edit > Remove other users/groups > Add Administrators with Full Control; deny others.
+
+8) Do a practical to change the ownership of the folder and the sub folders in it.
+=>Right-click folder > Properties > Security > Advanced > Change Owner > Enter admin username > Check "Replace owner on subcontainers and objects" > Apply.
+9) What is OS?
+=> Operating System is software that manages hardware, runs applications, and provides user interface (e.g., Windows, Linux, macOS).
+10) What are the types of OS?
+•	Desktop: Windows, macOS, Linux distributions (Ubuntu, Kali).
+•	Mobile: Android, iOS.
+•	Server: Windows Server, Linux Server.
+•	Real-time, embedded, etc.
+
+11) Do a practical to create bootable pen drive for kali Linux and install os
+=>Use Rufus or Etcher tool to burn ISO to USB. Boot from USB (change BIOS boot order), follow installer.
+
+12) Do a practical to create a bootable pen drive for windows 10 and install os. Do pen drive for creating a pen drive for mac os Big sur with unibeast
+=>Use Microsoft Media Creation Tool to make USB. Boot from it, follow setup.
+•	Download the macOS Big Sur installer from the Mac App Store.
+•	Format a USB drive (at least 16GB) using Disk Utility to Mac OS Extended with a GUID Partition Map. 
+•	Open Terminal and run the following command, replacing USB with your drive's actual name:
+•	Enter your password and wait for the process to complete.
+
+
+13) What is clean install?
+=>Clean installation is a fresh installation of OS that wipes existing data/partitions.
+
+14) What is upgrade installation?
+=>Installing a newer OS version while keeping files, settings, and programs from the old one.
+
+15) Do a practical to upgrade from windows 8 to windows 10.
+=>Run Windows 10 setup from ISO/USB while in Windows 8. Choose "Keep personal files and apps"
+
+16) What is partitioning?
+=>Partitioning divides a hard drive into separate logical sections (like C: and D: drives). A partition is one such section.
+
+17) What is format?
+=>Preparing a partition by setting a file system (e.g., NTFS, FAT32) and erasing data.
+
+18) Format a partition using cmd.
+=>Open Command Prompt as admin: diskpart → list disk → select disk X → list partition → select partition Y → format fs=ntfs quick.
+
+19) List out the administrative tools
+=>Computer Management, Event Viewer, Task Scheduler, Services, Disk Management, Device Manager, Performance Monitor, etc.
+
+18) What is disk management tools
+=>Built-in Windows tool (diskmgmt.msc) for managing disks, partitions, and volumes.
+
+19) List out the operations we can do with disk management tool..
+=>Create/delete/format partitions, change drive letters, extend/shrink volumes, initialize disks (GPT/MBR), convert to dynamic disk, check properties.
+
+20) What is Device Management? 
+Tool (devmgmt.msc) to view, update, disable, or uninstall hardware drivers and devices.
+
+21) Do a practical to delete a driver from the device management tool.
+=>In Device Manager, right-click device > Uninstall device
+
+22)What is windows Features?
+=>Windows Features are optional components and tools within the Microsoft Windows operating system that users can enable or disable to customize functionality, security, and performance without reinstalling the OS. 
+
+23) Do a practical to install dotnet framework 3.5 with Windows feature.
+=>Control Panel > Programs > Turn Windows features on or off > Check ".NET Framework 3.5" > OK .
+
+24) Do a practical to disable internet explorer in windows feature.
+=>Control Panel > Programs > Turn Windows features on or off >Ucheck Internet Explorer 11>OK
+
+25) What is backup and restore?
+Backup: Copying important data/files. Restore: Recovering from backup or restore points.
+
+26) What are the tools of backup?
+ Windows Backup and Restore, File History, System Image, third-party (e.g., Macrium Reflect), OneDrive.
+
+27) Do a practical to restore from restore point.
+=>Search "Create a restore point" > System Protection > System Restore > Choose point > Next.
+
+28) How to protect system from malfunctioning due to electrical fluctuation? 
+=>Use UPS (Uninterruptible Power Supply) with surge protection. Also use good SMPS and avoid direct wall sockets.
+
+29) What is OS base firewall? And configure inbound and outbound rule.
+=> Windows Defender Firewall (built-in). Inbound: Controls incoming traffic. Outbound: Controls outgoing. Configure: Windows Defender Firewall > Advanced Settings > Inbound/Outbound Rules > New Rule
+
+30) Do a practical to block internet with firewall.
+=>Windows Defender Firewall > Advanced Settings > Inbound/Outbound Rules >Create outbound rule: Block connection for all programs on specific ports (e.g., 80/443 for HTTP/HTTPS) or block entire apps like browsers.
+
+
+
+
+
+
+
+
+
+MODULE-4
+
+1)	What is troubleshooting? 
+=>Systematic process of identifying, diagnosing, and fixing problems in hardware/software.
+
+2)	Do a practical to change the administrator account forge password.
+=>From another admin account: lusrmgr.msc > Users > Right-click account > Set Password. Or boot from installation media and use command prompt methods
+
+3)	How do you troubleshoot a computer with no display on screen?
+	Check power, cables (HDMI/VGA), monitor input source. 
+•	Reseat GPU/RAM. 
+•	Test with another monitor or integrated graphics. 
+•	Check beep codes or motherboard LEDs for errors. 
+•	Clear CMOS. 
+•	Test PSU.
+
+
+4)	You get the Blue Screen of Death (BSOD)?
+=> Note error code (e.g., IRQL_NOT_LESS_OR_EQUAL). Causes: Driver issues, faulty RAM, overheating, bad updates. Fix: Update drivers, run SFC /scannow, memtest, check event viewer.
+
+5)	Do a practical to repair OS.
+=>Boot from Windows media > Repair your computer > Troubleshoot > Startup Repair or Command Prompt (sfc /scannow, chkdsk).
+
+6)	Do a practical to repair boot file.
+=>In Command Prompt (from recovery): bootrec /fixmbr, bootrec /fixboot, bootrec /rebuildbcd.
+
+7)	DO a practical to recover deleted file.
+=>Use Recuva, EaseUS Data Recovery, or Previous Versions in Windows . Scan the drive, preview the files, and save any recovered data to a different physical drive to avoid overwriting remaining fragments. 
+
+8) Do a practical to recover the formatted file
+=> Use Recuva, EaseUS Data Recovery, or Previous Versions in Windows . Scan the drive, preview the files, and save any recovered data to a different physical drive to avoid overwriting remaining fragments. 
+
+8)	  Do practical to recover data from the os Corrupted file
+	Create a Bootable USB: On a working computer, download recovery software like Wondershare Recoverit, EaseUS Data Recovery Wizard.
+	Insert the USB into the corrupted PC, enter the BIOS/UEFI (usually by pressing F2, F12, or Del during startup), and set the USB as the primary boot device. 
+	Once the recovery environment loads, select the corrupted drive, scan for lost files, and save the recovered data to a different, healthy external drive. 
+
+
+9)	What is the basic troubleshooting for printer?
+=> Check power/paper/ink, connections, drivers, print queue (clear jobs), test page, clean print heads, update firmware.
+
+10)	What are the basic troubleshooting for laptop? check the laptop which is not starting up practical to disassemble the laptop and change the corrupted ram practical to change the cartridge of the printer.
+=>
+	Check power adapter/charging light. 
+  Hard reset (remove battery, hold power 30s). 
+	Reseat RAM. 
+	Check for beep codes or lights. 
+	Test with minimal hardware (no peripherals).
+=>Practical : change RAM
+	Remove bottom panel, locate RAM slots, release clips, remove old sticks, insert new compatible RAM, reassemble, test.
+=>Practical: Change the cartridge of the printer 
+  Open printer cover, release old cartridge, remove protective tape from new one, insert until it clicks, run alignment/test page.
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
