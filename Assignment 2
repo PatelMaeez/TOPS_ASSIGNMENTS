@@ -1,0 +1,162 @@
+Module - 1
+
+1. What is a network?  
+   A network is a collection of computers, servers, networking devices, and other devices connected together to share resources (like files, printers, internet) and communicate with each other.
+
+2. Explain types of networks — LAN, MAN, WAN?  
+   - LAN (Local Area Network): Covers a small geographical area like a home, office, or building. High speed, privately owned.  
+   - MAN (Metropolitan Area Network): Covers a larger area such as a city or campus. Usually connects multiple LANs.  
+   - WAN (Wide Area Network): Covers a very large geographical area (countries or continents). The Internet is the largest WAN. Uses leased lines, satellites, etc.
+
+3. What is the Internet?  
+   The Internet is a global system of interconnected computer networks that use the Internet Protocol suite (TCP/IP) to communicate. It is a network of networks.
+
+4. Define Network Topologies.  
+   Network topology is the physical or logical arrangement of devices in a network. Common types:  
+   - Bus, Star, Ring, Mesh, Tree, Hybrid.
+
+5. Define list of cables used in networks — Twisted pair, Fiber optics.  
+   - Twisted Pair: Copper cables (UTP/STP). Most common (Cat5e, Cat6, Cat6a, Cat7). Used for Ethernet.  
+   - Fiber Optics: Uses light signals through glass/plastic fibers. Very high speed, long distance, immune to EMI. Types: Single-mode (long distance) and Multi-mode (short distance).
+
+6. Straight cable standard sequence 568A and 568B.  
+   - T568A: White-Green, Green, White-Orange, Blue, White-Blue, Orange, White-Brown, Brown.  
+   - T568B (most common): White-Orange, Orange, White-Green, Blue, White-Blue, Green, White-Brown, Brown.  
+   Straight-through cable uses same standard on both ends (usually T568B).
+
+7. What is fiber optics module and fiber connector?  
+   - Fiber Optic Module: Transceiver (SFP, GBIC, etc.) that converts electrical signals to optical and vice versa.  
+   - Fiber Connectors: LC, SC, ST, FC, MTRJ, MPO — used to join fiber cables to devices.
+
+8. Explain Switch.  
+   A network switch is a Layer 2 device that connects multiple devices in a LAN and forwards data based on MAC addresses. It reduces collisions by creating separate collision domains.
+
+9. Explain Router.  
+   A router is a Layer 3 device that connects different networks and forwards packets based on IP addresses. It performs routing between different subnets and provides NAT, firewall, etc.
+
+10. Explain MODEM.  
+    Modem (Modulator-Demodulator) converts digital signals from a computer into analog signals for transmission over telephone/cable lines and vice versa.
+
+11. Explain DHCP (Dynamic Host Configuration Protocol). Explain Domain Naming Services (DNS).  What is a protocol?  
+    DHCP automatically assigns IP addresses, subnet masks, gateway, and DNS to devices on a network. DNS translates human-readable domain names (e.g., google.com) into machine-readable IP addresses. A protocol is a set of rules and standards that define how data is exchanged between devices on a network (e.g., HTTP, TCP, IP).
+
+14. What is unicast, multicast, and broadcast?  
+    - Unicast: One-to-one communication.  
+    - Multicast: One-to-many (selected group).  
+    - Broadcast: One-to-all devices in the network.
+
+15. What is the OSI model?  
+    OSI (Open Systems Interconnection) is a 7-layer conceptual model:  
+    7. Application, 6. Presentation, 5. Session, 4. Transport, 3. Network, 2. Data Link, 1. Physical.
+
+16. What is a port number?  
+    A 16-bit number (0–65535) used to identify specific processes or services on a device (e.g., 80 for HTTP, 443 for HTTPS).
+
+17. Difference between TCP vs UDP communications. What is session development?  
+TCP is a connection-oriented protocol that guarantees reliable, ordered, and error-checked delivery of data by using a three-way handshake, acknowledgments, and retransmissions for lost packets.  This makes it ideal for applications where data integrity is critical, such as web browsing (HTTP/HTTPS), email (SMTP), and file transfers (FTP). 
+In contrast, UDP is a connectionless protocol that sends data packets without establishing a prior connection or verifying delivery.  It lacks flow control, congestion control, and retransmission mechanisms, resulting in lower latency and higher speed but no guarantee that data will arrive or arrive in order.  This "fire-and-forget" nature makes UDP the preferred choice for real-time applications where speed is more important than perfect accuracy, such as online gaming, live streaming, VoIP calls, and DNS lookups. 
+   
+ It refers to the establishment, maintenance, and termination of sessions between applications (handled by the Session layer of OSI).
+
+19. What is flow control?  
+    Flow control is a mechanism to prevent a fast sender from overwhelming a slow receiver (e.g., TCP uses Windowing).
+
+20. What is the difference between TCP/IP model and OSI model?  
+    - OSI: 7 layers (theoretical).  
+    - TCP/IP: 4 layers (practical) — Application, Transport, Internet, Network Access.  
+    TCP/IP is used in real-world networks.
+
+21. What is ARP broadcast?  
+    ARP (Address Resolution Protocol) broadcast is used to find the MAC address of a device when only its IP address is known. It sends a broadcast to the entire local network.
+
+22. What is MAC address?  
+    Media Access Control address is a unique 48-bit physical/hardware address assigned to network interface cards (expressed in hexadecimal, e.g., 00:1A:2B:3C:4D:5E).
+
+23. What is an IP address? Difference between IPv4 and IPv6. Assign multiple IPv4 in single network adapter in PC. What are network vulnerabilities?
+    IP address is a logical address used to identify devices on a network.  
+    - IPv4: 32-bit, 4 octets (e.g., 192.168.1.1), ~4.3 billion addresses.  
+    - IPv6: 128-bit, hexadecimal (e.g., 2001:db8::1), practically unlimited addresses.
+   Possible via IP aliasing or adding secondary IP addresses in network adapter settings (Advanced TCP/IP settings in Windows).    Weaknesses that can be exploited, e.g., weak passwords, unpatched software, open ports, misconfigured firewalls, social engineering.
+
+24. What is a firewall used for?  
+    A firewall monitors and controls incoming/outgoing network traffic based on security rules. It acts as a barrier between trusted and untrusted networks.
+
+25. Wireless router configure for internet connection and wireless security. What is Wireless Access Point (WAP) and Wireless Extender?   
+   - Connect WAN port to ISP modem.  
+    - Set WAN settings (PPPoE/DHCP/Static).  
+    - Security: Use WPA3 (or WPA2), strong password, hide SSID, disable WPS, enable MAC filtering. 
+    - WAP: Device that provides wireless connectivity to a wired network.  
+    - Wireless Extender/Repeater: Device that extends the range of an existing wireless signal.
+
+Module - 2
+
+29. What is SOHO network?  
+    Small Office / Home Office network — a small-scale network used in homes or small businesses.
+
+30. What is NAT?  
+    Network Address Translation — translates private IP addresses to public IP addresses for internet access.
+
+31. What is PAT?  
+    Port Address Translation (also called NAT Overload) — uses different ports to allow multiple private IPs to share one public IP.
+
+32. Difference between NAT & PAT.  
+    NAT maps one private IP to one public IP (one-to-one).  
+    PAT maps many private IPs to one public IP using port numbers (many-to-one).
+
+33. What is ACL?  
+    Access Control List — a set of rules used by routers/firewalls to filter network traffic.
+
+34. What are different types of ACL? What is Wildcard Mask?  
+    - Standard ACL (filters by source IP).  
+    - Extended ACL (filters by source/destination IP, port, protocol).  
+    Wildcard Mask: Inverse of subnet mask (e.g., 0.0.0.255 means any value in last octet).
+
+35. Explain Circuit Switching.  
+    A dedicated communication path is established between two nodes for the entire duration of the session (used in traditional telephone networks).
+
+36. What is the difference between leased line and broadband?  
+    - Leased Line: Dedicated, symmetric, high-speed, expensive, fixed bandwidth.  
+    - Broadband: Shared, usually asymmetric, cheaper (DSL, Cable, Fiber).
+
+37. Difference between a POTS line and a leased line?  
+    POTS (Plain Old Telephone Service) is analog voice line. Leased line is a dedicated digital point-to-point connection.
+
+38. Practice on printer sharing.  
+    (Practical) In Windows: Right-click printer → Printer properties → Sharing → Share this printer.
+
+39. Use of IIS.  
+    Internet Information Services — Microsoft’s web server for hosting websites, FTP, etc. on Windows Server.
+
+40. Create FTP server.  
+    Can be done using IIS, FileZilla Server, or third-party tools. Requires configuring users, permissions, and ports (21/20).
+
+41. What is the difference between cloud and virtualization?  
+    - Virtualization: Running multiple virtual machines on one physical server.  
+    - Cloud: Delivery of computing services (servers, storage, databases) over the internet on a pay-as-you-go basis (IaaS, PaaS, SaaS).
+
+42. Why are network monitoring tools used?  
+    To monitor performance, detect issues, analyze traffic, ensure security, and optimize network resources.
+
+43. What is ping?  
+    A tool that tests reachability and measures round-trip time using ICMP Echo Request/Reply.
+
+44. What is traceroute?  
+    Shows the path packets take to reach a destination and measures latency at each hop.
+
+45. What is nslookup?  
+    Tool used to query DNS servers and get domain name to IP mapping or other DNS records.
+
+46. Explain core switches.  
+    High-performance, high-capacity switches placed at the core layer of a hierarchical network design. They provide fast backbone connectivity between distribution switches.
+
+47. What is network management?  
+    The process of administering, monitoring, and maintaining a computer network using tools and protocols (SNMP, etc.).
+
+48. Explain Event Viewer.  
+    A Windows tool that displays detailed logs of system, application, and security events.
+
+49. Practice "parental control" or "family safety" option in Control Panel.  
+    (Practical) Used to restrict websites, apps, and screen time for child accounts.
+
+50. What are the types of network security attacks?  
+    - DoS/DDoS, MITM, Phishing, Malware (Virus, Trojan, Ransomware), SQL Injection, Zero-day, Spoofing, etc.
