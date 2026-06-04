@@ -1,0 +1,59 @@
+Module - 1
+
+1) Explain the OSI reference model?
+A) The OSI (Open Systems Interconnection) model is a 7-layer conceptual framework developed by ISO to standardize network communication. It describes how data moves from one device to another.
+    Layers (bottom to top):
+    Layer 1: Physical – Bits, cables, signals.
+    Layer 2: Data Link – Frames, MAC addressing, error detection.
+    Layer 3: Network – Packets, IP addressing, routing.
+    Layer 4: Transport – Segments, TCP/UDP, end-to-end delivery.
+    Layer 5: Session – Manages sessions/connections.
+    Layer 6: Presentation – Data formatting, encryption, compression.
+    Layer 7: Application – User interface, protocols like HTTP, FTP.
+
+2) What is a Network?
+A) A network is a collection of interconnected devices (computers, servers, printers, etc.) that can share resources and communicate with each other.
+3) What are Routers?
+A) Routers are Layer 3 devices that connect multiple networks and forward packets between them based on IP addresses. They determine the best path using routing tables and protocols.
+4) Explain Encapsulation.
+A) Encapsulation is the process of adding header (and sometimes trailer) information to data as it moves down the OSI/TCP/IP stack. Each layer adds its own control information. De-encapsulation removes this information at the receiving end.
+5) Peer-to-Peer Communication.
+A) It is the process where each layer of the OSI model on the source device communicates directly with the same layer on the destination device using protocol data units (PDUs).
+6) What is TCP and UDP?
+A) TCP (Transmission Control Protocol): Connection-oriented, reliable, uses sequencing, acknowledgments, and flow control. Used for web, email.
+  UDP (User Datagram Protocol): Connectionless, unreliable, faster, low overhead. Used for video streaming, DNS, VoIP.
+
+7) What is Internetwork Operating System software?
+A) IOS (Internetwork Operating System) is Cisco's proprietary operating system used on routers and switches. It provides the CLI for configuration and management.
+8) Explain LAN and draw any example.
+A) LAN (Local Area Network) is a network covering a small geographic area like a building or campus.
+   Example: A company office with PCs, printers, and servers connected via switches and a router.
+9) Explain Network Device – Router, Switch and Hub.
+A)   Hub: Layer 1 device, broadcasts all traffic (creates one collision domain).
+    Switch: Layer 2 device, forwards based on MAC addresses, creates separate collision domains per port.
+    Router: Layer 3 device, forwards based on IP addresses, connects different networks.
+
+10) Describe Router and switch connection in LAN.
+ A) Switches connect end devices (PCs) within the LAN. The router connects the LAN to other networks (WAN/Internet) and performs inter-VLAN routing if needed.
+11)  Types of Cable – explain types of Ethernets and speed.
+A) Coaxial: Older, used in bus topologies.
+  Twisted Pair (UTP/STP): Most common – Cat5e (1 Gbps), Cat6 (10 Gbps), Cat6a (10 Gbps+).
+  Fiber Optic: Single-mode (long distance), Multi-mode (short distance). High speed, immune to EMI.
+  Ethernet speeds: 10 Mbps, 100 Mbps (Fast), 1 Gbps (Gigabit), 10 Gbps, 40/100 Gbps.
+
+12) Explain TCP/IP – List of Protocol and port Number.
+ A)   TCP/IP is the suite of protocols used on the internet.
+    Common protocols & ports:
+    HTTP: TCP 80
+    HTTPS: TCP 443
+    FTP: TCP 20/21
+    SSH: TCP 22
+    Telnet: TCP 23
+    SMTP: TCP 25
+    DNS: UDP/TCP 53
+    DHCP: UDP 67/68
+
+13) Explain Node (backbone) and Physical layer.
+A)  Node: Any device with a network address (PC, router, switch).
+  Backbone: High-speed central network connecting multiple LANs.
+  Physical Layer: Deals with transmission of raw bits over physical media (cables, signals, connectors).
