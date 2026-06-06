@@ -1,0 +1,91 @@
+N+ Network security 
+ Theme: Startup Office IT Setup 
+Section A: Scenario-Based Concept Application
+
+1.	Explain the selection process for CPU, RAM, and storage specifications to ensure hardware compatibility and prevent performance bottlenecks for a startup team performing concurrent development and video conferencing tasks.
+A) Select multi-core CPU (e.g., Ryzen 5/Intel i5 or better) with high clock speed for concurrent dev + video calls. Choose 16–32GB RAM (DDR4/DDR5) to handle multitasking without swapping. Use NVMe SSD (minimum 512GB) for fast boot/storage. Ensure compatibility to avoid bottlenecks.
+
+2.	Explain how system resource allocation and hardware bottlenecks contribute to performance degradation after the deployment of resource-intensive background applications like antivirus software.
+A) Antivirus and background apps consume CPU/RAM/Disk I/O. Poor allocation leads to high utilization → thermal throttling, paging to diskg. This causes lag, freezes, and overall degradation as resources are starved from foreground tasks.
+
+3.	Explain the systematic troubleshooting process for resolving peripheral hardware failures caused by driver incompatibility or operating system conflicts when a device functions inconsistently across different workstations.
+A)
+•	Check Device Manager for errors/yellow marks. 
+•	Update/reinstall drivers from manufacturer site. 
+•	Test device on another workstation. 
+•	Boot in Safe Mode to isolate OS conflicts. 
+•	Check Event Viewer logs and BIOS/UEFI settings. 
+•	Replace cable/port if needed.
+
+
+4.	Explain the role of Uninterruptible Power Supply (UPS) systems and surge protection in preventing file system corruption and ensuring data integrity during unexpected power fluctuations.
+A) UPS(Uninterruptible Power Supply) provides battery backup during outages, allowing safe shutdown and preventing abrupt power loss that corrupts file systems. Surge protectors absorb voltage spikes that can damage components or cause data corruption.
+
+Section B: Practical Application
+
+Task 1: Physically assemble a workstation and document the component installation sequence.
+•	Prepare all components(CPU motherboard, RAM, GPU, storage , PSU , cooler, cables).
+•	Attach the motherboard and then connect components like RAM, CPU, PCI slots.
+•	Apply Thermal Paste and Install Cooler Apply thermal paste to the center of the CPU if it is not pre-applied to the cooler.
+•	Attach the power supply to cabinet and then connect with motherboard.
+•	Attach storage(ssd/sata/etc) and then connect all cables.
+
+Task 2: Troubleshoot and resolve a RAM mismatch error within the BIOS/UEFI settings.
+•	Enter BIOS/UEFI setup.
+•	Check instalated RAM capacity and speed.
+•	Verify Ram is seated Properly.
+•	Match Ram frequency and voltage.
+•	Enable XMP profile if supported.
+•	Update BIOS firmware if required.
+•	Save settigs and restart system.
+
+Task 3: Build a LAN topology in Packet Tracer for 5 systems and 1 printer using a Class C subnet.
+1.	Open Cisco Packet Tracer. From the bottom panel, add a Switch  to the workspace.
+2.	Add 5 Generic PCs  and 1 Generic Printer to the workspace.
+3.	Connect each PC to the switch using a Copper Straight-Through cable.
+4.	Connect the Printer to Switch using a Copper Straight-Through cable.
+5.	Configure each PC IP address: set Static IP (192.168.0.2 to .8), Subnet Mask (255.255.255.0), Default Gateway (192.168.0.1).
+6.	Configure the Printer: click Printer → Config → FastEthernet → set IP 192.168.0.7, Subnet Mask 255.255.255.0, Gateway 192.168.0.1.
+7.	 Successful replies confirm the LAN topology is functional.
+
+
+Task 4 : Perform a clean OS installation with manual disk partitioning and startup optimization.
+1.	Create bootable USB: use Windows Media Creation Tool or Rufus. Select GPT partition scheme for UEFI systems. Set file system to NTFS.
+2.	Enter BIOS and set USB as first boot device. Disable Secure Boot if using a custom Linux ISO, or keep enabled for Windows.
+3.	Boot from USB. At the Windows Setup screen, select language, time, and keyboard layout. Click 'Install Now'.
+4.	At 'Which type of installation do you want?' select 'Custom: Install Windows only (advanced)'.
+5.	Manual Disk Partitioning: select the target disk. Click 'New' to create partitions manually.
+6.	  Partition 1 — EFI System Partition: 100 MB (FAT32) — created automatically by Windows Setup in UEFI mode.
+7.	  Partition 2 — Microsoft Reserved: 16 MB — created automatically.
+8.	  Partition 3 — OS Partition (C:): 120 GB minimum (NTFS) — the primary Windows installation volume.
+9.	  Partition 4 — Data Partition (D:): remaining space (NTFS) — for user files and project data.
+10.	Select Partition 3 (OS) and click 'Next'. Windows copies installation files and restarts.
+11.	Complete OOBE (Out-Of-Box Experience): set region, keyboard, account (use local account for workstations without AD). Skip Microsoft account sign-in if preferred.
+12.	Install drivers: first install chipset drivers (from motherboard manufacturer), then GPU, audio, and NIC drivers. Reboot after each major driver install.
+13.	Startup Optimization after installation:
+14.	  Open Task Manager (Ctrl+Shift+Esc) → Startup tab → disable all non-essential startup programs (Teams, OneDrive, Spotify, etc.).
+
+
+Section C: Integrated Case Study
+
+Scenario: At Nexus Innovations, three rendering workstations pass morning POST checks but restart randomly during heavy afternoon workloads. The units are stored in poorly ventilated desk cabinets.
+Questions:
+1.	Identify the three hardware components most likely to cause random reboots under load.
+A) 1. Most Likely Components
+•	CPU (overheating)
+•	GPU (rendering workload)
+•	Power Supply Unit (PSU)
+2. Explain why the systems pass POST in the morning but fail in the afternoon.
+A) Morning systems are cool. Under heavy afternoon load + poor ventilation, components (especially CPU/GPU) overheat, triggering thermal protection that causes random reboots.
+
+3.	How would you use a stress-test tool to confirm a thermal or power issue?
+A)	Run stress tests while monitoring temperatures (HWMonitor/Core Temp) and voltages. Reboots or high temps (>90°C) confirm thermal/power issues.
+
+4.	Propose three specific steps to remediate the frequent system restarts.
+A)   	Improve airflow: Remove from cabinets, add case fans, clean dust. 
+Monitor & repaste CPU/GPU with quality thermal paste. 
+ 	Check PSU wattage/load — upgrade if necessary; ensure proper cable management.
+
+5.	Provide a brief technical justification for why a PSU upgrade might (or might not) be necessary.
+A) Might be necessary if current PSU is  old/degraded (failing voltage regulation). Might not if issue is purely thermal — good cooling often resolves reboots without PSU change. Test with monitoring first.
+
