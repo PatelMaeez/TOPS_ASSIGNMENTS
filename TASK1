@@ -1,0 +1,48 @@
+## 1.Create a comparison table listing at least 3 key differences between WAN and LAN, and give one real-world example of each from apps or services you use daily (for example, IRCTC, Instagram, or Zomato).
+
+| Feature | LAN (Local Area Network) | WAN (Wide Area Network) |
+|---|---|---|
+| Geographic scope | Covers a small area — a room, building, or campus | Spans cities, countries, or continents |
+| Speed | Very high (1 Gbps–10 Gbps typical) | Lower and variable (depends on ISP/leased lines) |
+| Ownership | Privately owned and managed (your router, switches) | Often leased from telecom providers (Jio, Airtel, BSNL) |
+| Latency | Very low (1–5 ms) | Higher (20–200 ms depending on distance) |
+| Cost | Low setup cost | Expensive — leased lines, MPLS circuits, ISP contracts |
+
+Real-world examples:
+- LAN: When you open the Zomato app on your phone connected to your home Wi-Fi, your device is on a LAN. Your router assigns it a local IP (192.168.x.x) and the data travels over your local network to reach your router.
+- WAN: After leaving your router, that same Zomato request travels over Jio/Airtel's WAN infrastructure — crossing cities and data centers — to reach Zomato's servers in Mumbai or Hyderabad. Similarly, IRCTC bookings from a station in Ahmedabad connect to the CRIS data center in Delhi via WAN links.
+
+---
+
+## 2. Draw a simple network diagram using any drawing tool (or on paper and upload a photo) that shows how a user in Ahmedabad could connect to a Flipkart data center in Bangalore using a WAN, labeling the LAN and WAN segments clearly.
+
+---
+
+## 3. What is MPLS? (Short Summary)
+
+Multiprotocol Label Switching (MPLS) is a high-performance data-carrying technique used by ISPs and enterprise networks to speed up and shape traffic flows. Instead of each router independently examining a packet's IP header and deciding the next hop (as in traditional IP routing), MPLS assigns a short label to each packet at the network's entry point (ingress router). Subsequent routers — called Label Switch Routers (LSRs) — forward packets purely based on that label, without re-reading the IP address, making decisions much faster. This pre-determined path is called a Label Switched Path (LSP). At the egress router, the label is removed and the packet is delivered normally. Compared to traditional IP routing — which is "hop-by-hop" and relies on longest-prefix matching at every router — MPLS offers faster forwarding, traffic engineering capabilities (you can explicitly control which path traffic takes), and the ability to implement Quality of Service (QoS) by assigning different labels to different traffic classes.
+
+---
+
+## 4.Observe the pre-configured MPLS network in the provided Packet Tracer or GNS3 file, and note down two routing behaviors that are different from standard IP routing.<br><br><em><strong>Hint:</strong> Look for how labels are used and how packets move between routers.</em>
+
+Since no Packet Tracer or GNS3 file was uploaded, here are the two key behaviors you should look for and note when you open your lab file:
+
+Behavior 1 — Label-based forwarding instead of IP lookup:
+In standard IP routing, every router runs a longest-prefix match on the destination IP in its routing table. In MPLS, once you inspect the forwarding table (`show mpls forwarding-table` in Cisco IOS), you'll see that the LSR doesn't look at the IP at all — it swaps an incoming label (e.g., label 100) for an outgoing label (e.g., label 200) and pushes the packet out a specific interface. This is a label swap operation, and it happens in hardware, making it far faster than an IP lookup.
+
+Behavior 2 — Pre-established Label Switched Paths (LSPs) bypass per-hop routing decisions:
+When you `ping` or `traceroute` across the MPLS domain in Packet Tracer/GNS3, you'll notice that intermediate routers (P routers) do not appear in the IP routing table for that destination — yet packets arrive correctly. This is because the LSP is a tunnel: only the ingress and egress PE routers know the ultimate destination IP. The core P routers only see and act on labels, meaning the path is entirely predetermined by the label stack, not by dynamic IP routing at each hop.
+
+---
+
+## 5. List three specific benefits MPLS offers over traditional routing for companies running high-traffic apps like YouTube or BookMyShow, and briefly explain how each benefit helps in real-world scenarios.
+
+1. Traffic engineering and path control
+Traditional IP routing sends packets along the "best" path as computed by algorithms like OSPF or BGP — but "best" usually just means shortest, not least congested. MPLS allows network engineers to explicitly define alternate paths (bypass tunnels) so that YouTube video streams, for example, never traverse an already-congested link even if it's technically the shortest route. For BookMyShow during IPL ticket sales, this means burst traffic can be rerouted around congested backbone links in real time, preventing packet loss and buffering.
+
+2. Quality of Service (QoS) with traffic prioritization
+MPLS labels can carry an Experimental (EXP) bits field (now called Traffic Class bits) that allows different packet types to be treated differently. A telecom provider serving YouTube can mark video streaming packets as high-priority and bulk data transfers as best-effort. Even under heavy load, video packets get forwarded first. Traditional IP routing treats all packets equally by default — differentiation requires complex per-hop policy configurations at every router, which is hard to manage at scale.
+
+3. Fast reroute (FRR) and high availability
+MPLS supports Fast Reroute, where a pre-computed backup LSP is instantly activated (in under 50 milliseconds) if a primary path fails — far faster than waiting for routing protocols like OSPF to reconverge (which can take seconds). For a platform like BookMyShow processing thousands of transactions per second, a 5-second routing reconvergence would cause visible errors and failed payments. With MPLS FRR, the failover is nearly invisible to end users.
