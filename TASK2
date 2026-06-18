@@ -1,0 +1,59 @@
+
+## 1.In Cisco Packet Tracer, create two separate networks (representing two branch offices) using two routers and configure basic IP addressing so that each network can ping its own devices.
+## 2.Configure a basic site-to-site VPN between the two routers in Packet Tracer using GRE tunnel interfaces and assign tunnel IP addresses so that PCs from one branch can ping PCs in the other branch.<br><br><em><strong>Hint:</strong> Use the 'interface tunnel' command on both routers and set the tunnel source and destination to the routers' public-facing interfaces.</em>
+=>
+
+
+## 3.Simulate a remote access VPN scenario in Packet Tracer by configuring a VPN client PC to connect securely to one of the branch routers using the built-in VPN client feature.<br><br><em><strong>Hint:</strong> Use the VPN tab on the PC and set the correct server IP, username, and password.</em>
+=> For the remote access VPN in Packet Tracer, the setup is as follows. A travelling employee's PC (the VPN client) connects from outside both branch networks — for example, from a hotel — to Router-A's public IP (10.0.0.1) using Packet Tracer's built-in VPN client tab. Router-A is configured as a VPN server with a username, password, and a pool of IP addresses to assign to remote clients (e.g., 192.168.100.x). Once authenticated, the client PC receives a virtual IP on the branch network and can reach internal resources exactly as if it were physically plugged into the office LAN.
+Steps to configure in Packet Tracer (PC VPN tab):
+
+Server IP: 10.0.0.1 (Router-A's public interface)
+Username: vpnuser
+Password: vpn123
+
+## 4.List and explain the main differences between site-to-site VPN and remote access VPN based on your Packet Tracer configurations, including at least two advantages and disadvantages of each approach.
+=>Site-to-site VPN — advantages:
+
+Always-on connectivity: once configured, all traffic between the offices flows automatically without any user action. Employees at Branch B can reach Branch A's file server like a local resource, every time.
+Centrally managed: network admins control the entire tunnel from the routers. No software to install or manage on individual PCs.
+
+Site-to-site VPN — disadvantages:
+
+Inflexible: if a new office opens, a new tunnel must be configured on both routers. In large organizations with many branches, managing dozens of tunnels becomes complex.
+Not suited for mobile workers: an employee working from home or a café cannot join the site-to-site tunnel — only devices physically at a branch are covered.
+
+Remote access VPN — advantages:
+
+Flexibility for mobile users: any employee anywhere in the world can securely connect to the office network from a laptop or phone, enabling hybrid and remote work.
+User-level control: access can be granted or revoked per user (e.g., disable vpnuser account) without touching router configurations.
+
+Remote access VPN — disadvantages:
+
+Dependent on client software: each device needs a VPN client configured correctly. Updates, compatibility, and user errors introduce support overhead.
+Performance varies: since each user's home internet is different, tunnel speed and latency are inconsistent — unlike a dedicated site-to-site leased line.
+
+
+## 5.Document and submit the step-by-step configuration commands you used to set up the site-to-site VPN in Packet Tracer, including interface, tunnel, and routing commands.
+=>Router-AStep 1 — LAN interface (Fa0/0)
+! Configure LAN-facing interfaceRouter-A# configure terminalRouter-A(config)# interface FastEthernet0/0Router-A(config-if)# ip address 192.168.1.1 255.255.255.0Router-A(config-if)# no shutdownRouter-A(config-if)# exit
+Router-AStep 2 — WAN interface (Fa0/1, public-facing)
+! Configure WAN-facing interface (the tunnel source)Router-A(config)# interface FastEthernet0/1Router-A(config-if)# ip address 10.0.0.1 255.255.255.252Router-A(config-if)# no shutdownRouter-A(config-if)# exit
+Router-AStep 3 — GRE tunnel interface (Tunnel0)
+! Create GRE tunnel — source = own WAN IP, dest = remote WAN IPRouter-A(config)# interface Tunnel0Router-A(config-if)# ip address 172.16.0.1 255.255.255.252Router-A(config-if)# tunnel source FastEthernet0/1Router-A(config-if)# tunnel destination 10.0.0.2Router-A(config-if)# no shutdownRouter-A(config-if)# exit
+Router-AStep 4 — Static route to Branch B via tunnel
+! Route Branch B's LAN through the tunnel endpointRouter-A(config)# ip route 192.168.2.0 255.255.255.0 172.16.0.2Router-A(config)# endRouter-A# write memory
+________________________________________
+Router-BStep 1 — LAN interface (Fa0/0)
+Router-B# configure terminalRouter-B(config)# interface FastEthernet0/0Router-B(config-if)# ip address 192.168.2.1 255.255.255.0Router-B(config-if)# no shutdownRouter-B(config-if)# exit
+Router-BStep 2 — WAN interface (Fa0/1, public-facing)
+Router-B(config)# interface FastEthernet0/1Router-B(config-if)# ip address 10.0.0.2 255.255.255.252Router-B(config-if)# no shutdownRouter-B(config-if)# exit
+Router-BStep 3 — GRE tunnel interface (Tunnel0)
+! Mirror of Router-A — source and destination swappedRouter-B(config)# interface Tunnel0Router-B(config-if)# ip address 172.16.0.2 255.255.255.252Router-B(config-if)# tunnel source FastEthernet0/1Router-B(config-if)# tunnel destination 10.0.0.1Router-B(config-if)# no shutdownRouter-B(config-if)# exit
+Router-BStep 4 — Static route to Branch A via tunnel
+Router-B(config)# ip route 192.168.1.0 255.255.255.0 172.16.0.1Router-B(config)# endRouter-B# write memory
+________________________________________
+Verification commands (run on either router)
+! Check tunnel is up and IP is assignedshow interfaces Tunnel0! Verify routing table includes remote LANshow ip route! Test end-to-end — from Router-A, ping PC-Bping 192.168.2.10 source 192.168.1.1! From PC-A desktop, ping PC-Bping 192.168.2.10
+
+
