@@ -1,0 +1,58 @@
+## 1.In Cisco Packet Tracer, set up a simple network with a router, one internal PC, and one external PC. Assign private IP addresses to the internal PC and public IP addresses to the external PC, then configure static NAT on the router to allow the internal PC to communicate with the external PC.
+=>Topology Setup:
+
+Add a Router (e.g., 2911).
+Add PC0 (Internal) connected to Router's Gig0/0 (Inside).
+Add PC1 (External) connected to Router's Gig0/1 (Outside).
+Optionally add a Switch between PC0 and Router for realism.
+
+IP Addressing:
+
+PC0 (Internal): 192.168.1.10 / 24, Gateway: 192.168.1.1
+Router Gig0/0 (Inside): 192.168.1.1 / 24
+Router Gig0/1 (Outside): 203.0.113.1 / 24
+PC1 (External): 203.0.113.10 / 24, Gateway: 203.0.113.1
+
+## 2.Configure Port Address Translation (PAT) on a router in Packet Tracer so that two internal PCs with private IPs can access a simulated public web server using a single public IP address.<br><br><em><strong>Hint:</strong> Use the 'ip nat inside source list' command with 'overload' to enable PAT.</em>
+=> Topology Modification:
+
+Keep the same router.
+Add PC2 (second internal PC) connected to the inside network (same switch or directly).
+PC0: 192.168.1.10
+PC2: 192.168.1.11
+Both use gateway 192.168.1.1
+
+Configuration (Replace static NAT with PAT):
+Bashconfigure terminal
+no ip nat inside source static 192.168.1.10 203.0.113.20   ! remove previous static
+
+access-list 1 permit 192.168.1.0 0.0.0.255
+
+ip nat inside source list 1 interface GigabitEthernet0/1 overload
+
+## 3.Test your NAT configuration by sending a ping from the internal PC to the external PC and capture the NAT translation table on the router to verify the address mapping.
+==>From internal PC(s): ping 203.0.113.10
+On Router: show ip nat translations
+You should see dynamic entries with ports (e.g., icmp 203.0.113.1:port 192.168.1.10:port).
+
+show ip nat statistics to see hits/misses.
+
+## 4.Modify your Packet Tracer topology to add a third internal PC. Update your NAT or PAT configuration so all three internal PCs can access the external network, and verify that each translation appears in the router's NAT table.
+=>Add PC3: 192.168.1.12 / 24, gateway 192.168.1.1
+No major config change needed — the existing PAT (overload) already supports multiple devices sharing the single public IP (203.0.113.1) via different port numbers.
+Verify with pings from all three PCs.
+Check show ip nat translations — you should see multiple translations for the same public IP but different ports.
+
+
+## 5.Explain in your own words how NAT and PAT help apps like Zomato or Flipkart serve millions of users with limited public IP addresses. Give two real-world scenarios where incorrect NAT/PAT setup could break connectivity for users.
+=>NAT (Network Address Translation) and especially PAT (Port Address Translation / NAT Overload) solve the IPv4 address exhaustion problem. Internet Service Providers (ISPs) and large companies have a limited number of public IPv4 addresses. Private IPs (RFC 1918 ranges like 192.168.x.x, 10.x.x.x) are used internally.
+
+Millions of users/devices behind corporate/home NAT routers share one or a few public IPs.
+PAT uses port numbers (the :80, :443, etc. in URLs) to distinguish between different sessions. One public IP can support thousands of simultaneous connections because each connection gets a unique source port.
+
+Real-world benefit for Zomato/Flipkart:
+When you open the Zomato app, your phone uses a private IP (e.g., 192.168.1.45). Your home router performs PAT and maps your request to the ISP's public IP + a unique port. Zomato's server sees only the public IP. This allows millions of users to access the service using far fewer public IPs than users.
+Two scenarios where incorrect NAT/PAT breaks connectivity:
+
+Port exhaustion / Misconfigured overload: If PAT is configured without "overload" (or with a very small pool of public IPs), and too many users try to connect simultaneously, the router runs out of available ports. New connections fail (especially for apps using many WebSocket/persistent connections like live tracking on Zomato or Flipkart). Users see "connection timeout" or "server unreachable" while others on the same network work.
+Static NAT instead of PAT for many devices, or missing "ip nat inside/outside": If an admin configures one-to-one static NAT for hundreds of internal servers/devices but only has a handful of public IPs, most devices lose internet access. Or if interfaces are not marked ip nat inside / ip nat outside, no translation happens → internal PCs cannot reach external servers (pings/web requests fail), even though routing works internally.
