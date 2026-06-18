@@ -1,7 +1,8 @@
 
 ## 1.In Cisco Packet Tracer, create two separate networks (representing two branch offices) using two routers and configure basic IP addressing so that each network can ping its own devices.
+=> https://github.com/PatelMaeez/TOPS_ASSIGNMENTS/blob/main/images/Screenshot%202026-06-18%20083342.png
 ## 2.Configure a basic site-to-site VPN between the two routers in Packet Tracer using GRE tunnel interfaces and assign tunnel IP addresses so that PCs from one branch can ping PCs in the other branch.<br><br><em><strong>Hint:</strong> Use the 'interface tunnel' command on both routers and set the tunnel source and destination to the routers' public-facing interfaces.</em>
-=>
+=>https://github.com/PatelMaeez/TOPS_ASSIGNMENTS/blob/main/images/16.2.2-2021-07-13_160727.webp
 
 
 ## 3.Simulate a remote access VPN scenario in Packet Tracer by configuring a VPN client PC to connect securely to one of the branch routers using the built-in VPN client feature.<br><br><em><strong>Hint:</strong> Use the VPN tab on the PC and set the correct server IP, username, and password.</em>
