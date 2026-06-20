@@ -1,0 +1,68 @@
+## 1. Use Cisco Packet Tracer to simulate a WAN setup connecting two branch offices via a VPN tunnel and configure NAT on the edge routers so both branches can access the internet.
+=>Topology in Packet Tracer:
+
+Branch 1 Router (R1):
+Gig0/0: Inside (LAN) — 192.168.1.1/24
+Gig0/1: Outside (to Internet) — 203.0.113.1/24
+
+Branch 2 Router (R2):
+Gig0/0: Inside (LAN) — 192.168.2.1/24
+Gig0/1: Outside — 198.51.100.1/24
+
+Connect R1 Gig0/1 and R2 Gig0/1 via a cloud or another router simulating the Internet (use a simple router as ISP with public IPs).
+Add 2–3 PCs in each branch 
+Add an external web server or PC on the ISP side for internet simulation.
+
+Basic NAT (PAT) on both edge routers for Internet access :crypto isakmp policy 10
+ encryption aes
+ hash sha
+ authentication pre-share
+ group 2
+exit
+crypto isakmp key VPNKEY address 198.51.100.1   ! R2's public IP
+
+crypto ipsec transform-set MYSET esp-aes esp-sha-hmac
+
+access-list 101 permit ip 192.168.1.0 0.0.0.255 192.168.2.0 0.0.0.255
+
+crypto map VPNMAP 10 ipsec-isakmp
+ set peer 198.51.100.1
+ set transform-set MYSET
+ match address 101
+exit
+
+interface GigabitEthernet0/1
+crypto map VPNMAP
+
+## 2. Configure Port Address Translation (PAT) on a router in your simulated WAN so that three devices from the internal network can browse the internet using a single public IP address.<br><br><em><strong>Hint:</strong> Use the 'overload' keyword in your NAT configuration.</em>
+=>access-list 1 permit 192.168.1.0 0.0.0.255   ! For Branch 1 (adjust for Branch 2)
+ip nat inside source list 1 interface GigabitEthernet0/1 overload
+
+interface GigabitEthernet0/0
+ ip nat inside
+interface GigabitEthernet0/1
+ ip nat outside
+
+## 3. Intentionally misconfigure the VPN tunnel's pre-shared key between two routers in your WAN simulation, then use the 'show crypto isakmp sa' and 'show run' commands to identify and fix the connectivity issue.
+=> show crypto isakmp sa        
+show run | section crypto      
+show crypto ipsec sa
+debug crypto isakmp          
+
+## 4. Troubleshoot a scenario where devices in one branch office can ping the internet but cannot access devices in the other branch via the VPN tunnel; document the commands you use and the configuration change that resolves the problem.
+=>Devices reach internet (NAT works) but inter-branch traffic fails.
+
+Troubleshooting steps:
+
+show crypto isakmp sa → Tunnel should be up (QM_IDLE / ACTIVE).
+show crypto ipsec sa → Check packet encrypt/decrypt counters (should increment on traffic).
+show ip route and show access-lists 101 → Verify interesting traffic ACL is correct and bidirectional.
+ping from a Branch 1 PC to Branch 2 PC (source the packet correctly).
+Check for NAT exemption (very common issue): VPN traffic should not be NATed.
+
+## 5. Take the WAN, VPN, and NAT scenario you built and swap your configuration file with a classmate; review their setup, find one misconfiguration, and write a short note on how you identified and fixed it.<br><br><em><strong>Constraint:</strong> Focus on using 'show' and 'debug' commands for troubleshooting rather than guessing the issue.</em>
+=>Identification using show/debug :
+
+Ran show crypto isakmp sa → Tunnel DOWN (MM_WAIT_MSG_6).
+show run | section crypto → Found mismatched transform-set or ACL mirrored incorrectly.
+debug crypto isakmp → "transform proposal not supported" or PSK/peer mismatch.
