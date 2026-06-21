@@ -1,0 +1,133 @@
+## 1. On a Cisco Packet Tracer or GNS3 simulation, create three VLANs named Insta, Zomato, and Flipkart on a single switch, and assign at least one PC to each VLAN.
+==>enable
+configure terminal
+
+vlan 10
+ name Insta
+exit
+
+vlan 20
+ name Zomato
+exit
+
+vlan 30
+ name Flipkart
+exit
+
+# Assign PCs 
+interface GigabitEthernet0/1
+ switchport mode access
+ switchport access vlan 10
+ no shutdown
+exit
+
+interface GigabitEthernet0/2
+ switchport mode access
+ switchport access vlan 20
+ no shutdown
+exit
+
+interface GigabitEthernet0/3
+ switchport mode access
+ switchport access vlan 30
+ no shutdown
+exit
+
+end
+write memory
+
+## 2. Configure a Router-on-a-Stick setup by creating sub-interfaces (e.g., GigabitEthernet0/0.10, .20, .30) on a simulated router, each with an IP address for the corresponding VLANs Insta, Zomato, and Flipkart.
+==>enable
+configure terminal
+
+# Create subinterfaces
+interface GigabitEthernet0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+ no shutdown
+exit
+
+interface GigabitEthernet0/0.20
+ encapsulation dot1Q 20
+ ip address 192.168.20.1 255.255.255.0
+ no shutdown
+exit
+
+interface GigabitEthernet0/0.30
+ encapsulation dot1Q 30
+ ip address 192.168.30.1 255.255.255.0
+ no shutdown
+exit
+
+# Physical interface must not have an IP address
+interface GigabitEthernet0/0
+ no ip address
+ no shutdown
+exit
+
+end
+write memory
+
+## 3. Assign the switch port connected to the router as a trunk port, and verify trunking is active using the show interfaces trunk command.<br><br><em><strong>Hint:</strong> Use the switchport mode trunk command on the relevant interface.</em>
+=>configure terminal
+interface GigabitEthernet0/24  
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20,30
+ no shutdown
+exit
+end
+write memory
+
+
+## 4. Test inter-VLAN connectivity by pinging from a PC in the Insta VLAN to a PC in the Zomato VLAN, and explain why the ping succeeds or fails based on your configuration.
+=>Insta VLAN PC (VLAN 10):
+IP: 192.168.10.10
+Subnet: 255.255.255.0
+Default Gateway: 192.168.10.1
+Zomato VLAN PC (VLAN 20):
+IP: 192.168.20.10
+Subnet: 255.255.255.0
+Default Gateway: 192.168.20.1
+Flipkart VLAN PC (VLAN 30):
+IP: 192.168.30.10
+Subnet: 255.255.255.0
+Default Gateway: 192.168.30.1
+
+Test:
+From Insta PC: ping 192.168.20.10 (Zomato PC)
+
+
+
+
+## 5. Refactor your Router-on-a-Stick configuration to add a new VLAN called 'Spotify' without disrupting existing VLAN communication, and document the exact commands you used for both the switch and the router.
+=>configure terminal
+
+vlan 40
+ name Spotify
+exit
+
+interface GigabitEthernet0/4   
+ switchport mode access
+ switchport access vlan 40
+ no shutdown
+exit
+
+interface GigabitEthernet0/24   
+ switchport trunk allowed vlan add 40
+exit
+
+end
+write memory
+
+IP: 192.168.40.10
+Subnet: 255.255.255.0
+Default Gateway: 192.168.40.1
+
+Verification:
+
+show vlan brief (Switch)
+show ip interface brief (Router) → All subinterfaces up/up
+show interfaces trunk (Switch) → VLAN 40 now allowed
+Ping from Insta PC to Spotify PC → Should succeed
+
+
