@@ -1,0 +1,93 @@
+## 1. On a Cisco Layer 3 switch, create three VLANs (e.g., VLAN 10 for 'Sales', VLAN 20 for 'Support', VLAN 30 for 'Marketing') and assign at least one interface to each VLAN.
+=>enable
+configure terminal
+
+vlan 10
+ name Sales
+exit
+
+vlan 20
+ name Support
+exit
+
+vlan 30
+ name Marketing
+exit
+
+# Assign access ports to PCs (adjust interface numbers as per your topology)
+interface GigabitEthernet0/1
+ switchport mode access
+ switchport access vlan 10
+ no shutdown
+exit
+
+interface GigabitEthernet0/2
+ switchport mode access
+ switchport access vlan 20
+ no shutdown
+exit
+
+interface GigabitEthernet0/3
+ switchport mode access
+ switchport access vlan 30
+ no shutdown
+exit
+
+end
+write memory
+
+
+##2.Configure Switch Virtual Interfaces (SVIs) for each VLAN you created by assigning them unique IP addresses (e.g., 192.168.10.1/24 for VLAN 10, etc.) and ensure each SVI is in 'up/up' state.<br><br><em><strong>Hint:</strong> Use the 'interface vlan' command to create SVIs and 'no shutdown' to enable them.</em>
+=>configure terminal
+
+interface vlan 10
+ ip address 192.168.10.1 255.255.255.0
+ no shutdown
+exit
+
+interface vlan 20
+ ip address 192.168.20.1 255.255.255.0
+ no shutdown
+exit
+
+interface vlan 30
+ ip address 192.168.30.1 255.255.255.0
+ no shutdown
+exit
+
+end
+write memory
+##3. Enable IP routing on the Layer 3 switch so that devices in different VLANs can communicate with each other without using an external router.<br><br><em><strong>Hint:</strong> Use the 'ip routing' global configuration command.</em>
+=>configure terminal
+ip routing
+end
+write memory
+
+## 4.Verify inter-VLAN routing by connecting two PCs (one in VLAN 10 and one in VLAN 20) and pinging between them. Capture and submit the ping results to show successful communication.
+=>Sales PC (VLAN 10):
+IP: 192.168.10.10
+Subnet Mask: 255.255.255.0
+Default Gateway: 192.168.10.1
+Support PC (VLAN 20):
+IP: 192.168.20.10
+Subnet Mask: 255.255.255.0
+Default Gateway: 192.168.20.1
+
+##5. Refactor your VLAN and SVI configuration so that VLAN 30 uses a different subnet mask (e.g., /25 instead of /24). Explain what changes you made and how this affects communication with the other VLANs.
+==>configure terminal
+
+interface vlan 30
+ no ip address                  # Remove old IP first
+ ip address 192.168.30.1 255.255.255.128
+exit
+
+end
+write memory
+
+IP: 192.168.30.10
+Subnet Mask: 255.255.255.128
+Default Gateway: 192.168.30.1
+
+
+
+
