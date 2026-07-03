@@ -1,0 +1,31 @@
+1. Open Command Prompt or Terminal and use the ping command to test connectivity to www.spotify.com. Note the number of packets sent, received, and the average response time.
+=>Pinging e1325.g.akamaiedge.net [23.222.51.XXX] with 32 bytes of data:
+Reply from 23.222.51.XXX: bytes=32 time=28ms TTL=56
+Reply from 23.222.51.XXX: bytes=32 time=25ms TTL=56
+Reply from 23.222.51.XXX: bytes=32 time=27ms TTL=56
+Reply from 23.222.51.XXX: bytes=32 time=26ms TTL=56
+
+Ping statistics for 23.222.51.XXX:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 25ms, Maximum = 28ms, Average = 26ms
+
+2. Use the traceroute (tracert on Windows, traceroute on Linux/Mac) command to trace the path from your computer to www.flipkart.com. List the number of hops and identify the IP address of the first and last hop.
+=>Command used (Windows): tracert www.flipkart.com
+Number of hops: Usually 8–15 hops depending on your ISP and location.
+First hop: Local router/gateway (e.g., 192.168.1.1 or your ISP's first router).
+Last hop: One of Flipkart’s CDN or server IPs
+3. Simulate a connectivity issue by pinging a non-existent website (for example, ping www.fakezomato12345.com) and write down the error message you receive.<br><br><em><strong>Hint:</strong> Compare the output to a successful ping and describe the difference in your findings.</em>
+=>Ping request could not find host www.fakezomato12345.com. Please check the name and try again.
+Comparison with Successful Ping:
+Successful ping (e.g., Spotify): Resolves domain name → shows IP address → sends/receives ICMP packets with low latency.
+Failed ping (fake domain): Fails at DNS resolution stage. No IP address is returned, so no packets are sent. This indicates a DNS lookup failure rather than a routing or connectivity problem.
+
+4. Imagine you are unable to access www.youtube.com from your system. Use both ping and traceroute commands to diagnose the issue and write a short report describing where the connection fails and what the possible reasons could be
+=>ping www.youtube.com
+tracert www.youtube.com   
+DNS Issue — Local DNS cache corrupted (solution: ipconfig /flushdns).
+ISP Routing Problem — Temporary outage or peering issue with Google’s network.
+Firewall / Proxy — Corporate or security software blocking YouTube traffic.
+MTU Fragmentation — Packet size issues causing blackholing.
+YouTube-side — Rare regional outage
