@@ -1,0 +1,46 @@
+1. Install Wireshark on your computer and capture 2 minutes of network traffic while you browse Instagram or YouTube. Save the capture file as insta_traffic.pcap.
+=>Download Wireshark from the official site (wireshark.org).
+Install it on your computer.
+Start a capture on your active network interface (WiFi/Ethernet).
+Browse Instagram or YouTube for 2 minutes.
+Stop the capture and save as insta_traffic.pcap.
+
+2. Use Wireshark to filter and list all HTTP or HTTPS requests made by your browser during the capture. Write down the domains you see most frequently.
+=>Filter used in Wireshark:
+
+http (for unencrypted) or tls.handshake / http2 (for HTTPS).
+
+Most Frequent Domains (typical for Instagram browsing):
+
+*.instagram.com
+*.cdninstagram.com
+*.fbcdn.net (Facebook CDN)
+*.facebook.com
+graph.instagram.com
+i.instagram.com (images)
+scontent.cdninstagram.com
+
+3. Open your insta_traffic.pcap in Wireshark and find a TCP packet. Document the source IP, destination IP, and TCP port numbers for that packet.
+=>Source IP: 192.168.1.105 
+Destination IP: 157.240.XX.XX 
+Source Port: 54321 (ephemeral port)
+Destination Port: 443 (HTTPS)
+Protocol: TCP
+Info: [SYN]
+
+4. Run an Nmap scan on your own machine (localhost) to detect open ports. Save the command you used and list the open ports found.<br><br><em><strong>Hint:</strong> Use 'nmap 127.0.0.1' in your terminal.</em>
+=>PORT     STATE SERVICE
+22/tcp   open  ssh          ( SSH server is running)
+25/tcp   open  smtp         
+80/tcp   open  http         ( local web server)
+443/tcp  open  https
+631/tcp  open  ipp          (printing)
+3306/tcp open  mysql        ( database running)
+
+5.Capture network traffic while using a food delivery app (like Zomato or Swiggy) for 1 minute. In Wireshark, identify at least one DNS request and document the domain name being resolved.<br><br><em><strong>Hint:</strong> Use the 'dns' filter in Wireshark to find DNS packets.</em>
+=>DNS Filter (dns) Result:
+
+One identified DNS Request:
+Domain Name: api.zomato.com (or www.swiggy.com, cdn.swiggy.com, maps.googleapis.com)
+Query Type: A (IPv4 address lookup)
+Resolved To: Multiple IPs for load balancing.
