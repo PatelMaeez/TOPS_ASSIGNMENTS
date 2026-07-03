@@ -1,0 +1,43 @@
+1. List 5 common hardware issues that can cause network problems in a typical office setup, and for each, describe one symptom that helps identify it.
+=>
+#Faulty Ethernet Cable
+Symptom: Intermittent or no connectivity on a specific PC, with link lights off or flickering on the NIC and switch port, while other devices on the same switch work fine.
+#Failing Network Switch Port
+Symptom: One or more devices connected to particular ports lose connectivity or show very slow speeds, while devices on other ports function normally (often visible via switch LED status).
+#Overheating or Failing Router
+Symptom: Frequent random disconnections across the entire network, high latency, or the router's WAN/Internet light blinking irregularly or staying off.
+#Power Supply Issues on a Switch/Router
+Symptom: Device powers on but ports show no activity (no link lights), or the device randomly reboots, causing widespread outages for connected devices.
+#Damaged or Loose Wi-Fi Access Point Antenna/Module
+Symptom: Weak or no wireless signal in specific areas of the office, with devices showing "limited connectivity" or very low signal strength despite being close to the AP.
+
+
+2. Open Cisco Packet Tracer or any network simulator, set up a small network with 3 PCs, 1 switch, and 1 router, and intentionally disconnect one device. Use the simulator's troubleshooting tools to identify which device is faulty and document the steps you took.
+=>Add devices: 3 PCs , 1 Switch , 1 Router .
+Connect them: PC0, PC1, PC2 → Switch (FastEthernet ports). Switch → Router . Configure basic IP addressing.
+Configure Router with a default gateway and enable routing. Test full connectivity with ping from all PCs to each other and to the router.
+Intentionally introduce a fault: Disconnect the cable from PC1 to the Switch 
+Troubleshooting steps in the simulator:
+Use the Packet Tracer "Simulation" mode to send ICMP packets from PC1 → observe failures.
+Check LED status on devices.
+Run ipconfig on PCs and show interfaces / show ip interface brief on Switch/Router via CLI to see "down/down" status.
+Use the "Troubleshoot" tools or hover over devices to see link status.
+Identification: The faulty/disconnected device shows no link light and failed pings, while others succeed. Reconnect or no shutdown the port to restore connectivity.
+
+3.Create a troubleshooting checklist for diagnosing slow internet issues in a home WiFi network, including at least 8 steps covering both hardware and software checks.
+=>Check physical connections: Ensure the modem/router Ethernet cable is securely plugged in and undamaged. 
+Verify ISP modem lights are normal.
+Router status lights: Look at the router — power, WAN, and WiFi lights should be solid (not blinking rapidly). Reboot the router (unplug 30 seconds).
+Run speed test: Use speedtest.net or fast.com on a wired device first, then wireless. Compare against your ISP plan.
+Check WiFi signal strength: Move closer to the router; check for interference .
+Device WiFi settings: Forget the network and reconnect; ensure you're on the 5GHz band if available (less interference).
+Run ping test: Open Command Prompt/Terminal → ping 8.8.8.8 -n 20 and ping google.com. High latency/packet loss indicates ISP or router issue.
+Check for bandwidth hogs: Look at connected devices for unknown devices or heavy downloads/streaming.
+Software checks: Update router firmware, scan for malware, disable VPN/proxy temporarily, check DNS .
+4.You receive a complaint that a user cannot access Instagram and YouTube on their laptop, but WhatsApp Web works fine. Write down the first 5 troubleshooting steps you would perform to identify if the issue is with hardware, software, or network configuration.
+=>
+Verify basic connectivity: Confirm the laptop has internet .
+Test other browsers/devices: Try opening Instagram/YouTube in an incognito window, different browser (Chrome vs Edge), or another device on the same network to rule out browser-specific issues.
+Check DNS resolution: Flush DNS (ipconfig /flushdns), try changing DNS servers to Google (8.8.8.8) or Cloudflare (1.1.1.1) in network adapter settings. Many site-specific blocks are DNS-related.
+Inspect for software blocks: Check firewall/antivirus settings, parental controls, or any proxy/VPN extensions that might selectively block video/streaming sites. Disable them temporarily.
+Hardware/Network config check: Run Windows Network Troubleshooter, check for MTU issues  (netsh interface ipv4 show subinterfaces), or test with a wired connection if possible to isolate WiFi driver vs. broader network problems.
