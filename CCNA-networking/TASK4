@@ -1,0 +1,56 @@
+1. Use the ping command to test connectivity between two PCs on different subnets in your Packet Tracer network and document the output for both successful and failed attempts.
+=>C:\>ping 192.168.2.10
+
+Reply from 192.168.2.10: bytes=32 time=1ms TTL=127
+Reply from 192.168.2.10: bytes=32 time<1ms TTL=127
+
+Packets: Sent=4, Received=4, Lost=0 (0% loss)
+
+C:\>ping 192.168.2.10
+
+Request timed out.
+Request timed out.
+
+Packets: Sent=4, Received=0, Lost=4 (100% loss)
+
+2. Identify and fix an incorrect default gateway configuration on one device in your network so that it can access an external web server simulation; submit the steps you took and the command outputs before and after the fix.
+=>Problem: One PC had wrong default gateway ( 192.168.1.1 instead of actual router IP 192.168.1.254).
+Steps Taken:
+
+On the affected PC → ipconfig (showed wrong gateway).
+Configured correct gateway via GUI or CLI:
+ipconfig /release
+ipconfig /renew
+
+3. A user reports they cannot access Flipkart.com from their simulated network. Trace the path using traceroute (or tracert) and identify where the connection fails; explain how you diagnosed and resolved the issue.
+=>From user PC: ping www.flipkart.com → DNS resolves but high loss or timeout.
+Ran tracert www.flipkart.com:
+Hop 1: Local router (OK)
+Hop 2: ISP gateway (OK)
+Hop 3–5: * * * (timeouts)
+
+Issue identified: Missing or incorrect static/default route on the border router toward the ISP.
+4.Simulate a scenario where a router has an incorrect static route that breaks connectivity between two VLANs. Correct the route configuration and verify the solution using appropriate show commands.<br><br><em><strong>Hint:</strong> Use 'show ip route' and 'show running-config' to check current routes and settings.</em>
+>Scenario: Router had wrong static route: ip route 192.168.20.0 255.255.255.0 192.168.10.1 (wrong next-hop).
+Troubleshooting:
+
+show ip route → Showed incorrect or missing route for VLAN 20.
+show running-config → Confirmed faulty static route.
+Removed bad route: no ip route 192.168.20.0 255.255.255.0 192.168.10.1
+Added correct route: ip route 192.168.20.0 255.255.255.0 192.168.30.2
+
+5.You receive a network diagram and a set of running-config outputs for a multi-router setup where WhatsApp voice calls are not working between two branches. Analyze the configs, identify the misconfiguration, and describe your troubleshooting steps and resolution.
+=>Common Misconfiguration Found:
+
+One router missing ip helper-address for DHCP (if using VoIP).
+Or more likely: ACL blocking UDP ports 3478-3481 and 50000-60000 (WhatsApp WebRTC ports).
+Missing QoS policy causing high jitter/latency for voice traffic.
+NAT misconfiguration on one branch router not translating return traffic properly.
+
+Troubleshooting Steps:
+
+Captured traffic on both branches → Saw outbound calls but no response.
+show access-lists → Identified overly restrictive ACL.
+show ip nat translations → Checked NAT entries.
+Added required rules: Permit UDP high ports and STUN traffic.
+Applied voice QoS policy or priority queue for RTP traffic.
