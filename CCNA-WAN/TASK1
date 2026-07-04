@@ -1,0 +1,26 @@
+1. Create a table comparing at least three types of WAN connections (such as leased line, DSL, and MPLS) with columns for speed, cost, and typical use cases.
+=>WAN Type         Speed                                                                         Cost                                              Typical Use Cases
+Leased Line     Dedicated symmetric: T1/E1 (1.5-2 Mbps), up to 10 Gbps+               High (most expensive due to dedicated nature)        Point-to-point connections between offices/data centers, high-security needs, constant high-volume traffic (e.g., financial institutions)."
+DSL             Asymmetric: Typically 1-100 Mbps download                              Low to moderate (uses existing phone lines)           SOHO/small business internet access, general browsing, email; not ideal for high upload or symmetric needs."
+MPLS            2 Mbps to 10 Gbps+ (scalable)                                          High (but offers QoS and managed service)            Enterprise multi-site WANs, latency-sensitive apps (VoIP, ERP), traffic engineering with QoS across provider networks."
+
+2. Draw a labeled diagram (on paper or using any drawing tool) showing how a CSU/DSU connects a router to a WAN service provider, and explain the role of each device in 2-3 sentences.
+=>  [Router (CPE)] --- Serial Cable --- [CSU/DSU] === Leased Line / WAN Link === [Service Provider (Telco/CO)]
+
+Router: Customer Premises Equipment (CPE) that routes IP traffic between the local LAN and the WAN.
+Serial Cable: Short connection  linking the router's serial interface to the CSU/DSU.
+CSU/DSU: Converts digital signals from the router into a format suitable for the telco's line (provides clocking, signal regeneration, and line coding).
+WAN Service Provider: Handles the long-distance transmission.
+
+3. List three real-world examples of popular apps or services (like IRCTC, WhatsApp, or Zomato) that rely on WAN connections, and briefly describe how WAN enables their functionality.
+=>IRCTC (Indian Railway Catering and Tourism Corporation): India's official rail booking platform. WAN enables global users to access centralized reservation servers over the internet for real-time seat availability, booking, and PNR status checks across vast geographic distances.
+WhatsApp: Global messaging and calling app. WAN (via internet backbones) allows end-to-end encrypted text, voice, and video communication between users on different continents, routing messages through distributed servers.
+Zomato: Food delivery and restaurant discovery service. WAN connects users' mobile apps to centralized backend servers for real-time order tracking, restaurant listings, payments, and logistics coordination across cities and countries.
+
+4. Research online and find an image or datasheet of a physical WAN aggregator device used in enterprise networks. Paste the image or link, and write two key features of that device.
+=>A common enterprise example is the Cisco 8500 Series Secure Routers (e.g., C8550-G2 or C8570-G2), used for scalable WAN aggregation.
+Image/Datasheet Link: See Cisco's official datasheet images and details here: Cisco 8500 Series Secure Routers Datasheet (includes front panel views with multiple 1/10G SFP+ ports, etc.).
+Two Key Features:
+
+High-performance secure aggregation with up to 190 Gbps forwarding and support for thousands of SD-WAN/IPsec tunnels, ideal for branch/headend consolidation.
+Advanced security and modularity (e.g., MACsec, high-density Ethernet ports) for hybrid WAN environments combining MPLS, internet, and cloud connectivity.
