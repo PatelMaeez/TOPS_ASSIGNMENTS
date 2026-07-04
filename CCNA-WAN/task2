@@ -1,0 +1,41 @@
+1. Draw a simple network diagram showing two routers connected over a WAN link and label where authentication is needed to prevent unauthorized access.
+=>[Router A (R1)] --- Serial Link (WAN) --- [Router B (R2)]
+     |                                      |
+   LAN (Local)                           LAN (Local)
+
+Authentication Points (to prevent unauthorized access):
+- At R1's Serial Interface: Incoming authentication (e.g., PPP) verifies R2.
+- At R2's Serial Interface: Incoming authentication verifies R1.
+
+2. Configure a sample HDLC WAN connection between two routers using Packet Tracer or any network simulator, and explain why HDLC does not provide authentication.<br><br><em><strong>Hint:</strong> Focus on the commands used and what is missing in terms of security.</em>
+=>HDLC (High-Level Data Link Control) is Cisco's default encapsulation for serial interfaces. It is simple but lacks built-in authentication.
+Sample Commands (on both routers, assuming Serial0/0/0):
+textRouter1(config)# interface serial 0/0/0
+Router1(config-if)# ip address 192.168.1.1 255.255.255.0
+Router1(config-if)# encapsulation hdlc
+Router1(config-if)# no shutdown
+Why HDLC does not provide authentication: HDLC is a Layer 2 protocol focused on framing and error detection. It has no mechanisms for username/password exchange, challenges, or identity verification (unlike PPP). Any device connected physically can communicate if the link is up, making it vulnerable to unauthorized access. The hint points to missing security commands like ppp authentication. Use it only in trusted environments
+
+3. Set up a PPP connection between two routers in Packet Tracer and enable PAP (Password Authentication Protocol) authentication. Show the configuration commands and explain what happens if the password is incorrect.
+=>Router1(config)# username Router2 password cisco
+Router1(config)# interface serial 0/0/0
+Router1(config-if)# encapsulation ppp
+Router1(config-if)# ppp authentication pap
+Router1(config-if)# ip address 192.168.1.1 255.255.255.0
+Router1(config-if)# no shutdown
+
+(On Router2):
+textRouter2(config)# username Router1 password cisco
+Router2(config)# interface serial 0/0/0
+Router2(config-if)# encapsulation ppp
+Router2(config-if)# ppp pap sent-username Router2 password cisco
+Router2(config-if)# ip address 192.168.1.2 255.255.255.0
+Router2(config-if)# no shutdown
+
+4. Modify your PPP configuration to use CHAP (Challenge Handshake Authentication Protocol) instead of PAP, and describe one key difference in how CHAP improves security over PAP.
+=>Router1(config-if)# ppp authentication chap
+  CHAP improves security over PAP by using a three-way handshake with a challenge (random value). The password is never sent in clear text; instead, a hashed response (MD5) is used. This prevents eavesdropping/sniffing attacks common with PAP's plaintext transmission. CHAP also supports periodic re-challenges.
+
+5. Research and list two real-world scenarios (such as public WiFi login or mobile data authentication) where WAN authentication protocols like PAP, CHAP, or MS-CHAP are used, and explain why authentication is critical in each case.
+=>Dial-up / Mobile Data Connections (e.g., legacy 3G/GSM CSD or VPN dialers): Devices use PPP with PAP/CHAP/MS-CHAP to authenticate to ISP servers when establishing a data session. Authentication is critical to verify subscriber identity, prevent billing fraud, and block unauthorized access to the provider's network.
+PPPoE / DSL Broadband or Enterprise VPN (e.g., some public Wi-Fi captive portals or remote access): PAP/CHAP (or MS-CHAPv2 in tunneled EAP like TTLS) authenticates users to the access concentrator. Critical for billing, access control, and preventing man-in-the-middle attacks on shared or public links (e.g., hotel Wi-Fi or outsourced dial scenarios).
