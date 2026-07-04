@@ -1,0 +1,32 @@
+1. Create a comparison table listing at least 5 key differences between traditional WAN and SD-WAN, focusing on how data is routed, managed, and secured.
+=>Aspect                     Traditional WAN                                                                      SD-WAN
+Data Routing           Static routing or manual policy-based (e.g., MPLS)           Dynamic, application-aware intelligent routing (based on real-time performance)"
+Management             Decentralized, device-by-device CLI/config                      Centralized controller/orchestrator with policy automation
+Security               Often relies on perimeter firewalls/VPNs                       Integrated zero-trust, segmentation, and encryption with cloud integration"
+Link Usage            Primarily private links (MPLS) with backup                          Hybrid (MPLS + broadband + 4G/5G) with active-active load balancing
+Scalability & Agility      Slow provisioning (weeks/months), hardware-dependent          Rapid overlay deployment, software-defined policies for cloud/direct internet access"
+
+2. Draw a simple network diagram (on paper or using a tool like draw.io) showing how SD-WAN connects multiple branch offices to cloud apps (like Office 365 or AWS) and the main data center. Label the SD-WAN controllers, edges, and at least two types of WAN links (e.g., MPLS, broadband).
+=>[Branch Office 1 (Ahmedabad)] -- Edge Router -- [MPLS Link]
+                                           |
+[Branch Office 2 (Mumbai)] --- Edge Router --- [Broadband/Internet]
+                                           |
+[Branch Office 3 (Bangalore)] - Edge Router -- [4G/5G Backup]
+
+                  \           |           /
+                   \          |          /
+                    SD-WAN Controller / Orchestrator (Central Cloud)
+                              |
+                        Main Data Center + Cloud Apps (Office 365 / AWS)
+
+3. Pick any app you use daily (like WhatsApp, Zomato, or Instagram) and write a short scenario explaining how SD-WAN could improve user experience for that app when used across multiple cities in India.<br><br><em><strong>Hint:</strong> Think about speed, reliability, and security when users access the app from different locations.</em>
+=>A delivery executive in Delhi uses the Zomato app while a customer in Chennai places an order. Without SD-WAN, the app might suffer from high latency due to backhauling traffic through a central Mumbai HQ.
+With SD-WAN, the platform intelligently routes traffic over the best available link (e.g., local broadband or 5G) with application-aware policies prioritizing real-time order updates and GPS tracking. This results in faster app response times, reliable live tracking across cities, and secure encrypted tunnels for payment data—reducing dropped sessions and improving overall user satisfaction during peak hours in different Indian cities.
+
+4. List and explain three key benefits of SD-WAN for a company with offices in Ahmedabad, Mumbai, and Bangalore. For each benefit, give a real-world example of how it would help employees or customers.
+=>Improved Performance & Reliability: Dynamic path selection avoids congestion.
+Example: Employees in Bangalore accessing Mumbai-based ERP get consistent low-latency performance via broadband + MPLS failover, speeding up inventory checks for customers.
+Cost Savings: Leverages cheaper broadband/5G instead of expensive MPLS everywhere.
+Example: The company reduces WAN costs significantly while maintaining direct cloud access (e.g., AWS in Mumbai region) for faster order processing in Ahmedabad, freeing budget for expansion.
+Enhanced Security & Simplified Management: Centralized policies with zero-trust segmentation.
+Example: Uniform security policies protect customer data across all offices; IT admins push updates instantly from one console, quickly responding to threats affecting delivery partners in any city.
