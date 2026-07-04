@@ -1,0 +1,43 @@
+1. Write a short scenario where a user tries to access a private WiFi network (like at a campus or airport) and describe how each of the three AAA functions—Authentication, Authorization, and Accounting—would apply step by step in this situation.
+=>A student at a university campus tries to connect to the private "CampusSecure" WiFi.
+
+Authentication: The user enters their student ID and password (or uses certificate/802.1X). The network verifies credentials against the AAA server to confirm identity.
+Authorization: Once authenticated, the system checks the user's role (student) and grants access to specific VLANs, bandwidth limits, and permitted services (e.g., academic sites but not social media during class hours).
+Accounting: The system logs the login time, session duration, data usage, and accessed resources for auditing, billing (if applicable), or security incident response
+
+2. Create a table comparing at least two different AAA deployment models (such as centralized vs distributed), listing three advantages and three disadvantages of each for a company like Zomato that handles sensitive user data.
+=>Model,Advantages,Disadvantages
+"Centralized (e.g., single RADIUS/TACACS+ server)","1. Consistent policy enforcement across all locations.
+2. Easier management and updates for sensitive data.
+3. Better auditing and reporting for compliance (critical for Zomato's user data).","1. Single point of failure (outage affects entire network).
+2. Higher latency for remote branches.
+3. Scalability challenges during peak loads."
+Distributed (multiple local AAA servers with replication),"1. Reduced latency and resilience (local auth for Zomato delivery partners).
+2. Fault tolerance (one server down doesn't stop all access).
+3. Better performance for high-volume, geo-distributed operations.","1. Complex synchronization of policies and logs.
+2. Higher administrative overhead and cost.
+3. Potential inconsistencies or security gaps if replication fails."
+
+
+3. Draw a simple network diagram (can be hand-drawn and photographed) showing how AAA servers are integrated into a typical enterprise network for user access control, labeling where Authentication, Authorization, and Accounting processes happen.
+=>[End Users (Laptops/Mobiles)] --- Wireless AP / Switch --- [Edge Router/Firewall]
+                                           |
+                                       [AAA Server (RADIUS/TACACS+)]
+                                           |
+                                       [Backend Database (User DB)]
+
+Labels:
+- Authentication: Happens at AP/Switch → AAA Server (credential check)
+- Authorization: AAA Server decides permissions → sent back to AP/Switch
+- Accounting: Logs sent from AP/Switch or Router to AAA Server (start/stop records)
+
+4. Pick any app you use daily (Instagram, Paytm, or Flipkart) and write a paragraph explaining how AAA concepts could be applied to secure user logins and actions within that app.<br><br><em><strong>Hint:</strong> Think about what happens when you log in, what features you are allowed to use, and how your actions might be tracked for security or billing.</em>
+=>When using Paytm for payments or recharges, Authentication occurs during login with phone number + OTP/PIN/biometrics to verify user identity. Authorization then applies: a verified user can access wallet balance, send money, or book tickets, but features like high-value transfers require additional KYC checks or limits based on account tier. Accounting tracks all transactions, login attempts, and session details for fraud detection, dispute resolution, compliance with financial regulations, and generating statements—ensuring actions are logged immutably for security audits. This layered AAA approach protects sensitive financial data while enabling seamless user experience.
+
+5. Use ChatGPT or any AI tool to generate a sample AAA policy for a college WiFi network that restricts access to students only, allows certain websites, and logs all access attempts. Paste the generated policy and briefly explain how each AAA function is addressed.
+=>Policy Name: CollegeWiFi_StudentAccess
+Scope: Campus Wireless Network
+
+Authentication: All users must authenticate via 802.1X/EAP with valid student email and password against the central directory (e.g., Active Directory). Guest accounts denied. Failed attempts (after 3 tries) trigger temporary MAC block.
+Authorization: Authenticated students granted access to internet with bandwidth caps (5 Mbps). Allow academic sites (edu domains, library proxies) and essential services (email, LMS). Block social media/gaming during lecture hours via time-based ACLs. Role-based: Faculty get higher bandwidth and full access.
+Accounting: Log all login/logout times, IP assignments, data usage, and accessed domains. Store logs for 90 days. Generate daily reports for security team; alert on suspicious patterns (e.g., multiple failed logins or unusual data spikes).
