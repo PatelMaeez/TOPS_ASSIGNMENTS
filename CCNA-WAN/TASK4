@@ -1,0 +1,36 @@
+1. Create a comparison table listing at least 4 key differences between RADIUS and TACACS+ features, focusing on protocol type, encryption, ports used, and command authorization.
+=>Feature               RADIUS                                                       TACACS+
+Protocol Type     UDP (connectionless)                                  TCP (connection-oriented)
+Encryption      Encrypts only the password in access-request packets       Encrypts the entire packet body
+Ports Used         1812 (auth), 1813 (accounting)                         49 (all communications)
+Command Authorization       Limited                          Granular per-command authorization (ideal for admin sessions)1.
+
+2. Draw a simple flowchart or sequence diagram that illustrates the RADIUS authentication process for a user trying to log in to a Wi-Fi network (like at a coffee shop or college campus).
+=>User (Supplicant) --> Wi-Fi AP (Authenticator): Association Request + Credentials
+AP --> RADIUS Server (Authentication Server): Access-Request (Username, hashed password, etc.)
+RADIUS Server --> AP: Access-Accept (with attributes like VLAN, ACL) OR Access-Reject
+AP --> User: Grant Access (or Deny)
+
+3. Describe a real-world scenario from any app you use (such as Zomato, Paytm, or IRCTC) where TACACS+ would be more suitable than RADIUS for managing admin access, and explain why.
+=>In IRCTC (or similar government/enterprise admin panels), network admins managing core routers/switches for the booking system would benefit from TACACS+.
+Why more suitable than RADIUS: TACACS+ provides granular command-level authorization (e.g., allow "show running-config" but deny "configure terminal" for junior admins) and full packet encryption. This is critical for auditing privileged access to sensitive infrastructure handling millions of user transactions and PII. RADIUS is weaker for admin sessions as it combines auth/authz less flexibly and encrypts less. TACACS+ centralizes admin AAA while separating it from end-user auth.
+
+4. List two advantages and two disadvantages of using RADIUS for network authentication in a public hotspot (like those found in malls or airports).
+=>Advantages:
+
+Lightweight and widely supported by access points and client devices (easy 802.1X deployment).
+Good for centralized user authentication and accounting (tracks usage for fair access or billing).
+
+Disadvantages:
+
+Limited encryption (only password) makes it vulnerable to eavesdropping in public environments.
+UDP-based, so less reliable for critical sessions; lacks strong per-command control for any admin functions.
+
+5. Use ChatGPT or another AI tool to generate a sample TACACS+ configuration for a Cisco router, then review the output and highlight any commands you would modify for a college lab setup.<br><br><em><strong>Hint:</strong> Ask the AI tool for 'basic TACACS+ configuration for Cisco router' and check for lines like 'tacacs-server host' and 'aaa new-model'.</em>
+=>aaa new-model
+tacacs-server host 192.168.1.100 key SecretKey123
+aaa authentication login default group tacacs+ local
+aaa authorization exec default group tacacs+ local
+aaa accounting exec default start-stop group tacacs+
+line vty 0 4
+ login authentication default
