@@ -1,0 +1,37 @@
+1. Create a comparison table listing at least 4 key features of RADIUS and TACACS+ side by side, highlighting which protocol supports each feature.
+=>Feature                                                RADIUS          TACACS+                               Winner/Notes
+Transport Protocol                                        UDP              TCP                              TACACS+ (reliable)
+Encryption                                              Password only      entire packet body                 TACACS+ (more secure)
+Authentication & Authorization                           Combined        Separates AAA                         TACACS+ (granular)
+Command Authorization                               Limited                Granular (per-command)                TACACS+ (admin use)
+Accounting,Strong,Strong,Both good; RADIUS common for users
+
+
+2. Draw a step-by-step flow diagram showing the RADIUS authentication process for a user logging in to a public WiFi hotspot, labeling each communication step between the client, network device, and RADIUS server.
+=>1. User (Client) → WiFi Hotspot (AP/NAS): Association + Credentials (Username/Password)
+2. AP/NAS → RADIUS Server: Access-Request (EAP or PAP/CHAP)
+3. RADIUS Server → AP/NAS: Access-Challenge (if needed) or Access-Accept/Reject
+4. AP/NAS → User: Grant Access (with attributes like IP/VLAN) or Deny
+5. (Accounting) AP/NAS → RADIUS: Accounting-Request (Start)
+6. RADIUS → AP/NAS: Accounting-Response
+
+3. List 3 real-world use cases where TACACS+ is preferred over RADIUS, and briefly explain why TACACS+ is better suited for each scenario.
+=>Enterprise Router/Switch Admin Access: TACACS+ allows per-command authorization (e.g., junior admins can only run "show" commands). Better than RADIUS because it separates auth/authz for fine-grained control.
+Data Center Network Device Management: Full packet encryption and TCP reliability suit high-security environments where admin sessions must be protected from eavesdropping.
+Compliance-Heavy Industries (Banking/Govt): Detailed per-command accounting and authorization help meet auditing requirements
+
+4. Given a scenario where a user tries to log into a network device but fails authentication, describe how RADIUS and TACACS+ would handle the logging and response differently.<br><br><em><strong>Hint:</strong> Focus on how each protocol manages accounting and command authorization.</em>
+=>In a failed login to a network device:
+
+RADIUS: Sends Access-Reject. Accounting logs the attempt (failed login, timestamp, source IP) but offers limited command-level detail since it combines functions. Response is quick (UDP) but less detailed for admin troubleshooting.
+TACACS+: Also rejects but provides richer accounting logs (including attempted commands if partial auth occurred). Better separation allows logging exactly where authorization failed. TCP ensures reliable delivery of logs.
+
+TACACS+ gives more forensic value for admin failures.
+
+5. Use ChatGPT or another AI tool to generate a sample RADIUS configuration snippet for a Cisco router, then review the output and list any changes you would make to adapt it for a college campus WiFi setup.
+=>aaa new-model
+radius-server host 192.168.1.100 key SharedSecret
+aaa authentication login default group radius local
+aaa authorization network default group radius
+interface GigabitEthernet0/1
+ ip address dhcp
