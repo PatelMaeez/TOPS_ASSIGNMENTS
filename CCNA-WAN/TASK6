@@ -1,0 +1,42 @@
+1. Create a table comparing Authentication, Authorization, and Accounting (AAA) by listing at least two real-world examples of each function from popular apps like Instagram, Zomato, or Paytm.
+=>AAA Function      Description                                       Examples from Apps (Instagram, Zomato, Paytm)"
+Authentication        Verifies ""who you are""                    Instagram: Login with username/password or OTP/biometrics.
+Authorization        Determines ""what you are allowed to do      Zomato: Verified users can order food; premium users get faster delivery slots.
+Accounting           Tracks ""what was done""                         Paytm: Logs every transaction, login time, and IP for fraud detection.
+
+2. Draw a simple network diagram showing how AAA is used to secure access to a WiFi network in a college campus, labeling where authentication, authorization, and accounting take place.<br><br><em><strong>Hint:</strong> Include devices like user laptops, access points, AAA server, and the internet gateway.</em>
+=>[User Laptops/Mobiles] --- Wireless Connection --- [Access Points (APs)]
+                                           |
+                                    [AAA Server (RADIUS)]
+                                           |
+                                    [Internet Gateway / Firewall]
+
+Labels:
+- Authentication: User → AP → AAA Server (credential validation)
+- Authorization: AAA Server → AP (grants VLAN/access rights)
+- Accounting: AP/Gateway → AAA Server (logs session start/stop, usage)
+
+3. Explain the difference between centralized and distributed AAA deployment models by describing how each would work in a scenario where multiple Flipkart warehouses need secure network access.
+=>Centralized AAA: All warehouses  forward authentication requests to a single central AAA server. A warehouse worker logs in → request goes to HQ server → policy applied uniformly. This ensures consistent security rules but may introduce latency for remote sites.
+Distributed AAA: Each warehouse has local AAA servers (with periodic sync to central). Local auth happens quickly on-site for inventory system access. Better for low-latency but requires effort to keep policies synchronized across locations.
+
+4. Pick any one AAA deployment model and list three advantages and two disadvantages of using it for a large-scale app like BookMyShow.
+=>Advantages:
+
+Consistent policy enforcement (same login rules for users across cities).
+Simplified management and easier auditing of all events from one place.
+Stronger central control over sensitive ticketing data.
+
+Disadvantages:
+
+Single point of failure (server outage affects nationwide logins during peak shows).
+Potential higher latency for users in remote areas.
+5.Use ChatGPT or another AI tool to generate a sample AAA policy for a Zomato-like app, specifying what actions are authenticated, which roles are authorized for each action, and what accounting logs should be kept. Paste the generated policy and highlight one thing you would change to make it more secure.
+=>Authentication: All actions require user login (phone + OTP/biometrics). Actions: Login, Order Placement, Payment Initiation.
+Authorization (Role-based):
+Customer: Can browse, order, track delivery, view history.
+Delivery Partner: Can accept orders, update location, mark delivered (restricted to assigned tasks).
+Restaurant Partner: Manage menu, view orders, update status.
+Admin: Full access + user management.
+
+Accounting: Log all login attempts (success/fail, timestamp, IP/device), orders (amount, items, location), payments, and delivery updates. Retain logs for 1 year for fraud/compliance.
