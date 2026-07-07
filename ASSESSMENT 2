@@ -1,0 +1,26 @@
+Section A: Scenario-Based Concept Application
+1. Explain how Deep Packet Inspection (DPI) at the Network and Transport layer of the OSI model allows a startup to isolate specific traffic bottlenecks causing
+slow internet speeds despite high available bandwidth.
+==>DPI examines packet contents (payload) beyond just headers at Layer 3 (IP addresses, routing) and Layer 4 (TCP/UDP ports, sequence numbers). 
+  It identifies specific applications/protocols causing congestion (e.g., heavy video streaming or large file transfers) even when bandwidth is high, allowing targeted QoS policies or blocking.
+
+2. Explain the distinct roles of DHCP and DNS in a scenario where startup devices are successfully assigned IP addresses but remain unable to resolve external
+web addresses for internet access.
+=>DHCP (Layer 3/4) dynamically assigns IP addresses, subnet masks, default gateways, and DNS server IPs to devices.
+DNS resolves human-readable domain names (e.g., google.com) to IP addresses. Devices get IPs via DHCP but fail to browse because DNS queries to the configured DNS server are failing (e.g., unreachable DNS server or misconfigured DNS IP).
+
+3. Explain the necessity of Inter-VLAN Routing and the specific role of static routes when a startup requires communication between two isolated
+departments on the same physical switch.
+=>VLANs create separate broadcast domains on the same switch, isolating departments. Inter-VLAN routing (via Router-on-a-Stick or Layer 3 switch) is required for communication between VLANs. Static routes manually define paths (e.g., ip route 192.168.20.0 255.255.255.0 192.168.10.1) between VLAN subnets when dynamic routing protocols are not used.
+
+4. Explain the performance differences between ICMP and HTTP/HTTPS protocolsthat would cause a website to experience high latency while a ping test
+returns a fast, successful response.
+=>ICMP (ping) is lightweight, connectionless, uses small packets with minimal processing.
+HTTP/HTTPS involves TCP 3-way handshake, larger packets, encryption (TLS), session establishment, and server processing. High latency on website but fast ping indicates issues at Transport/Application layers (e.g., proxy, firewall, or server load) rather than basic IP connectivity.
+
+5. Explain the conceptual logic of Firewall Access Control Lists (ACLs) and thestrategic placement of a firewall to restrict unauthorized traffic between a
+startup’s management and general staff departments.
+=>ACLs are ordered rule sets (permit/deny) that filter traffic based on source/destination IP, ports, or protocols. 
+Place the firewall at the boundary between management and staff VLANs (e.g., on the Layer 3 device) to inspect and restrict unauthorized access (e.g., deny staff → management subnet).
+
+                                            Section- B    Practical Application 
