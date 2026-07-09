@@ -24,3 +24,67 @@ startup’s management and general staff departments.
 Place the firewall at the boundary between management and staff VLANs (e.g., on the Layer 3 device) to inspect and restrict unauthorized access (e.g., deny staff → management subnet).
 
                                             Section- B    Practical Application 
+
+
+Task 1: Design a VLSM subnet scheme for 3 departments requiring 15 hosts each
+using $192.168.10.0/24$
+=>Dept 1 (VLAN 10): 192.168.10.0/27 (32 addresses → 30 usable > 15 hosts)
+Dept 2 (VLAN 20): 192.168.10.32/27
+Dept 3 (VLAN 30): 192.168.10.64/27
+Remaining: 192.168.10.96/27 onward.
+
+Task 2: Configure VLANs 10, 20, and 30 on a Cisco switch and assign physical
+interfaces to each.
+=>Switch(config)# vlan 10; name Marketing
+Switch(config)# vlan 20; name Engineering
+Switch(config)# vlan 30; name Management
+Switch(config)# interface range fa0/1 - 8; switchport mode access; switchport access vlan 10
+Switch(config)# interface range fa0/9 - 16; switchport access vlan 20
+Switch(config)# interface range fa0/17 - 24; switchport access vlan 30
+
+Task 3: Set up a DHCP pool on a Router/L3 switch to provide dynamic addressing for
+the VLAN 10 subnet.
+=>Router(config)# ip dhcp pool VLAN10
+Router(dhcp-config)# network 192.168.10.0 255.255.255.224
+Router(dhcp-config)# default-router 192.168.10.1
+Router(dhcp-config)# dns-server 8.8.8.8
+Router(dhcp-config)# exit
+Router(config)# ip dhcp excluded-address 192.168.10.1 192.168.10.10
+
+Task 4: Capture a network trace in Wireshark and identify the IP addresses in the DNS
+query and HTTP GET headers.
+=>
+Filter: dns → Identify DNS query (source PC → DNS server IP).
+Filter: http or tls.handshake → Identify HTTP GET (destination server IP in headers).
+
+
+                            Section C: Integrated Case Study
+
+1. Based on the symptoms, identify the two most likely OSI layers where this fault
+is occurring
+=>Layer 2 (Data Link) and Layer 1 (Physical) — flapping, packet loss, and VLAN-specific issues point to switching loops, bad cables, or port errors.
+
+
+
+2. Outline a 4-step "Bottom-Up" troubleshooting sequence to isolate this specific
+issue.
+=>Physical — Check cables, ports, LEDs, power.
+Data Link — Verify interface status, errors (show interfaces).
+Network — Check IP connectivity, routing, ARP.
+Transport/Application — Test specific services (DNS, HTTP).
+
+3. List three CLI commands you would run on the switch to check for cable faults
+or broadcast storms.
+=> show interfaces status / show interfaces counters errors
+show spanning-tree
+show processes cpu or show mac address-table
+
+
+4. If the issue is a "Switching Loop," explain which protocol should have prevented
+this and why it might have failed.
+=> Switching Loop:
+Spanning Tree Protocol (STP) should prevent loops by blocking redundant ports. It might have failed due to: STP disabled, BPDU Guard missing, or incompatible vendor implementations.
+
+5. Propose a long-term configuration change to ensure an error in one
+department doesn't impact the rest of the office.
+=>Implement VLAN segmentation + STP features (PortFast, BPDU Guard, Root Guard) + redundant links with proper EtherChannel + monitoring (SNMP/syslog) to isolate department faults.
