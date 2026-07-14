@@ -1,0 +1,56 @@
+1. Open Group Policy Management Console (GPMC) on your Windows Server and create a new GPO named 'PasswordPolicyDemo' that enforces a minimum password length of 8 characters. Link it to your test OU and verify the setting is applied using gpresult.
+=> Open Group Policy Management Console (gpmc.msc via Run/Search).
+Expand Forest → Domains → your domain (e.g., mycollege.local).
+Right-click Group Policy Objects → New.
+Name: PasswordPolicyDemo → OK.
+Right-click the new GPO → Edit.
+Navigate to:
+Computer Configuration → Policies → Windows Settings → Security Settings → Account Policies → Password Policy.
+Double-click Minimum password length.
+Set it to 8 characters → OK.
+Close the Editor.
+
+Link the GPO:
+
+Right-click the EventPlanners OU → Link an Existing GPO → Select PasswordPolicyDemo → OK.
+
+Verify with gpresult:
+
+On the DC or a domain-joined client: Open Command Prompt as admin.
+Run: gpresult /h report.html /scope computer
+Open the HTML report and check under Computer Configuration → Policies → Windows Settings → Security Settings → Account Policies → Password Policy for the 8-character minimum.
+
+2. Configure a GPO to restrict access to the Control Panel for all users in a specific OU, similar to how public computers in a cybercafe or college lab prevent users from changing system settings.<br><br><em><strong>Hint:</strong> In the GPO, navigate to User Configuration > Administrative Templates > Control Panel and set 'Prohibit access to Control Panel and PC settings' to Enabled.</em>
+=>In GPMC, right-click Group Policy Objects → New → Name: ControlPanelRestriction.
+Right-click the new GPO → Edit.
+Navigate to:
+User Configuration → Policies → Administrative Templates → Control Panel.
+Double-click Prohibit access to Control Panel and PC settings.
+Set to Enabled → OK.
+Close the Editor.
+Link this GPO to the EventPlanners OU
+
+3. Edit your 'PasswordPolicyDemo' GPO to enable account lockout after 3 invalid login attempts and set the lockout duration to 10 minutes. Run gpupdate /force on a client PC and test the lockout by entering the wrong password.
+=>In GPMC, right-click PasswordPolicyDemo → Edit.
+Go to:
+Computer Configuration → Policies → Windows Settings → Security Settings → Account Policies → Account Lockout Policy.
+Configure these settings:
+Account lockout threshold: 3 invalid logon attempts.
+Account lockout duration: 10 minutes.
+Reset account lockout counter after: 10 minutes (recommended matching duration).
+
+Click OK on each.
+Close the Editor.
+
+Apply and Test:
+
+On a domain-joined client (or DC), run: gpupdate /force.
+Log off/on or wait for policy refresh.
+Test lockout: Attempt to log in with one of the users
+
+4. Document all GPO settings you applied in this session (password policy, desktop restriction, lockout policy) in a table format, and for each setting, describe its expected impact on users in 1-2 sentences.
+=>GPO Name              Setting                                                        Location in GPO                                                                                               Expected Impact on Users
+PasswordPolicyDemo      Minimum password length = 8 characters                         Computer Config → Windows Settings → Security Settings → Account Policies → Password Policy    Users must create passwords with at least 8 characters. This improves security against brute-force attacks but may require users to choose stronger, memorable passwords."
+PasswordPolicyDemo      Account lockout threshold = 3 attempts
+Lockout duration = 10 min  Computer Config → Windows Settings → Security Settings → Account Policies → Account Lockout Policy,"After 3 wrong passwords                            the account locks for 10 minutes. This protects against password guessing but can cause temporary access issues for forgetful users.
+ControlPanelRestriction    Prohibit access to Control Panel and PC settings = Enabled    User Config → Administrative Templates → Control Panel                                Users cannot open Control Panel or change most system settings. This keeps lab/public computers consistent and prevents accidental or malicious configuration changes.
