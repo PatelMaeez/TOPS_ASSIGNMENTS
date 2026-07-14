@@ -1,0 +1,41 @@
+1. On your Windows Server VM, create a new folder named 'MusicShare' on the D: drive and share it with the network using the Share Wizard.
+=>Open File Explorer on the server.
+Go to D: drive 
+Right-click in an empty area → New → Folder → Name it MusicShare.
+Right-click the MusicShare folder → Properties → Sharing tab → Advanced Sharing.
+Check Share this folder.
+Click Permissions:
+Remove Everyone if present.
+Add the MusicLovers group (from step 3 below) and grant Full Control (or Change) at share level for now.
+Click OK to finish sharing. The share path will be \\YourServerName\MusicShare.
+
+2. Set NTFS permissions on the 'MusicShare' folder so that the user 'Student1' has Read & Write access, while 'Student2' has Read-only access.
+=>Right-click MusicShare folder → Properties → Security tab → Edit.
+Click Add and select your test users:
+Add Student1 (or equivalent) → Grant Modify (which includes Read & Write).
+Add Student2 (or equivalent) → Grant Read & execute (Read-only).
+Remove unnecessary groups (e.g., Users or Everyone) if they have broad access.
+Click Apply → OK. (Inheritance may need to be disabled if you want strict control.)
+
+3. Configure Share permissions for 'MusicShare' so that only members of the 'MusicLovers' group can access the share, and all others are denied.
+=>Right-click MusicShare → Properties → Sharing tab → Advanced Sharing → Permissions.
+Remove Everyone.
+Click Add → Select the MusicLovers group.
+Grant Change or Full Control to MusicLovers.
+Ensure no other groups/users have access (this denies everyone else at the share level).
+Click OK → Apply.
+
+4. Simulate these access scenarios: log in as 'Student1' and try to copy a file into 'MusicShare', then log in as 'Student2' and attempt to delete a file from the same folder. Write down what happens in each case and explain why based on the permissions set.\
+=>Scenario A: Log in as 'Student1' (member of MusicLovers)
+
+Map the network drive: \\YourServerName\MusicShare or browse to it.
+Copy a test file (e.g., create a text file on desktop and copy it) into the folder.
+Expected Result: Succeeds (Read + Write works).
+Explanation: Student1 has Modify NTFS permissions (allows write/create) + sufficient Share permissions via the MusicLovers group. Effective access = Write allowed.
+
+Scenario B: Log in as 'Student2' (member of MusicLovers)
+
+Browse to the share.
+Attempt to delete a file that was copied earlier.
+Expected Result: Fails with "Access Denied" error.
+Explanation: Student2 has only Read NTFS permissions (no delete/write) even though they can access the share via MusicLovers group. Share permissions allow entry, but NTFS is more restrictive and blocks modification/deletion.
