@@ -1,0 +1,48 @@
+1. Install Windows Server (any version) on a virtual machine using VirtualBox or VMware, and take a screenshot of the successful installation desktop.
+=.Used Oracle VirtualBox.
+Created a new VM with 8 GB RAM, 4 vCPUs, 100 GB virtual hard disk.
+Attached Windows Server 2022/2025 ISO (Datacenter with Desktop Experience).
+Completed installation, set strong Administrator password.
+Post-install: Server reached desktop with Server Manager open.
+
+2. Create a new Active Directory domain called "musicstream.local" and add two user accounts: one for 'arijit.singh' and one for 'neha.kakkar'. Capture screenshots of the AD Users and Computers console showing both accounts.
+=.Promoted server to Domain Controller with root domain musicstream.local.
+Opened Active Directory Users and Computers.
+Created users in the default Users container (or a new OU):
+User 1: Full name Arijit Singh, User logon name arijit.singh
+User 2: Full name Neha Kakkar, User logon name neha.kakkar
+
+3. Set up a Group Policy Object (GPO) that prevents users from accessing Control Panel, and link it to the 'Users' OU you created. Show before-and-after screenshots of the policy in effect for one of your test users.
+=.Opened Group Policy Management (gpmc.msc).
+Created new GPO named ControlPanelBlock.
+Edited: User Configuration → Policies → Administrative Templates → Control Panel → Enabled Prohibit access to Control Panel and PC settings.
+Linked the GPO to the domain (or Users OU).
+Ran gpupdate /force on test client.
+
+Before-and-After Screenshots Description:
+
+Before: Logged in as arijit.singh → Control Panel opens normally.
+After: Attempting to open Control Panel shows restriction message or blank access denied. Settings app is also blocked.
+
+4. Share a folder named 'Playlists' on your Windows Server so that only the 'arijit.singh' user can read and write files, but 'neha.kakkar' can only read. Demonstrate this by logging in as each user and attempting to create or edit a file in the shared folder.<br><br><em><strong>Hint:</strong> Use NTFS permissions and sharing settings to control access for each user.</em>
+=>Created folder D:\Playlists.
+Shared it as Playlists (Advanced Sharing).
+Share Permissions: Granted MusicLovers group (or Everyone) Change permission initially.
+NTFS Permissions (Security tab):
+arijit.singh: Modify (Read + Write).
+neha.kakkar: Read & execute only.
+Removed broad groups for tighter control.
+
+5. Write a short report (1-2 pages) summarizing your domain, user, GPO, and shared folder setup. Include at least 3 screenshots and describe one challenge you faced and how you solved it.
+=>We installed Windows Server on a VirtualBox VM and created the musicstream.local domain. This simulates a small media/streaming company environment. Two user accounts were added for artists/content creators: arijit.singh and neha.kakkar.
+Group Policy
+A GPO named ControlPanelBlock was created and linked to restrict Control Panel access. This ensures users cannot modify system settings, maintaining a controlled lab environment.
+Shared Folder
+The Playlists folder demonstrates granular access control:
+
+Arijit Singh has full Read/Write access (suitable for content managers).
+Neha Kakkar has Read-only access (suitable for viewers/contributors who should not alter files).
+
+Challenge Faced & Solution
+Challenge: After setting NTFS permissions, both users initially had the same access level despite correct settings.
+Solution: I discovered Share permissions were overriding (Everyone had Full Control). I tightened Share permissions to the specific group and re-tested Effective Access in the folder’s Advanced Security tab. Running gpupdate /force and logging off/on also helped apply changes cleanly. This highlighted the importance of understanding that effective permissions = most restrictive of (Share + NTFS).
