@@ -1,0 +1,49 @@
+1. In Active Directory Users and Computers, create a new Organizational Unit (OU) called 'EventPlanners' to represent a team that manages college fests like those seen in BookMyShow.
+=>In ADUC, expand your domain (e.g., mycollege.local).
+Right-click the domain name (or an existing parent OU if preferred) → New → Organizational Unit.
+Enter the name: EventPlanners.
+Click OK.
+
+2. Add three user accounts to the 'EventPlanners' OU with usernames inspired by your favorite IPL cricket players (e.g., viratk, msdhoni, hardikp). Set a strong password for each and ensure 'User must change password at next logon' is enabled.
+=>In ADUC, navigate to the EventPlanners OU.
+Right-click inside the OU → New → User.
+
+User 1 (inspired by Virat Kohli):
+
+Full name: Virat Kohli
+User logon name: viratk (this becomes viratk@mycollege.local)
+Click Next.
+Set a strong password (e.g., P@ssw0rdIPL2026! or better — mix of upper/lower, numbers, symbols).
+Check User must change password at next logon.
+Click Next → Finish.
+
+User 2 (inspired by MS Dhoni):
+
+Full name: Mahendra Singh Dhoni
+User logon name: msdhoni
+Same strong password + User must change password at next logon → Finish.
+
+3. Create a security group named 'FestTicketManagers' inside the 'EventPlanners' OU. Add all three user accounts you created to this group.
+=>Right-click inside the EventPlanners OU → New → Group.
+Group name: FestTicketManagers
+Group scope: Global
+Group type: Security
+Click OK.
+
+Add members:
+
+Right-click the FestTicketManagers group → Properties → Members tab → Add.
+Enter the usernames: viratk; msdhoni; hardikp (separated by semicolons) or add them one by one using the search.
+Click Check Names → OK.
+Click Apply → OK.
+
+4. Rename one of your user accounts in the 'EventPlanners' OU to match your own first name and update their description field to 'Social Media Manager for College Fest'.
+=>Choose one user (e.g., viratk):
+
+Right-click the user (e.g., viratk) in the EventPlanners OU → Rename.
+Change the name to your first name, e.g., Grok (or your actual first name).
+Press Enter to confirm the rename (this updates Full Name and related fields).
+Right-click the renamed user → Properties.
+On the General tab, in the Description field, enter:
+Social Media Manager for College Fest
+Click Apply → OK.
