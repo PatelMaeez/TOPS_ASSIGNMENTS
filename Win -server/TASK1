@@ -1,0 +1,93 @@
+1. Install Windows Server on a virtual machine using VirtualBox or VMware and take a screenshot of the desktop after the installation completes.
+=>Download the Windows Server ISO (e.g., 2022/2025 evaluation from Microsoft Evaluation Center).
+Install VirtualBox and its Extension Pack.
+Create a new VM:
+Name: e.g., "WinServer-DC".
+Type: Microsoft Windows, Version: Windows Server (64-bit).
+RAM: Minimum 4-8 GB (recommended 8+ GB).
+CPU: 2-4 cores.
+Hard Disk: Create new VDI, dynamically allocated, 60-100 GB+.
+Storage: Attach the ISO to the virtual optical drive.
+Enable EFI if needed for newer versions.
+
+Start the VM and boot from the ISO.
+In the installer:
+Select language, time, keyboard → Next.
+Click Install Now.
+Choose edition (e.g., Windows Server Datacenter with Desktop Experience for GUI).
+Accept license terms.
+Custom install → Select the virtual disk → Next (installation proceeds, VM may restart multiple times).
+Set administrator password and complete initial setup.
+
+2. Open Server Manager and use the 'Add roles and features' wizard to install the Active Directory Domain Services (AD DS) role. Document each step with a short description and screenshot.
+=> It launches automatically or search for it in Start. Dashboard view shows local server info.
+Add Roles and Features:
+Click Manage → Add Roles and Features (top right).
+Before you begin: Review notes → Next.
+
+Installation Type: Select Role-based or feature-based installation → Next.
+Server Selection: Select your local server → Next.
+Server Roles: Check Active Directory Domain Services. A popup appears for additional features (e.g., management tools) → Click Add Features.
+Features: No additional needed usually → Next.
+AD DS: Review info → Next.
+Confirmation: Review selections → Click Install. Progress shown; server may need restart.
+
+Screenshots Description (in practice):
+
+Wizard welcome / role selection screen with AD DS checkbox highlighted.
+Confirmation page listing AD DS + dependencies.
+Post-install: Notification flag in Server Manager with "Promote this server..." link.=>
+
+3.Promote your Windows Server to a Domain Controller by creating a new forest with a root domain name of your choice (e.g., mycollege.local). List the options you selected during the configuration.
+=>Promote your Windows Server to a Domain Controller by creating a new forest with a root domain name of your choice (e.g., mycollege.local). List the options you selected during the configuration.
+After AD DS installation:
+
+In Server Manager, click the yellow notification flag → Promote this server to a domain controller. This launches the AD DS Configuration Wizard.
+
+Configuration Options Selected (example for new forest):
+
+Deployment Configuration: Add a new forest → Root domain name: mycollege.local → Next.
+Domain Controller Options:
+Forest functional level: Windows Server 2016/2022/2025 (or highest compatible).
+Domain functional level: Same.
+DNS server: Checked (installs integrated DNS).
+Global Catalog: Checked.
+DSRM password: Set a strong password.
+
+DNS Options: Default (delegation if applicable; usually none for new forest).
+Additional Options: NetBIOS domain name (e.g., MYCOLLEGE) auto-filled or customized.
+Paths: Default database, log files, and SYSVOL paths (C:\Windows\NTDS, etc.).
+Review Options: Verify all settings.
+Prerequisites Check: Should pass; fix any warnings.
+Click Install. Server reboots automatically.
+
+4. Create two new user accounts and one group in Active Directory Users and Computers. Assign both users to the group and describe how you did it.<br><br><em><strong>Hint:</strong> Use the 'Users' container and right-click options in ADUC.</em>
+=>Steps (Hint followed):
+
+Open Active Directory Users and Computers (dsa.msc via Run or search).
+Expand the domain (mycollege.local).
+Navigate to the Users container.
+
+Create Group:
+
+Right-click in Users container → New → Group.
+Group name: e.g., "LabStudents".
+Group scope: Global (default).
+Group type: Security.
+Click OK.
+
+Create Users:
+
+Right-click in Users container → New → User.
+First user: Full name "Student One", User logon name "student1@mycollege.local" (or sAMAccountName "student1").
+Set password (e.g., strong one), uncheck "User must change password at next logon" if desired.
+Finish.
+
+Repeat for second user: "Student Two" / "student2".
+
+Assign Users to Group:
+
+Open properties of "LabStudents" group → Members tab → Add → Enter "student1" and "student2" → Check names → OK.
+(Alternatively: Edit each user's Member Of tab → Add the group.)
+
+This completes the lab. Users are now members of the group for permission assignment later. Verify in ADUC by refreshing and checking group membership.
