@@ -1,0 +1,54 @@
+1. Install the Print Server role on your Windows Server and add a new network printer using the Print Management console.
+=>Open Server Manager → Manage → Add Roles and Features.
+Select Print and Document Services role.
+Include Print Server (and optionally Print Management Console).
+Complete the installation.
+Open Print Management console (from Server Manager → Tools or search).
+Right-click Print Servers → your server → Add Printer.
+Choose Add a TCP/IP printer (or local if simulating) → provide a dummy IP or use an existing network printer.
+Install the driver (use a generic one like "Microsoft Print to PDF" or a standard PCL driver for testing).
+Share the printer
+
+2. Configure print permissions for a shared network printer so that only specific users (create two test user accounts) can print, while others are denied access.<br><br><em><strong>Hint:</strong> Use the Security tab in the printer's Properties to set Allow/Deny permissions for each user.</em>
+=>In Print Management, right-click the printer → Properties → Security tab.
+Create two test users in Active Directory Users and Computers (or local users):
+Student1 (allowed)
+Student2 (denied)
+
+Remove Everyone or set it to no access.
+Add Student1 → Allow Print.
+Add Student2 → Deny Print.
+Click OK.
+
+3.Send a test print job from both an allowed and a denied user account, then use the Print Management console to monitor and manage the print queue, noting what happens for each user.
+=>Log in as Student1 (allowed) on a client:
+Add the network printer → Print a test page.
+Job should appear in queue and print successfully.
+
+Log in as Student2 (denied):
+Try to print → Should get Access Denied error.
+
+Back on the server in Print Management:
+View the print queue.
+You can Pause, Resume, Restart, or Cancel jobs as admin.
+
+4. Change the priority of two print jobs in the print queue so that one user's job prints before another's, regardless of submission order.<br><br><em><strong>Hint:</strong> Right-click the job in the print queue and adjust the priority value.</em>
+=>Submit two test jobs from different users (or same user).
+In the Print Queue window (double-click the printer in Print Management):
+Right-click a job → Properties.
+Set Priority
+
+5. Simulate a real-world scenario: Imagine your college fest team is printing event posters. Configure the printer so that 'Event Managers' group can manage documents (pause, resume, cancel), while 'Volunteers' can only print, and test these permissions by logging in as both roles.
+=>Create groups:
+EventManagers
+Volunteers
+
+Add test users to these groups.
+On the printer Properties → Security tab:
+Volunteers group: Allow Print only.
+EventManagers group: Allow Print + Manage Documents (this includes pause/resume/cancel other users' jobs).
+Your admin account: Full Control.
+
+Testing:
+As Volunteer: Can submit print jobs but cannot manage/cancel others' jobs.
+As EventManager: Can view queue, pause/resume, cancel any document.
