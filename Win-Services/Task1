@@ -1,0 +1,36 @@
+1. Open Server Manager on your Windows Server VM, add the DNS Server role, and take a screenshot showing the DNS role installed.
+=>Open Server Manager (it usually opens automatically or search for it in the Start menu).
+Click Manage → Add Roles and Features.
+In the wizard:
+Select Role-based or feature-based installation.
+Select your server.
+Under Server Roles, check DNS Server.
+Add any required features it prompts for (usually none extra).
+Complete the installation
+
+2. In DNS Manager, create a new Forward Lookup Zone named foodies.local and add an A record for zomato.foodies.local pointing to 192.168.1.50.
+=>Open DNS Manager (from Server Manager → Tools → DNS, or search "dnsmgmt.msc").
+In DNS Manager, expand your server name.
+Right-click Forward Lookup Zones → New Zone.
+Choose Primary zone (store in Active Directory if it's a domain controller, otherwise file-based).
+Zone name: foodies.local
+Complete the wizard (allow dynamic updates if desired, or "Do not allow" for static lab).
+Expand the new zone foodies.local.
+Right-click inside the zone → New Host (A or AAAA).
+Name: zomato
+IP address: 192.168.1.50
+Click Add Host.
+
+3. Add a CNAME record in the foodies.local zone so that swiggy.foodies.local points to zomato.foodies.local.<br><br><em><strong>Hint:</strong> Use the 'New Alias (CNAME)' option and test both names with nslookup.</em>
+=>Still in the foodies.local zone.
+Right-click → New Alias (CNAME).
+Alias name: swiggy
+Fully qualified domain name (FQDN) for target host: zomato.foodies.local
+Click OK.
+
+4. Simulate a DNS resolution: On a client machine, use nslookup to resolve swiggy.foodies.local and zomato.foodies.local, then explain what happens and why in 3-4 lines.
+=>On a client machine (Windows client joined to the network, with DNS server IP set to your Windows Server's IP in IPv4 settings):
+cmdnslookup swiggy.foodies.local
+nslookup zomato.foodies.local
+What happens and why (3-4 lines explanation):
+When you query swiggy.foodies.local, the DNS client sends a recursive query to the configured DNS server. The server looks up the CNAME record in the foodies.local zone, which points swiggy to zomato.foodies.local. It then performs an additional lookup for the A record of zomato.foodies.local, returning the IP 192.168.1.50. This is canonical name resolution — CNAME acts as an alias, allowing multiple names to point to the same host/IP without duplicating records. The process demonstrates efficient name resolution chaining in DNS.
