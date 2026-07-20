@@ -1,0 +1,55 @@
+1. Configure a DNS server role on your Windows Server VM and create a new forward lookup zone named 'myapp.local' with an A record pointing to 192.168.1.50.
+=>
+Open Server Manager → Add Roles and Features → Install DNS Server role.
+Open DNS Manager.
+Right-click Forward Lookup Zones → New Zone → Primary zone.
+Zone name: myapp.local
+Create an A record:
+Right-click the zone → New Host (A or AAAA).
+Name: @ or a hostname (e.g., app).
+IP: 192.168.1.50
+
+2. Set up the DHCP server role and create a new scope that assigns IP addresses from 192.168.1.100 to 192.168.1.120 with a lease duration of 8 hours.
+=>Install DHCP Server role via Server Manager.
+Open DHCP Manager.
+Right-click IPv4 → New Scope.
+Scope name: e.g., CampusScope
+IP Range: 192.168.1.100 to 192.168.1.120
+Subnet mask: 255.255.255.0
+Lease duration: 8 hours (in Scope Properties → General tab).
+Activate the scope.
+(Optional) Authorize the DHCP server in AD if domain-joined.
+
+3. Share a folder named 'MusicLibrary' on your Windows Server and set permissions so only users in the 'Students' group can read and write to it.<br><br><em><strong>Hint:</strong> Use the 'Advanced Sharing' and 'Permissions' tabs to manage access.</em>
+=>Create folder (e.g., C:\Shared\MusicLibrary).
+Right-click → Properties → Sharing tab → Advanced Sharing.
+Share name: MusicLibrary
+Permissions: Add Students group → Read/Write (or Change).
+
+Security tab (NTFS):
+Add Students group → Allow Modify (Read + Write + Execute).
+
+Test access from a client logged in as a Students group member.
+
+4. Install the Print Server role, add a virtual printer (Microsoft XPS Document Writer), and share it as 'CampusPrinter' so network users can print to it.
+=>Install Print and Document Services → Print Server role.
+Open Print Management.
+Add Printer → Use Microsoft XPS Document Writer (virtual).
+Share it as CampusPrinter.
+Configure basic permissions
+
+5. Troubleshoot: A client PC is not receiving an IP address from your DHCP server. List 3 possible causes and describe how you would test and fix each one using Windows Server tools.
+=>Client Network Configuration Issue
+Cause: Client set to static IP instead of DHCP.
+Test: On client run ipconfig /all — look for "DHCP Enabled: No".
+Fix: Set IPv4 to "Obtain an IP address automatically". Run ipconfig /release then /renew.
+
+DHCP Server Scope or Service Problem
+Cause: Scope not activated, exhausted IPs, or DHCP service stopped.
+Test: In DHCP Manager, check if scope is green/active and has available addresses. Check Event Viewer (Applications and Services Logs → Microsoft → DHCP-Server).
+Fix: Activate scope, restart DHCP Server service (services.msc), or expand scope range.
+
+Network Connectivity / Relay / Firewall
+Cause: Client on different subnet without DHCP relay, or firewall blocking UDP 67/68.
+Test: Ping server from client. On server: netstat -ano | find "67" to check listening. Check firewall rules (File and Printer Sharing).
+Fix: Enable DHCP relay (if routed), open ports, or place client on same subnet/VLAN.
