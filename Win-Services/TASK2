@@ -1,0 +1,33 @@
+1. On your Windows Server VM, open the DHCP Manager and create a new DHCP scope named 'CampusWiFi' with an IP address range of 192.168.50.100 to 192.168.50.200 and a subnet mask of 255.255.255.0.
+=>Open DHCP Manager (Server Manager → Tools → DHCP, or dhcpmgmt.msc).
+Expand your server → right-click IPv4 → New Scope.
+Scope name: CampusWiFi
+IP range: Start 192.168.50.100, End 192.168.50.200
+Subnet mask: 255.255.255.0
+Complete the wizard 
+Right-click the new scope → Activate.
+
+2. Add a DHCP reservation for a device (use your own laptop's MAC address if possible) so it always receives the IP address 192.168.50.150 from the 'CampusWiFi' scope.<br><br><em><strong>Hint:</strong> Right-click Reservations in your scope, choose 'New Reservation', and enter the MAC address.</em>
+=>Expand the CampusWiFi scope.
+Right-click Reservations → New Reservation.
+Reservation name: e.g., MyLaptop
+IP address: 192.168.50.150
+MAC address: Enter your laptop's MAC (find with ipconfig /all on client → Physical Address).
+Description: optional.
+Click Add.
+
+3. Configure the DHCP lease duration for the 'CampusWiFi' scope to 2 days instead of the default setting.
+=>Right-click the CampusWiFi scope → Properties.
+Go to the General tab.
+Change Lease duration to 2 Days (or 2880 minutes).
+Click OK / Apply.
+
+4. Connect a client machine (or use a virtual client) to the network and verify it receives an IP address from your DHCP scope; take a screenshot showing the assigned IP in the client’s network settings.
+=>On a client (physical laptop or VM), ensure it is set to obtain IP automatically (DHCP).
+Connect to the network (same subnet as server).
+Run ipconfig /release then ipconfig /renew.
+Check ipconfig /all — it should show an IP in 192.168.50.100–200 range.
+Take a screenshot of Network Settings or ipconfig output showing the assigned IP.
+
+5. Document your entire DHCP setup process in a Word or PDF file, including screenshots of the scope creation, reservation, lease duration change, and the client receiving its IP address.
+=>
