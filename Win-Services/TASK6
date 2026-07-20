@@ -1,0 +1,62 @@
+1. Open Hyper-V Manager on your Windows Server machine and create a new virtual machine named 'MyTestVM' with default settings.
+==>Open Hyper-V Manager (search for it in the Start menu).
+In the right Actions pane, click New → Virtual Machine.
+Follow the wizard with default settings:
+Name: MyTestVM
+Generation: Generation 2 (recommended)
+Memory: Default (usually 512 MB or 1 GB)
+Network: Not connected yet
+Virtual Hard Disk: Create a new one (default size/location)
+Installation Options: Leave for later
+
+2. Configure a virtual switch in Hyper-V Manager that allows your virtual machines to access the internet, and attach 'MyTestVM' to this switch.<br><br><em><strong>Hint:</strong> Use the Virtual Switch Manager and select 'External' for internet access.</em>
+=>In Hyper-V Manager, click Virtual Switch Manager (right pane).
+Select New virtual network switch → External → Create Virtual Switch.
+Give it a name (e.g., ExternalSwitch).
+Select your physical network adapter that has internet access.
+Click Apply / OK.
+Right-click MyTestVM → Settings → Network Adapter.
+Set Virtual switch to the one you just created (ExternalSwitch).
+Click OK.
+
+3. Install a Windows 10 ISO on 'MyTestVM' and ensure it boots successfully to the desktop.
+=>Right-click MyTestVM → Settings → SCSI Controller → Hard Drive → Add (if needed) or use the existing one.
+Under DVD Drive, click Browse and select your Windows 10 ISO file.
+Click OK.
+Right-click the VM → Start.
+Right-click → Connect to open the VM console.
+Complete the Windows 10 installation (choose Custom install, select the virtual disk).
+After installation, the VM should boot to the Windows 10 desktop.
+
+4. Take a snapshot (checkpoint) of 'MyTestVM' after installation, then make a change inside the VM (like creating a folder on the desktop), and restore the VM to the checkpoint to verify the change is undone.
+=>With the VM running or shut down, right-click MyTestVM → Checkpoint (or Take Checkpoint).
+Name it e.g. Post-Install.
+Inside the VM: Create a folder on the Desktop named TestFolder.
+Shut down the VM if needed.
+Right-click MyTestVM → Revert (or Apply Checkpoint).
+Start the VM again → verify the TestFolder is gone. The checkpoint worked.
+
+5. Use ChatGPT or Copilot to generate PowerShell commands for creating a new Hyper-V VM with 2GB RAM and a 40GB disk, then run the commands and verify the VM appears in Hyper-V Manager.
+=># Create new Hyper-V VM with 2GB RAM and 40GB disk
+$VMName = "PowerShellVM"
+$RAM = 2GB
+$DiskSize = 40GB
+$VHDPath = "C:\Hyper-V\Virtual Hard Disks\$VMName.vhdx"  # Change path if needed
+$SwitchName = "ExternalSwitch"  # Use the switch you created earlier
+
+# Create directory if it doesn't exist
+New-Item -Path "C:\Hyper-V\Virtual Hard Disks" -ItemType Directory -Force
+
+# Create the VM
+New-VM -Name $VMName `
+       -MemoryStartupBytes $RAM `
+       -Generation 2 `
+       -NewVHDPath $VHDPath `
+       -NewVHDSizeBytes $DiskSize `
+       -SwitchName $SwitchName
+
+# Optional: Set processor count and enable dynamic memory
+Set-VM -Name $VMName -ProcessorCount 2 -DynamicMemory
+
+# Verify
+Get-VM -Name $VMName | Format-List Name, State, MemoryAssigned, ProcessorCount
