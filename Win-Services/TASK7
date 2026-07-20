@@ -1,0 +1,32 @@
+1. Open Server Manager on your Windows Server VM and use the 'Add Roles and Features' wizard to install the Remote Desktop Services (RDS) role.
+=>Open Server Manager (it usually launches automatically at logon, or run ServerManager.exe).
+Click Manage → Add Roles and Features.
+On Before You Begin, click Next.
+Select Role-based or feature-based installation (not "Remote Desktop Services installation" — that wizard is for multi-server deployments and will railroad you into a different flow). Click Next.
+Choose your local server from the pool, click Next.
+Under Server Roles, check Remote Desktop Services, click Next through Features.
+Under Role Services (this appears because you picked RDS), select at minimum:
+Remote Desktop Session Host
+Remote Desktop Licensing (optional for a lab, but Windows will nag about licensing after 120 days without it)
+Confirm and click Install. This will require a reboot.
+
+2. Configure a Remote Desktop Session Collection named 'StudentApps' and publish Notepad and Calculator as RemoteApps for users.
+=>In Server Manager, go to Remote Desktop Services → Collections.
+Click Tasks → Create Session Collection.
+Name it StudentApps, click Next.
+Select the RD Session Host server(s) to add to the collection, click Next.
+Choose which user group(s) can access it (default is Domain Users/local Users — for a lab, you can leave defaults or scope it to specific groups), click Next.
+Configure user profile disks if desired (optional — skip for a simple lab), click Next, then Create.
+
+3. Create a new local user account called 'testuser', add it to the Remote Desktop Users group, and verify that this user can successfully connect via Remote Desktop from another device on your network.
+=>New-LocalUser -Name "testuser" -Password (Read-Host -AsSecureString "Enter password") -FullName "Test User" -Description "RDS test account"
+Add-LocalGroupMember -Group "Remote Desktop Users" -Member "testuser"
+Open Remote Desktop Connection (mstsc) on the other machine.
+Enter the server's IP or hostname.
+Log in as testuser with the password you set.
+Confirm you land on a desktop (or the RemoteApp list, if connecting through RD Web Access instead of a full session).
+
+4. Simulate a scenario where multiple users are connecting to your RDS server at the same time by launching two Remote Desktop sessions as different users. Observe and note any resource or session limitations you encounter.<br><br><em><strong>Hint:</strong> Try connecting as both 'Administrator' and 'testuser' and see how the server handles simultaneous logins.</em>
+=>From one device, connect via RDP as Administrator.
+From a second device (or a second RDP client window), connect as testuser.
+Keep both sessions open simultaneously and observe:
