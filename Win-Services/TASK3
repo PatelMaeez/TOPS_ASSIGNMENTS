@@ -1,0 +1,44 @@
+1. On your Windows Server VM, create a shared folder named 'MusicLibrary' and set the share permissions so only the 'Students' group has read access.
+=>On the Windows Server VM, create a folder (e.g., C:\Shared\MusicLibrary).
+Right-click the folder → Properties → Sharing tab → Advanced Sharing.
+Check Share this folder.
+Share name: MusicLibrary
+Click Permissions.
+Remove Everyone.
+Add the Students group (create the group in Active Directory Users and Computers or local groups if not domain-joined).
+Grant Students group Read permission only.
+Click OK to apply.
+
+2. Configure NTFS permissions on the 'MusicLibrary' folder so that members of the 'Students' group can read and write files, but cannot delete any files.<br><br><em><strong>Hint:</strong> Use the Advanced Security Settings to deny delete permissions while allowing modify.</em>
+=>Right-click MusicLibrary folder → Properties → Security tab → Advanced.
+Disable inheritance if needed (Convert inherited permissions).
+Remove unnecessary groups/users.
+Add Students group:
+Allow: Read & execute, List folder contents, Read, Write (or Modify as base).
+Important: Click Edit → uncheck Delete and Delete subfolders and files (or explicitly add a Deny entry for Delete permissions).
+
+Apply to This folder, subfolders and files.
+Ensure your admin account retains Full Control.
+
+3. From a Windows client system, map the 'MusicLibrary' shared folder as a network drive and try to copy, edit, and delete a file. Document which actions succeed or fail, and explain why based on the permissions you set.
+=>On the client machine:
+Map the drive: Right-click This PC → Map network drive → \\ServerIP\MusicLibrary (or server name).
+Assign a drive letter (e.g., Z:).
+
+Test actions:
+Copy file → Should succeed (Write permission).
+Edit / save changes to a file → Should succeed (Write).
+Delete file → Should fail with Access Denied.
+
+4. Create a second shared folder called 'PhotoShare' and set up share and NTFS permissions so that only your user account has full control. Attempt to access this share from another user account and note the result.
+=>Create folder (e.g., C:\Shared\PhotoShare).
+Share it as PhotoShare.
+Share Permissions: Give your user account Full Control; remove Everyone/Students.
+NTFS Permissions (Advanced):
+Your user account: Full Control.
+Remove or Deny access for other groups/users (especially Students).
+
+From another user account on the client:
+Try to access \\ServerIP\PhotoShare → Should fail with Access Denied.
+
+Log in as your admin account → Full access (create/delete/read/write) works.
