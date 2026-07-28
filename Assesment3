@@ -1,0 +1,218 @@
+                                                                      SECTION-A
+
+SCENARIO 1
+You are the only IT support person at a 45-employee marketing firm. Every PC has its
+own local accounts, and each employee's password is different on every machine they
+log into.
+Question: Recommend whether the firm should move from a workgroup to a domain-based
+model, and justify your recommendation using at least two specific administrative problems the
+current setup creates.
+
+=>>No centralized credential management. Because each PC has its own local SAM database, every employee has to remember (or the IT person has to manually reset) a different password on every machine they use. There's no single place to enforce password policy, force a reset, or disable an account when someone leaves — you'd have to touch all 45 machines individually.
+  No centralized access control or auditing. With local accounts, there's no way to apply a security policy (e.g., "Sales can't install software" or "Finance PCs lock after 5 minutes") across all machines from one location. Every policy change means walking to each PC. There's also no single log of who logged in where, which matters for both troubleshooting and compliance.
+  No scalable resource sharing. Granting access to a shared printer or folder means creating matching local accounts with matching passwords on every device involved — this breaks down fast past a handful of machines, and is already unmanageable at 45 employees for one IT person
+
+SCENARIO 2
+You are designing the OU structure for a company with HR, Finance, Sales, and IT
+departments. The IT manager wants each department's local coordinator to reset
+passwords and manage computer accounts for their own department only, without
+being made a Domain Admin.
+Question: Explain how Organizational Units make this possible, and describe why OUs exist for
+delegation rather than just for tidy organization
+
+==>Organizational Units let you assign granular administrative permissions scoped to a container, without granting broader Active Directory rights.
+Specifically:
+You create an OU per department (HR, Finance, Sales, IT), and move each department's user and computer objects into their respective OU.
+You use the Delegation of Control Wizard on each department's OU to grant that department's coordinator specific rights — e.g., "Reset Password," "Read/Write account restrictions," "Create/Delete/Manage computer objects" — but only within that OU.
+This uses Access Control Lists (ACLs) inherited at the OU level, not membership in a privileged group like Domain Admins. The coordinator gets exactly the permissions needed for their own department's objects and nothing else — they can't touch HR's objects if they're the Sales coordinator, and they can't create new domain admins, modify GPOs at the domain level, or touch schema/forest settings.
+
+SCENARIO 3
+You are onboarding new employee laptops. Each laptop needs to authenticate against
+the domain, resolve internal hostnames like fileserver01.company.local, and get
+validated as a genuine domain member during the join process.
+Question: Walk through the domain join process end to end, and explain what role
+AD-integrated DNS plays in making this authentication and name resolution possible.
+
+=>>Locate a domain controller. The laptop needs to find a DC to join against. It does this via DNS — specifically by querying for SRV records like _ldap._tcp.dc._msdcs.company.local, which AD-integrated DNS publishes automatically for every DC in the domain.
+Establish a secure channel. Using credentials supplied during the join, the laptop contacts the DC over LDAP to authenticate the join request.
+Create a computer account object. The DC creates computer object in AD, and a secure channel password is established and stored both on the DC and locally on the laptop's registry.
+DNS registration. The laptop registers its own hostname and IP into the AD-integrated DNS zone , so other machines can resolve it — e.g., as fileserver01.company.local would already be registered.
+Reboot and subsequent authentication. After rebooting, the laptop authenticates using Kerberos: it requests a Ticket Granting Ticket (TGT) from a DC
+
+SCENARIO 4
+You are designing DHCP for a company that cannot tolerate any downtime in IP address
+assignment — if their DHCP server fails, remote warehouse scanners and office laptops
+must still get addresses within seconds.
+Question: Decide between DHCP Failover in Load Balance mode versus Hot Standby mode for
+this environment, and justify your choice based on how each mode behaves during a server
+outage.
+==>Load Balance mode splits scope traffic between two servers roughly 50/50 (or a configured ratio) — both are active simultaneously. If one server fails, the surviving server does take over the failed server's share of leases, but only after a MCLT (Maximum Client Lead Time) delay elapses for leases it doesn't already have full state on, and it must recognize the partner is down (via STATE SWITCH INTERVAL), which by default takes several minutes, not seconds.
+That gap is a real risk for warehouse scanners that need addresses within seconds.
+Hot Standby mode designates one server as active and one as a passive standby that would take over fully if the active one fails. Because the entire scope's leasing responsibility is already understood by the standby (it holds a full replica of the lease database), when a failure is detected, the standby takes over the whole scope rather than negotiating a mid-outage split.
+This is simpler and more predictable for an environment where the requirement is "no tolerance for downtime" — you want one server always fully ready to assume 100% of the load instantly, not two servers whose exact failover math depends on how much load each was carrying when the failure happened.
+
+SCENARIO 6
+You are troubleshooting a shared folder where a user says they can open a file over the
+network but cannot open the same file when logged in locally on the file server.
+Question: Explain how NTFS permissions and Share permissions combine to produce the
+effective permission a user actually gets, and account for the behavior this user is reporting.
+
+==>Share permissions apply only when a resource is accessed over the network (via the \\server\share path).
+NTFS permissions apply at all times — whether accessing the file locally on the server or over the network — because they're enforced by the file system itself (attached to the actual file/folder on disk).
+When a resource is accessed over the network, Windows evaluates both sets of permissions and applies the more restrictive (most restrictive) of the two as the effective permission. Locally, only NTFS permissions apply
+
+                                                                        SECTION-B
+
+Task 1: Forest & OU Foundation Plan
+Propose a domain name and a basic OU hierarchy for a company migrating off a workgroup.
+(Foundational — single concept, direct decision.)
+Propose a valid internal Active Directory domain name and justify the choice.
+List an OU hierarchy covering at least 4 departments plus a dedicated OU for service/admin
+accounts.
+Write the Install-ADDSForest command with all mandatory parameters filled in for your
+domain name.
+==>Justification: Using a .local suffix (or any name not resolvable on the public internet) for the AD domain avoids split-brain DNS conflicts with a real public domain, and is a widely used internal-AD convention. The corp prefix keeps the AD root distinct from the public-facing brand domain
+      Install-ADDSForest `
+    -DomainName "corp.company.local" `
+    -DomainNetbiosName "CORP" `
+    -ForestMode "WinThreshold" `
+    -DomainMode "WinThreshold" `
+    -InstallDns:$true `
+    -SafeModeAdministratorPassword (ConvertTo-SecureString "P@ssw0rd!2026" -AsPlainText -Force) `
+    -DatabasePath "C:\Windows\NTDS" `
+    -LogPath "C:\Windows\NTDS" `
+    -SysvolPath "C:\Windows\SYSVOL" `
+    -NoRebootOnCompletion:$false `
+    -Force:$true
+
+
+Task 2: DNS & DHCP Scope with Failover
+Configure AD-integrated DNS and a resilient DHCP scope for the same company. (Applied —
+one concept combined with high-availability configuration.)
+Write the PowerShell commands to create an AD-integrated DNS zone for your Task 1 domain.
+Write the Add-DhcpServerv4Scope command for a scope sized for at least 200 clients,
+including an exclusion range.
+Write the Add-DhcpServerv4Failover command, choosing Load Balance or Hot Standby mode
+with a one-sentence justification.
+State one setting that would prevent the domain controller itself from pulling a DHCP-assigned
+address.
+==>Add-DnsServerPrimaryZone `
+    -Name "corp.company.local" `
+    -ReplicationScope "Domain" `
+    -DynamicUpdate "Secure"
+
+    Add-DhcpServerv4Scope `
+    -Name "Corp-Main-Scope" `
+    -StartRange 192.168.10.10 `
+    -EndRange 192.168.10.250 `
+    -SubnetMask 255.255.255.0 `
+    -State Active
+
+Add-DhcpServerv4ExclusionRange `
+    -ScopeId 192.168.10.0 `
+    -StartRange 192.168.10.10 `
+    -EndRange 192.168.10.20
+
+  Add-DhcpServerv4Failover `
+    -Name "Corp-DHCP-Failover" `
+    -ScopeId 192.168.10.0 `
+    -PartnerServer "DHCP02.corp.company.local" `
+    -Mode HotStandby `
+    -ServerRole Active `
+    -SharedSecret "FailoverSecret2026!" `
+    -MaxClientLeadTime 00:01:00
+
+Task 3: File Share with NTFS Permissions & FSRM Quota
+Provision a departmental file share with correct permissions and a storage quota.
+(Intermediate — two concepts used together: permissions + FSRM.)
+Write the New-SmbShare command to create the share with an appropriate Share permission
+level.
+Write the icacls or Set-Acl command(s) to set NTFS permissions that differ from the Share
+permission, and state the resulting effective permission.
+Write the FSRM cmdlet(s) to apply a hard quota to the share.
+Add a file screen blocking at least 2 file extensions commonly used as ransomware vectors.
+==>New-SmbShare `
+    -Name "Finance" `
+    -Path "D:\Shares\Finance" `
+    -FullAccess "CORP\Domain Admins" `
+    -ChangeAccess "CORP\Authenticated Users"
+
+icacls "D:\Shares\Finance" /inheritance:r
+icacls "D:\Shares\Finance" /grant "CORP\Finance_Group:(OI)(CI)M"
+icacls "D:\Shares\Finance" /grant "CORP\Domain Admins:(OI)(CI)F"
+
+New-FsrmFileGroup `
+    -Name "Ransomware-Blocked-Extensions" `
+    -IncludePattern @("*.exe","*.js")
+
+New-FsrmFileScreen `
+    -Path "D:\Shares\Finance" `
+    -IncludeGroup "Ransomware-Blocked-Extensions" `
+    -Active
+
+
+Task 4: End-to-End Rollout Sequence
+Combine your domain/OU design, DNS/DHCP configuration, and file share provisioning into a
+single sequenced deployment. (Integrative — multi-step flow combining 3+ concepts.)
+Sequence all commands from Tasks 1–3 in the order they must actually run, with a one-line
+reason for each position in the sequence.
+Add a step that joins a client machine to the domain and verifies it received an IP address
+from your Task 2 scope.
+Add a step that configures a VPN endpoint (SSTP or IKEv2) so a remote user can reach the Task
+3 file share.
+Summarize the full rollout as a deployment checklist (6–10 steps).
+==># 1. Promote the server to a domain controller (must exist before anything else can join or be created in AD)
+Install-ADDSForest -DomainName "corp.company.local" -DomainNetbiosName "CORP" `
+    -ForestMode WinThreshold -DomainMode WinThreshold -InstallDns:$true `
+    -SafeModeAdministratorPassword (ConvertTo-SecureString "P@ssw0rd!2026" -AsPlainText -Force) `
+    -Force:$true
+
+# 2. Create the AD-integrated DNS zone (requires the forest/domain to exist first)
+Add-DnsServerPrimaryZone -Name "corp.company.local" -ReplicationScope "Domain" -DynamicUpdate "Secure"
+
+# 3. Create the DHCP scope (clients need addresses before they can reach the DC/DNS at all)
+Add-DhcpServerv4Scope -Name "Corp-Main-Scope" -StartRange 192.168.10.10 -EndRange 192.168.10.250 `
+    -SubnetMask 255.255.255.0 -State Active
+Add-DhcpServerv4ExclusionRange -ScopeId 192.168.10.0 -StartRange 192.168.10.10 -EndRange 192.168.10.20
+
+# 4. Configure DHCP failover (protects the scope created in step 3; requires the scope to exist first)
+Add-DhcpServerv4Failover -Name "Corp-DHCP-Failover" -ScopeId 192.168.10.0 `
+    -PartnerServer "DHCP02.corp.company.local" -Mode HotStandby -ServerRole Active `
+    -SharedSecret "FailoverSecret2026!" -MaxClientLeadTime 00:01:00
+
+# 5. Create the file share (needs the DC/domain up so domain groups like CORP\Finance_Group can be referenced)
+New-SmbShare -Name "Finance" -Path "D:\Shares\Finance" -FullAccess "CORP\Domain Admins" `
+    -ChangeAccess "CORP\Authenticated Users"
+
+# 6. Apply NTFS permissions (must come after the share/folder exists, to lock down actual file-system access)
+icacls "D:\Shares\Finance" /inheritance:r
+icacls "D:\Shares\Finance" /grant "CORP\Finance_Group:(OI)(CI)M"
+icacls "D:\Shares\Finance" /grant "CORP\Domain Admins:(OI)(CI)F"
+
+# 7. Apply FSRM quota and file screen (protects the share/folder just created and permissioned)
+New-FsrmQuota -Path "D:\Shares\Finance" -Size 50GB -Description "Finance hard quota"
+New-FsrmFileGroup -Name "Ransomware-Blocked-Extensions" -IncludePattern @("*.exe","*.js")
+New-FsrmFileScreen -Path "D:\Shares\Finance" -IncludeGroup "Ransomware-Blocked-Extensions" -Active
+
+# 8. Join a client to the domain (domain/DNS/DHCP must all be functional first so the client can locate the DC, get an IP, and register in DNS)
+Add-Computer -DomainName "corp.company.local" -Credential "CORP\Administrator" -Restart
+
+# 9. Verify the client received an address from the Task 2 scope
+Test-Connection -ComputerName "NewLaptop01" | Select-Object IPV4Address
+Get-DhcpServerv4Lease -ScopeId 192.168.10.0 | Where-Object {$_.HostName -like "NewLaptop01*"}
+
+# 10. Configure the VPN endpoint (SSTP, since it tunnels over HTTPS — for remote access to the Finance share)
+Install-RemoteAccess -VpnType VpnS2S
+Set-VpnServerConfiguration -TunnelType Sstp -SslCertificate "CN=vpn.company.local"
+
+
+                                                                    SECTION-C
+
+
+
+
+
+
+
+
+
