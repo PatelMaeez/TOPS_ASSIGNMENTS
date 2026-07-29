@@ -1,0 +1,35 @@
+1. Open Windows Server Backup on your training VM and perform a one-time full backup of the C: drive. Take a screenshot of the confirmation screen after completion.
+=>Open Server Manager → Tools → Windows Server Backup
+(or run wbadmin.msc).
+In the right Actions pane, click Backup Once….
+Choose Different options → Next.
+Select Custom → Next.
+Click Add Items → select the C: volume (or the entire bare-metal / system state if you prefer a fuller recovery option) → OK → Next.
+Choose the destination (local disk, volume, or network share) → Next.
+Confirm the settings and click Backup.
+Wait for the operation to finish. The final confirmation screen shows “Backup completed successfully” (or similar) with start/end time and status.
+
+2. Configure a scheduled incremental backup in Windows Server Backup to run daily at 8:00 PM for the folder containing your music or video files (e.g., D:\Media). Document the steps you followed and the schedule settings you chose.
+=>In Windows Server Backup, click Backup Schedule… in the Actions pane.
+Choose Custom → Next.
+Add Items → select the folder (e.g. D:\Media) → Next.
+On the Specify Backup Time page:
+Select Once a day.
+Set the time to 20:00 (8:00 PM).
+Choose the destination 
+Confirm and finish the wizard. Windows Server Backup will create a scheduled task that runs daily.
+
+3. Create a comparison table in a Word or Excel file showing the differences between full, incremental, and differential backups, including how much storage and time each method might use over a week if you back up a 10GB folder daily and only 1GB changes per day.<br><br><em><strong>Hint:</strong> Use simple numbers and explain your reasoning for each backup type.</em>
+=>Backup Type,         Day 1,    Days 2–7 daily,          Total storage after 7 days,         Relative time,               Restore complexity
+Full,                  10 GB,     10 GB each,               70 GB                               ,Longest,                  Simplest (any single set)
+Incremental,           10 GB     ,1 GB each               ,16 GB,                             Shortest after Day 1,        Most complex (full + all incrementals)
+Differential          ,10 GB,    1→6 GB growing,           31 GB,                          Medium (grows daily),           Medium (full + latest differential only)
+
+4. List three backup best practices for Windows Server that would be important for a Flipkart-style e-commerce website, and explain why each is critical for minimizing downtime or data loss.
+=>Application-consistent (VSS-aware / database-aware) backups of the order, inventory, and payment databases
+Why critical: A crash-consistent backup of a live SQL Server / MongoDB / etc. can leave transactions half-written. Application-consistent backups guarantee that the database can be restored to a transactionally consistent state, preventing order loss, double charges, or inventory corruption — any of which would cause immediate revenue and trust damage.
+3-2-1 rule with off-site / immutable copies and short RPO
+(At least 3 copies, on 2 different media, 1 off-site; ideally one copy immutable or air-gapped.)
+Why critical: Ransomware, regional outages, or a compromised admin account can destroy local backups. An off-site or immutable copy ensures the business can still recover product catalogs, customer data, and recent orders even if the primary data center is lost, keeping downtime and data loss within acceptable RTO/RPO targets (often minutes to a few hours for e-commerce).
+Regular automated restore testing + monitoring of backup success/failure
+Why critical: A backup that has never been restored is only a hope. Automated restore drills (and alerting on failed backups) verify that recovery actually works within the required time window. For a high-traffic site, discovering a broken backup only during a real outage can mean hours of downtime, lost sales, and regulatory/compliance issues.
