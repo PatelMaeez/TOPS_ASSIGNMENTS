@@ -1,0 +1,85 @@
+1. Install the Active Directory Certificate Services (AD CS) role on your Windows Server VM and take a screenshot of the 'Role Services' selection screen.
+=>Open Server Manager → Manage → Add Roles and Features.
+Choose Role-based or feature-based installation → Next.
+Select the local server → Next.
+On Server Roles, check Active Directory Certificate Services.
+Click Add Features when prompted → Next through Features.
+On the AD CS introduction page → Next.
+Role Services page: check only Certification Authority (for a basic standalone root).
+Optional later: Certification Authority Web Enrollment, Online Responder, etc.
+This is the screen you would screenshot. It lists checkboxes for Certification Authority, Certificate Enrollment Policy Web Service, Certificate Enrollment Web Service, Certification Authority Web Enrollment, Network Device Enrollment Service, Online Responder.
+Complete the wizard and install. Restart if prompted.
+
+2.Configure a new Standalone Root Certification Authority (CA) using the AD CS wizard and set the common name to 'CampusAppCA'.
+=>Credentials: use a local Administrator account (standalone).
+Role Services: select Certification Authority → Next.
+Setup Type: Standalone CA (Enterprise is grayed out if the server is not domain-joined).
+CA Type: Root CA.
+Private Key: Create a new private key.
+Cryptography: keep defaults or choose RSA#Microsoft Software Key Storage Provider, SHA256, key length 2048 or 4096.
+CA Name: enter CampusAppCA (this becomes the common name / CN).
+Validity Period: typically 5–15 years (or longer for a root).
+Database/Log locations: accept defaults or customize.
+Confirm and configure.
+
+3. Issue a user certificate for a test user account (e.g., 'testuser') from your CA and export the certificate as a .cer file.
+=>Create a local (or domain) test account named testuser if it does not exist.
+On a client or the CA itself, open certreq or use the Certificates MMC / Web Enrollment (if you also installed Web Enrollment).
+Generate a certificate request (CSR) for a user certificate (Key Usage: Digital Signature, Client Authentication; Subject: CN=testuser).
+Submit the request to the CA (certreq -submit or via the CA console / Web Enrollment page http://<CA>/certsrv).
+On the CA, open Certification Authority console (certsrv.msc).
+Go to Pending Requests → right-click the request → Issue.
+Go to Issued Certificates → double-click the certificate → Details tab → Copy to File….
+Export as DER encoded binary X.509 (.CER) or Base-64 → save as e.g. testuser.cer.
+
+4. Simulate a Flipkart-style secure login: Configure your server to require client certificate authentication for a test web application and attempt to log in using the issued certificate.<br><br><em><strong>Hint:</strong> You can use IIS and map client certificates to user accounts for this demo.</em>
+=>Create a simple test web site/application in IIS (or use Default Web Site).
+Obtain an SSL certificate for the site (can be issued by your CampusAppCA) and bind HTTPS.
+In IIS Manager → select the site → SSL Settings:
+Require SSL
+Client certificates: Require
+
+Enable and configure client-certificate mapping:
+Feature View → Authentication → disable Anonymous, Windows, Basic, etc.
+Open Configuration Editor → section system.webServer/security/authentication/iisClientCertificateMappingAuthentication
+Set enabled = True
+For one-to-one mapping: enable oneToOneCertificateMappingsEnabled, add a mapping that points the exported testuser.cer (or its public key blob) to the Windows account .\testuser (or DOMAIN\testuser) and supply the account password.
+Or use many-to-one mapping with rules matching Subject CN=testuser.
+
+Import the CA root certificate (CampusAppCA) into the Trusted Root Certification Authorities store on both the server and the client.
+On the client, import the user certificate (with private key, usually as .pfx) into the Current User Personal store.
+Browse to https://yourserver/ – the browser should present the client certificate and IIS should map it to the testuser account
+
+5. Use ChatGPT to generate a step-by-step checklist for troubleshooting common AD CS installation errors, and apply one of the steps to intentionally misconfigure your CA, then fix it using the checklist.
+=>Verify the CertSvc service
+Get-Service CertSvc → Status must be Running.
+If stopped: Start-Service CertSvc. Check Event Viewer (System + Application) for why it stopped.
+Ping the CA
+certutil -ping
+Success indicates the CA is listening and responsive.
+Check CA configuration and status
+certutil -CAInfo
+certutil -getreg CA
+Review recent failed requests
+certutil -view -restrict "Disposition=31" -out "RequestID,CommonName,DispositionMessage"
+Confirm published templates (Enterprise only)
+certutil -CATemplates
+Validate CRL / AIA accessibility
+certutil -verify -urlfetch <certificate.cer>
+Ensure HTTP/LDAP paths in the CA’s extensions are reachable and the CRLs are not expired.
+Permissions
+CA Administrators / Certificate Managers groups.
+NTFS permissions on %SystemRoot%\System32\CertLog and the private-key container.
+For Enterprise: Enterprise Admins / Domain Admins on the Public Key Services container in AD.
+
+Network / RPC issues (“RPC server unavailable”)
+Firewall: allow RPC (135) + dynamic high ports, or restrict to a fixed port.
+Test: Test-NetConnection <CA> -Port 135
+
+Cryptography / key storage problems
+certutil -repairstore my <serial> or re-create the CA private key if corrupted.
+Event logs
+Filter for sources CertSvc, Microsoft-Windows-CertificationAuthority, and look for Event IDs related to database, private key, or AD integration failures.
+Re-run configuration if the role is partially installed
+Install-AdcsCertificationAuthority (or the GUI wizard) again after fixing prerequisites.
+
