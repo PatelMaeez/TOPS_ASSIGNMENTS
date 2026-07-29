@@ -1,0 +1,68 @@
+1. Install and configure Windows Server Update Services (WSUS) on a Windows Server VM, ensuring the WSUS role is added and the initial setup wizard is completed.
+=>1. Install and configure WSUS (role + initial setup wizard)
+
+Open Server Manager → Manage → Add Roles and Features.
+Choose Role-based or feature-based installation → select the local server.
+On Server Roles, check Windows Server Update Services.
+When prompted, add the required features
+On the Content location page, specify a folder on a drive with plenty of free space .
+Complete the installation and click Launch Post-Installation tasks .
+Initial configuration wizard (starts automatically or via WSUS console):
+Open Windows Server Update Services console .
+Complete the wizard:
+Choose Synchronize from Microsoft Updat.
+Select languages (at least English + any others you need).
+Choose products (Windows versions, Office, etc. that match your clients).
+Choose classifications (at minimum: Critical Updates, Security Updates, Update Rollups, Service Packs).
+Set the sync schedule (manual for the first sync, then scheduled).
+Start the first synchronization
+
+2.Create a group of at least two Windows client machines (physical or virtual), and configure their Windows Update settings via Group Policy to point to your WSUS server for updates.
+=>On the WSUS server (optional but recommended):
+
+In the WSUS console, expand Computers → All Computers.
+Right-click → Add Computer Group → create a group (e.g. Training-Clients).
+
+Configure clients with Group Policy (domain environment):
+
+On a domain controller (or a machine with Group Policy Management), open Group Policy Management.
+Create a new GPO (e.g. WSUS-Client-Config) and link it to the OU that contains your client computer accounts.
+Edit the GPO and navigate to:
+Computer Configuration → Policies → Administrative Templates → Windows Components → Windows Update
+Configure these key settings:
+Specify intranet Microsoft update service location → Enabled
+Set both “Set the intranet update service for detecting updates” and “Set the intranet statistics server” to:
+http://Your-WSUS-Server:8530
+(use https://Your-WSUS-Server:8531 if you configured SSL)
+
+Configure Automatic Updates → Enabled (choose the install behavior you want, e.g. auto-download and schedule install).
+Enable client-side targeting → Enabled and enter the group name you created in WSUS (e.g. Training-Clients) if you want automatic group assignment.
+
+3. On your WSUS server, approve a specific Windows security update for installation on your client machines and initiate the update process.
+=>In the WSUS console, go to Updates → All Updates.
+Use the search or filters (Approval = Unapproved, Status = Needed, Classification = Security Updates) to find a specific security update that applies to your clients.
+Right-click the update → Approve….
+Select the computer group(s) you created (or All Computers) → set the approval to Approved for Install.
+Click OK. Optionally set a deadline.
+On the client machines, force a detection/install cycle:
+Windows 10/11 / Server 2016+:
+usoclient StartScan
+or
+usoclient StartInstall
+Older clients: wuauclt /detectnow and wuauclt /updatenow
+Monitor progress in the WSUS console under the update’s status or under each computer’s update status.
+
+4.Generate a WSUS patch report that lists all client machines and shows which ones successfully installed the approved update, then export the report as a CSV or screenshot and save it for review.<br><br><em><strong>Hint:</strong> Use the WSUS console's 'Reports' section to create and export the update status report.</em>
+=>In the WSUS console, click Reports in the left pane.
+Choose one of these useful reports:
+Update Status Summary
+Computer Status Summary
+Update Detailed Status (best for seeing which machines installed a specific update)
+Computer Detailed Status
+Select the specific update you approved (or filter by group / time range).
+Run the report.
+Once generated, use the report viewer’s toolbar to:
+Export as CSV, or
+Print / save as PDF, or
+Take a screenshot of the results.
+Save the exported file for review.
