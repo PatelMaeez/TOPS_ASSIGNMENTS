@@ -1,0 +1,55 @@
+1. Open Windows Security, navigate to Virus & Threat Protection, and perform a full system scan using Windows Defender. Take a screenshot of the scan summary once completed.
+=>Open Windows Security (search for it in the Start menu or click the shield icon in the system tray).
+Click Virus & threat protection.
+Under “Current threats” or “Scan options”, click Scan options.
+Select Full scan → click Scan now.
+Wait for the scan to finish (this can take a long time on a full system).
+When it completes, the summary screen shows the number of files scanned, threats found, and time taken.
+
+2. Configure Windows Defender to enable real-time protection and set up a scheduled scan to run every Sunday at 8 AM. Write down the steps you followed.
+=>Open Windows Security → Virus & threat protection.
+Click Manage settings under “Virus & threat protection settings”.
+Ensure Real-time protection is turned On.
+Scroll down and click Scan options (or go back and use the main Virus & threat protection page).
+To set a scheduled scan:
+Open Task Scheduler (taskschd.msc).
+Navigate to Task Scheduler Library → Microsoft → Windows → Windows Defender.
+Locate the task Windows Defender Scheduled Scan.
+Right-click → Properties → Triggers tab → Edit (or New).
+Set:
+Begin the task: On a schedule
+Weekly
+Sunday
+08:00:00
+
+Under Conditions / Settings, adjust as needed (e.g., run whether user is logged on or not).
+Save the changes.
+
+3. Simulate downloading a harmless EICAR test file (from https://www.eicar.org/download-anti-malware-testfile/) and observe how Windows Defender reacts. Document the threat detected and the action taken by Defender.<br><br><em><strong>Hint:</strong> The EICAR file is a safe industry-standard test for antivirus software.</em>
+=>The EICAR test file is a harmless, industry-standard test string created specifically so antivirus products can be verified without using real malware. It is safe.
+How to test (on your VM only):
+Visit the official page: https://www.eicar.org/download-anti-malware-testfile/
+Download one of the test files (the plain .com or .txt version is fine).
+As soon as the file is written to disk (or sometimes even during the download), Windows Defender should:
+Detect it as EICAR-Test-File (or “Virus:DOS/EICAR_Test_File”).
+Automatically quarantine or remove it.
+Show a notification 
+
+4. Open Windows Defender settings and customize the notification options so that you only receive critical threat alerts. Test your configuration by triggering a Defender notification and describe the result.
+=>Open Windows Security → Virus & threat protection → Manage settings.
+Scroll to Notifications (or open Windows Security → Settings / gear icon → Notifications).
+Click Virus & threat protection notifications (or “Manage notifications”).
+Turn off the less important options and leave only the critical/severe threat notifications enabled.
+Typical options include:
+Recent activity and scan results
+Critical threat alerts (keep this On)
+Informational / non-critical alerts (turn these Off if you want only critical alerts)
+You can also control toast notifications via Windows Settings → System → Notifications.
+
+5. After completing a full scan, open the Protection History in Windows Defender and list any threats detected, along with the actions taken (quarantined, removed, allowed). If no threats were found, state 'No threats detected'.
+=>Open Windows Security → Virus & threat protection.
+Click Protection history (under “Current threats”).
+Filter by time range if needed (e.g., “Last 7 days”).
+Review the list:
+If you tested with the EICAR file, you should see an entry for EICAR-Test-File (or similar) with action Quarantined or Removed.
+If the system was clean and you did not run the EICAR test, the history will show No threats detected (or an empty list).
