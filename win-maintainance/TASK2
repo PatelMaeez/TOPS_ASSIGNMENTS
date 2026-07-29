@@ -1,0 +1,63 @@
+1 Open Server Manager on your Windows Server VM and install the Active Directory Certificate Services (AD CS) role, selecting only the Certification Authority role service.
+=>Open Server Manager → Manage → Add Roles and Features.
+Role-based or feature-based installation → select the local server.
+On Server Roles, check Active Directory Certificate Services.
+Click Add Features when prompted.
+On the Role Services page, select only Certification Authority.
+Complete the installation.
+
+2. Configure a new Standalone Root CA using the AD CS Configuration wizard and name the CA after your favorite IPL team (e.g., "GujaratTitansRootCA").
+=>Credentials: local Administrator (Standalone) or Enterprise Admin (Enterprise).
+Role Services: Certification Authority.
+Setup Type:
+Standalone CA (if workgroup), or
+Enterprise CA (if domain-joined – required for templates).
+
+CA Type: Root CA.
+Private Key: Create a new private key.
+Cryptography: RSA, SHA256, 2048 or 4096 bits.
+CA Name / Common name: e.g. GujaratTitansRootCA (or your preferred IPL team name).
+Validity period: 5–15 years (or longer for a root).
+Finish the wizard.
+
+3. Create a certificate template for 'App Developers' that allows code signing, then issue a new certificate from your CA using this template and export it as a .cer file.
+=>Open certtmpl.msc (Certificate Templates console).
+Right-click the built-in Code Signing template → Duplicate Template.
+Compatibility: choose a recent Windows Server version.
+General tab:
+Template display name: App Developers
+Template name: AppDevelopers (no spaces).
+
+Request Handling: allow private key to be exported (if needed).
+Subject Name: Supply in the request (common for code-signing).
+Extensions → Application Policies / Extended Key Usage: ensure Code Signing is present.
+Security tab: grant Read + Enroll to the group or users who will request the certificate (e.g., a Developers group).
+OK to save the template.
+Open certsrv.msc → right-click Certificate Templates → New → Certificate Template to Issue → select App Developers.
+
+4. Simulate a Zomato-style secure API scenario: generate a certificate request (CSR) for an imaginary 'ZomatoAPI' server, submit it to your CA, approve it, and install the issued certificate.
+=>certreq -new ZomatoAPI.inf ZomatoAPI.req
+  Submit the request to the CA:
+Via Web Enrollment (http://<CA>/certsrv) if installed, or
+certreq -submit -config "CAServer\GujaratTitansRootCA" ZomatoAPI.req ZomatoAPI.cer
+Or copy the .req file to the CA and use the CA console.
+
+On the CA (certsrv.msc):
+Go to Pending Requests.
+Right-click the request → Issue.
+
+Retrieve and install the issued certificate:
+Export from Issued Certificates (or use certreq -retrieve).
+On the ZomatoAPI server, import the certificate (with private key if it was generated there) into the Local Computer → Personal store and bind it to the HTTPS site / API endpoint.
+
+5. Use ChatGPT or Copilot to generate a PowerShell script that lists all issued certificates from your CA, then run the script and take a screenshot of the output.<br><br><em><strong>Hint:</strong> Ask the AI tool for a script using Get-CertificationAuthority and Get-IssuedRequest cmdlets.</em>4
+=># Install once (requires internet or offline copy)
+Install-Module -Name PSPKI -Scope CurrentUser -Force
+
+Import-Module PSPKI
+
+# List all issued certificates
+Get-CertificationAuthority | Get-IssuedRequest |
+    Select-Object RequestID, RequesterName, CommonName, CertificateTemplate,
+                  SerialNumber, NotBefore, NotAfter, CertificateEffectiveDate |
+    Format-Table -AutoSize
