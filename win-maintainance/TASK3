@@ -1,0 +1,84 @@
+1. Create a new Active Directory domain called 'musicstream.local' for a fictional music streaming startup, and add five user accounts representing employees from different departments (e.g., admin, marketing, tech, support, HR).
+=>Open Server Manager → Add Roles and Features.
+Select Role-based or feature-based installation → choose the local server.
+Install the Active Directory Domain Services role (include management tools). Restart if prompted.
+After installation, click the notification flag → Promote this server to a domain controller.
+Choose Add a new forest.
+Root domain name: musicstream.local.
+Set a strong Directory Services Restore Mode (DSRM) password and complete the wizard (defaults are fine for a lab). The server will reboot and become the domain controller.
+Log in as musicstream\Administrator.
+Open Active Directory Users and Computers (dsa.msc).
+Expand musicstream.local → right-click Users (or create an OU called “Employees”) → New → User. Create these five accounts
+
+2. Configure DNS and DHCP services on your Windows Server so that all devices in the 'musicstream.local' network automatically receive IP addresses and can resolve domain names within the network.<br><br><em><strong>Hint:</strong> Use the Server Manager to install and configure both roles, and test by connecting a client VM or device.</em>
+=>DNS (already installed with AD DS):
+
+DNS is automatically configured for the new domain.
+Open DNS Manager (dnsmgmt.msc) and confirm the forward lookup zone musicstream.local exists and contains the domain controller’s records.
+Create a reverse lookup zone if desired (optional for a lab).
+
+DHCP:
+
+In Server Manager → Add Roles and Features → install the DHCP Server role.
+Complete the DHCP post-deployment configuration wizard (authorize the DHCP server in AD).
+Open DHCP console (dhcpmgmt.msc).
+Right-click IPv4 → New Scope.
+Name the scope (e.g., “MusicStream LAN”).
+Define an IP range (example: 192.168.10.100 – 192.168.10.200), subnet mask 255.255.255.0.
+Exclude any static addresses you need.
+Set lease duration (e.g., 8 days).
+Configure options:
+Router (default gateway) – your server’s IP or the lab gateway.
+DNS server – the domain controller’s IP address.
+DNS domain name – musicstream.local.
+
+Activate the scope.
+
+3. Set up a shared folder named 'PlaylistShares' on your server, give read/write access only to the 'marketing' and 'tech' users, and map it as a network drive on their accounts.
+=>On the server create a folder, e.g. C:\Shares\PlaylistShares.
+Right-click the folder → Properties → Sharing → Advanced Sharing.
+Share the folder as PlaylistShares.
+Permissions: remove Everyone; add marketing and tech with Change (or Full Control if preferred).
+
+On the Security tab (NTFS permissions):
+Remove overly broad inherited permissions if needed (or disable inheritance carefully).
+Give marketing and tech Modify (or Read & Write) permissions.
+Leave Administrators / SYSTEM with Full Control.
+
+Map the drive for the users:
+Log on as marketing or tech (on a domain-joined client).
+File Explorer → This PC → Map network drive → choose a letter (e.g. P:) → folder \\dc.musicstream.local\PlaylistShares (or \\servername\PlaylistShares) → Reconnect at sign-in.
+Alternatively, use Group Policy Preferences or a logon script for automatic mapping.
+
+4. Create a Group Policy Object (GPO) that enforces password complexity and disables USB storage for all users except the 'admin' account.
+=>Open Group Policy Management (gpmc.msc).
+Expand Forest → Domains → musicstream.local.
+Right-click the domain (or an OU that contains the users) → Create a GPO in this domain, and Link it here. Name it e.g. “Security – Password & USB”.
+Edit the GPO:
+Computer Configuration → Policies → Windows Settings → Security Settings → Account Policies → Password Policy
+Password must meet complexity requirements → Enabled
+(Optionally set Minimum password length, history, etc.)
+
+Computer Configuration → Policies → Administrative Templates → System → Removable Storage Access
+All Removable Storage classes: Deny all access → Enabled
+(Or specifically “Removable Disks: Deny execute/read/write access”)
+
+
+To exempt the admin account:
+Best practice: place the admin account in a separate OU that does not have this GPO linked, or
+Use Security Filtering on the GPO: remove “Authenticated Users”, add a security group that contains everyone except admin, or
+Use Item-level targeting / WMI filtering, or simply apply the USB restriction only to a “Users” OU that excludes Domain Admins.
+
+Force update on clients: gpupdate /force.
+
+5. Write a step-by-step guide (max 1 page) explaining how to restore a deleted user account from backup in your 'musicstream.local' domain, including the tools and commands you would use.<br><br><em><strong>Hint:</strong> Mention Windows Server Backup and Active Directory Users and Computers.</em>
+=>Boot the domain controller into Directory Services Restore Mode (DSRM) – press F8 during startup or use msconfig / recovery options and select Safe Mode / DSRM. Log in with the DSRM password set during promotion.
+Open Windows Server Backup → Recover.
+Select the backup that contains System State → choose System State recovery → select Original location → enable Perform an authoritative restore of Active Directory files.
+After the System State restore completes, open an elevated command prompt before rebooting and run:cmdntdsutil
+activate instance ntds
+authoritative restore
+restore object "CN=Username,OU=Employees,DC=musicstream,DC=local"(or restore subtree for an entire OU).
+Type quit twice, then reboot normally.
+After reboot, open Active Directory Users and Computers, confirm the user is restored, reset the password if necessary, and re-add the account to any groups that were lost.
+
