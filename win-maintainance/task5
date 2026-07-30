@@ -1,0 +1,65 @@
+1. Configure a local security policy on your Windows Server to enforce password complexity requirements, then take a screenshot of the policy settings window.
+=>Press Win + R, type secpol.msc, and press Enter.
+Expand Account Policies → Password Policy.
+Double-click Password must meet complexity requirements.
+Select Enabled → click OK.
+(Recommended companion settings you can also set in the same node):
+Minimum password length = 8 (or higher)
+Maximum password age = as needed
+Take a screenshot of the Password Policy pane that clearly shows “Password must meet complexity requirements” set to Enabled.
+
+2. Enable Windows Defender on your server and schedule a daily quick scan at a specific time using Windows Task Scheduler.<br><br><em><strong>Hint:</strong> Use the 'Task Scheduler' app and select 'Windows Defender Scheduled Scan' as the task.</em>
+=>Open Windows Security (search for it) → Virus & threat protection and verify real-time protection is On. If it is off, turn it on.
+Open Task Scheduler (taskschd.msc).
+In the left pane go to:
+Task Scheduler Library → Microsoft → Windows → Windows Defender.
+Right-click Windows Defender Scheduled Scan → Properties.
+On the Triggers tab → New:
+Begin the task: On a schedule
+Daily
+Choose a specific time (e.g., 02:00)
+Enabled → OK
+On the Actions tab confirm the action is still “Start a program” with the Defender executable (or leave the existing action).
+On the Settings / Conditions tabs adjust as needed (allow start on batteries, etc.).
+Click OK. The task will now run a scan daily at the time you chose.
+
+3. Set up a basic scheduled backup for a folder named 'ProjectFiles' on your server using Windows Server Backup, and save the backup to a different drive.
+=>Install the feature if needed:
+Server Manager → Add Roles and Features → Features → check Windows Server Backup → Install.
+Open Windows Server Backup (search for it or wbadmin.msc).
+In the right Actions pane click Backup Schedule….
+Choose Custom → Next.
+Click Add Items → select the folder ProjectFiles → OK → Next.
+Choose a schedule.
+Select Backup to a hard disk that is dedicated for backups or Backup to a volume on a different drive.
+Confirm the destination drive and finish the wizard.
+The scheduled backup will now appear under Scheduled Backup.
+
+4. Install and configure Performance Monitor to track CPU and memory usage on your server for 30 minutes, then export the collected report as a screenshot or CSV file.
+=>Open Performance Monitor (perfmon.msc).
+Expand Data Collector Sets → User Defined.
+Right-click User Defined → New → Data Collector Set.
+Name it (e.g., “CPU-Memory-30min”) → Create manually (Advanced) → Next.
+Select Performance Counter → Next → Add:
+Processor → % Processor Time (instance _Total)
+Memory → Available MBytes (or % Committed Bytes In Use)
+Add any other counters you want → OK → Next.
+Set sample interval (e.g., 15 seconds) → Next.
+Choose a location to save the data → Next → Save and close or Start this data collector set now.
+Right-click the new Data Collector Set → Start. Let it run for 30 minutes, then Stop.
+To view / export:
+Under Reports → User Defined open the report, or
+Go to the log file location → the .blg file can be opened in Performance Monitor.
+
+5. Write a short report (200-300 words) describing the security policies, backup schedule, and monitoring tools you configured, including any challenges faced and how you resolved them.
+=>I configured a local password policy that enforces complexity requirements (enabled via secpol.msc under Account Policies → Password Policy). This forces passwords to contain a mix of character types and prevents simple or username-based passwords, significantly reducing the success rate of dictionary and brute-force attacks.
+Windows Defender real-time protection was confirmed enabled. Using Task Scheduler I modified the existing “Windows Defender Scheduled Scan” task so that a quick scan runs daily at a fixed time (e.g., 02:00). This provides continuous malware protection with minimal administrative overhead.
+A scheduled backup of the ProjectFiles folder was created with Windows Server Backup. The backup runs on a daily schedule and is stored on a separate drive, ensuring recovery capability if the primary volume fails or data is accidentally deleted.
+Performance Monitor was used to create a custom Data Collector Set that logged % Processor Time and Available Memory for a continuous 30-minute period. The resulting report/graph (or exported CSV) allows baseline analysis of resource usage and can help identify performance bottlenecks.
+Challenges & resolutions
+
+The Windows Server Backup feature was not installed by default; it was added via Server Manager.
+Ensuring the backup destination was on a different physical/logical drive required careful selection in the wizard.
+The Performance Monitor data collector needed an explicit stop after 30 minutes; this was handled by starting and stopping the set manually (or by setting a duration stop condition).
+
+These configurations together improve password strength, malware protection, data recoverability, and visibility into system performance.
