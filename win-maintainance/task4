@@ -1,0 +1,37 @@
+1. Open the Local Security Policy tool on your Windows Server and configure a password policy that requires at least 8 characters, includes uppercase and lowercase letters, and enforces password changes every 45 days.
+==>Press Win + R, type secpol.msc, and press Enter to open Local Security Policy.
+Expand Account Policies → Password Policy.
+Configure these settings (double-click each one):
+Minimum password length → set to 8 characters.
+Password must meet complexity requirements → Enabled.
+Maximum password age → set to 45 days.
+Optionally strengthen further:
+Enforce password history → 24 (or higher).
+Minimum password age → 1 day (prevents immediate reuse cycling).
+Click OK on each dialog. Changes take effect for new password changes.
+
+
+2. Set up an account lockout policy using the Local Security Policy tool so that a user account is locked after 3 invalid login attempts and remains locked for 15 minutes before it can be used again.
+=>In the same Local Security Policy console, expand Account Policies → Account Lockout Policy.
+Configure:
+Account lockout threshold → 3 invalid logon attempts.
+Account lockout duration → 15 minutes.
+Reset account lockout counter after → 15 minutes.
+When you set the threshold, Windows will prompt you to configure the other two values; accept or adjust them to 15 minutes.
+Click OK.
+
+3. Enable and configure audit log settings in the Local Security Policy tool to track successful and failed logon attempts on your server.<br><br><em><strong>Hint:</strong> Look for 'Audit logon events' under Local Policies → Audit Policy.</em>
+=>In Local Security Policy, expand Local Policies → Audit Policy.
+Double-click Audit logon events.
+Check both Success and Failure.
+Click OK.
+
+4. Harden your Windows Server by disabling at least two unnecessary services (for example: Print Spooler, Remote Registry) using the Services management console, and explain in a short note why you chose these services.
+=>Press Win + R, type services.msc, and press Enter.
+Locate and double-click each service, set Startup type to Disabled, and click Stop if it is running:
+Print Spooler (Spooler)
+Remote Registry (RemoteRegistry)
+Click OK.
+
+5. Submit a report (1-2 pages) describing all the security policies you configured, including screenshots of your password policy, account lockout policy, and audit log settings. Briefly explain how each policy helps improve server security.
+
