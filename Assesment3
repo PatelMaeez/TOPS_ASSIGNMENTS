@@ -209,10 +209,216 @@ Set-VpnServerConfiguration -TunnelType Sstp -SslCertificate "CN=vpn.company.loca
                                                                     SECTION-C
 
 
+# ==============================================================
+# Windows Server M3-A1 Capstone: Network Identity & File Services Rollout
+# ==============================================================
 
+# ---- STEP 1: Promote server to domain controller ----
+# Must run first — nothing else in AD, DNS, or DHCP can exist without a domain.
+Install-ADDSForest `
+    -DomainName "corp.company.local" `
+    -DomainNetbiosName "CORP" `
+    -ForestMode "WinThreshold" `
+    -DomainMode "WinThreshold" `
+    -InstallDns:$true `
+    -SafeModeAdministratorPassword (ConvertTo-SecureString "P@ssw0rd!2026" -AsPlainText -Force) `
+    -DatabasePath "C:\Windows\NTDS" `
+    -LogPath "C:\Windows\NTDS" `
+    -SysvolPath "C:\Windows\SYSVOL" `
+    -Force:$true
 
+# ---- STEP 2: Create OU structure (post-reboot) ----
+# Organizes department + admin accounts for future GPO linking and delegation.
+New-ADOrganizationalUnit -Name "Departments" -Path "DC=corp,DC=company,DC=local"
+New-ADOrganizationalUnit -Name "HR"      -Path "OU=Departments,DC=corp,DC=company,DC=local"
+New-ADOrganizationalUnit -Name "Finance" -Path "OU=Departments,DC=corp,DC=company,DC=local"
+New-ADOrganizationalUnit -Name "Sales"   -Path "OU=Departments,DC=corp,DC=company,DC=local"
+New-ADOrganizationalUnit -Name "IT"      -Path "OU=Departments,DC=corp,DC=company,DC=local"
+New-ADOrganizationalUnit -Name "Admin_Accounts" -Path "DC=corp,DC=company,DC=local"
 
+# ---- STEP 3: Create AD-integrated DNS zone ----
+# Requires the domain to exist; -ReplicationScope Domain makes this AD-integrated (replicates via AD, not zone files).
+Add-DnsServerPrimaryZone `
+    -Name "corp.company.local" `
+    -ReplicationScope "Domain" `
+    -DynamicUpdate "Secure"
 
+# ---- STEP 4: Create DHCP scope with exclusion range ----
+# Clients need addresses before they can reach the DC/DNS at all.
+Add-DhcpServerv4Scope `
+    -Name "Corp-Main-Scope" `
+    -StartRange 192.168.10.10 `
+    -EndRange 192.168.10.250 `
+    -SubnetMask 255.255.255.0 `
+    -State Active
+
+Add-DhcpServerv4ExclusionRange `
+    -ScopeId 192.168.10.0 `
+    -StartRange 192.168.10.10 `
+    -EndRange 192.168.10.20
+# .10-.20 reserved for statically-addressed infrastructure (DC itself uses a static IP in this range, never DHCP-leased)
+
+# ---- STEP 5: Configure DHCP failover (Hot Standby) ----
+# Protects the scope created above; Hot Standby chosen because the standby server holds a full
+# lease-database replica and can assume 100% of the scope instantly on failure — meeting the
+# "addresses within seconds" requirement for warehouse scanners and laptops.
+Add-DhcpServerv4Failover `
+    -Name "Corp-DHCP-Failover" `
+    -ScopeId 192.168.10.0 `
+    -PartnerServer "DHCP02.corp.company.local" `
+    -Mode HotStandby `
+    -ServerRole Active `
+    -SharedSecret "FailoverSecret2026!" `
+    -MaxClientLeadTime 00:01:00
+
+# ---- STEP 6: Create the Finance file share ----
+# Share permission intentionally broader than NTFS (Change for Authenticated Users) —
+# NTFS below will be the actual restricting layer.
+New-SmbShare `
+    -Name "Finance" `
+    -Path "D:\Shares\Finance" `
+    -FullAccess "CORP\Domain Admins" `
+    -ChangeAccess "CORP\Authenticated Users"
+
+# ---- STEP 7: Lock down NTFS permissions ----
+# Must run after the share/folder exists. Only Finance_Group gets real access; everyone else
+# is blocked at the filesystem layer regardless of the (broader) share permission.
+icacls "D:\Shares\Finance" /inheritance:r
+icacls "D:\Shares\Finance" /grant "CORP\Finance_Group:(OI)(CI)M"
+icacls "D:\Shares\Finance" /grant "CORP\Domain Admins:(OI)(CI)F"
+
+# ---- STEP 8: Apply FSRM quota and file screen ----
+# Protects the share just created and permissioned.
+New-FsrmQuota `
+    -Path "D:\Shares\Finance" `
+    -Size 50GB `
+    -Description "Finance department hard quota"
+
+New-FsrmFileGroup `
+    -Name "Ransomware-Blocked-Extensions" `
+    -IncludePattern @("*.exe","*.js")
+
+New-FsrmFileScreen `
+    -Path "D:\Shares\Finance" `
+    -IncludeGroup "Ransomware-Blocked-Extensions" `
+    -Active
+
+# ---- STEP 9: Join a client machine to the domain ----
+# Only possible now that domain, DNS, and DHCP are all live — the client needs DNS SRV
+# records to find the DC and a DHCP lease to have an IP in the first place.
+Add-Computer -DomainName "corp.company.local" -Credential "CORP\Administrator" -Restart
+
+# ---- STEP 10: Verify the client received a Task-2-scope IP address ----
+Get-DhcpServerv4Lease -ScopeId 192.168.10.0 | Where-Object { $_.HostName -like "NewLaptop01*" }
+
+# ---- STEP 11: Configure the VPN endpoint ----
+# SSTP chosen for staff on strict corporate networks (tunnels over HTTPS, indistinguishable
+# from normal web traffic); IKEv2 offered in parallel for home-network users needing better
+# performance and reconnect behavior. Runs last since remote access only matters once there's
+# a live share to reach.
+Install-RemoteAccess -VpnType VpnS2S
+Set-VpnServerConfiguration -TunnelType Sstp -SslCertificate "CN=vpn.corp.company.local"
+
+# NPS/RADIUS centralizes authN/authZ/accounting for both VPN protocols under one policy set
+# (e.g. require CORP\VPN_Users group membership) rather than configuring RRAS in isolation.
+Install-WindowsFeature NPAS -IncludeManagementTools
+
+                                                        SECTION-D
+
+Exact prompt(s) given to the AI tool
+
+"Write a PowerShell script for Windows Server 2022 that creates a file share called 'Sales' at D:\Shares\Sales with NTFS permissions for a Sales_Group, applies an FSRM hard quota of 25GB and a file screen blocking .exe and .js files, and configures an IIS site called 'SalesPortal' bound to HTTPS on port 443. Comment each step so I can trace whether it would run without errors."
+
+# Create the Sales file share
+New-SmbShare -Name "Sales" -Path "D:\Shares\Sales" -FullAccess "CORP\Domain Admins" -ChangeAccess "CORP\Authenticated Users"
+
+# Set NTFS permissions for the Sales group
+icacls "D:\Shares\Sales" /inheritance:r
+icacls "D:\Shares\Sales" /grant "CORP\Sales_Group:(OI)(CI)M"
+icacls "D:\Shares\Sales" /grant "CORP\Domain Admins:(OI)(CI)F"
+
+# Apply FSRM hard quota
+New-FsrmQuota -Path "D:\Shares\Sales" -Size 25GB
+
+# Block ransomware-prone extensions
+New-FsrmFileGroup -Name "Sales-Blocked-Extensions" -IncludePattern @("*.exe","*.js")
+New-FsrmFileScreen -Path "D:\Shares\Sales" -IncludeGroup "Sales-Blocked-Extensions" -Active
+
+# Create and configure the IIS site
+Install-WindowsFeature -Name Web-Server -IncludeManagementTools
+New-Item -Path "C:\inetpub\SalesPortal" -ItemType Directory
+New-IISSite -Name "SalesPortal" -PhysicalPath "C:\inetpub\SalesPortal" -BindingInformation "*:443:"
+New-WebBinding -Name "SalesPortal" -Protocol https -Port 443
+
+## Section D — AI-Augmented Learning
+
+### Step 1 — Exact prompt(s) given to the AI tool
+
+> "Write a PowerShell script for Windows Server 2022 that creates a file share called 'Sales' at D:\Shares\Sales with NTFS permissions for a Sales_Group, applies an FSRM hard quota of 25GB and a file screen blocking .exe and .js files, and configures an IIS site called 'SalesPortal' bound to HTTPS on port 443. Comment each step so I can trace whether it would run without errors."
+
+### Step 2a — AI's original script
+
+```powershell
+# Create the Sales file share
+New-SmbShare -Name "Sales" -Path "D:\Shares\Sales" -FullAccess "CORP\Domain Admins" -ChangeAccess "CORP\Authenticated Users"
+
+# Set NTFS permissions for the Sales group
+icacls "D:\Shares\Sales" /inheritance:r
+icacls "D:\Shares\Sales" /grant "CORP\Sales_Group:(OI)(CI)M"
+icacls "D:\Shares\Sales" /grant "CORP\Domain Admins:(OI)(CI)F"
+
+# Apply FSRM hard quota
+New-FsrmQuota -Path "D:\Shares\Sales" -Size 25GB
+
+# Block ransomware-prone extensions
+New-FsrmFileGroup -Name "Sales-Blocked-Extensions" -IncludePattern @("*.exe","*.js")
+New-FsrmFileScreen -Path "D:\Shares\Sales" -IncludeGroup "Sales-Blocked-Extensions" -Active
+
+# Create and configure the IIS site
+Install-WindowsFeature -Name Web-Server -IncludeManagementTools
+New-Item -Path "C:\inetpub\SalesPortal" -ItemType Directory
+New-IISSite -Name "SalesPortal" -PhysicalPath "C:\inetpub\SalesPortal" -BindingInformation "*:443:"
+New-WebBinding -Name "SalesPortal" -Protocol https -Port 443
+```
+
+### Step 2b — Corrected version
+
+```powershell
+# Create the Sales file share
+New-SmbShare -Name "Sales" -Path "D:\Shares\Sales" -FullAccess "CORP\Domain Admins" -ChangeAccess "CORP\Authenticated Users"
+
+# Set NTFS permissions for the Sales group
+icacls "D:\Shares\Sales" /inheritance:r
+icacls "D:\Shares\Sales" /grant "CORP\Sales_Group:(OI)(CI)M"
+icacls "D:\Shares\Sales" /grant "CORP\Domain Admins:(OI)(CI)F"
+
+# Apply FSRM hard quota (explicitly hard — the default -Usage flag isn't guaranteed across cmdlet versions)
+New-FsrmQuota -Path "D:\Shares\Sales" -Size 25GB -Usage
+
+# Block ransomware-prone extensions
+New-FsrmFileGroup -Name "Sales-Blocked-Extensions" -IncludePattern @("*.exe","*.js")
+New-FsrmFileScreen -Path "D:\Shares\Sales" -IncludeGroup "Sales-Blocked-Extensions" -Active
+
+# Create and configure the IIS site
+Install-WindowsFeature -Name Web-Server -IncludeManagementTools
+New-Item -Path "C:\inetpub\SalesPortal" -ItemType Directory -Force
+
+# Generate (or import) a certificate and bind it to the port BEFORE the HTTPS binding is used —
+# an https binding with no certificate bound at that IP:port will fail the TLS handshake.
+$cert = New-SelfSignedCertificate -DnsName "salesportal.corp.company.local" -CertStoreLocation "Cert:\LocalMachine\My"
+$thumbprint = $cert.Thumbprint
+
+New-IISSite -Name "SalesPortal" -PhysicalPath "C:\inetpub\SalesPortal" -BindingInformation "*:443:"
+New-WebBinding -Name "SalesPortal" -Protocol https -Port 443
+
+# Bind the certificate to the port via netsh — this is the step New-WebBinding does NOT do for you
+$appId = "{" + [guid]::NewGuid().ToString() + "}"
+netsh http add sslcert ipport=0.0.0.0:443 certhash=$thumbprint appid=$appId
+```
+
+### Step 2c — Note on what was changed and why
+
+The AI's script created an HTTPS binding with `New-WebBinding -Protocol https -Port 443`, but never associated an actual SSL certificate with that IP:port combination — `New-WebBinding` only registers the binding metadata in IIS, it does not perform the certificate-to-port association Windows needs at the HTTP.sys level. Without that, any client hitting the site over HTTPS would get a TLS handshake failure, even though the binding "exists." I fixed it by generating a certificate, then explicitly binding it with `netsh http add sslcert`, which is the step that actually makes HTTPS traffic work. I also tightened the FSRM quota call to explicitly pass `-Usage` (hard quota) rather than relying on the cmdlet's default behavior, since quota type should never be left implicit in production scripts.
 
 
 
