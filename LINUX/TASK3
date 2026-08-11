@@ -1,0 +1,36 @@
+1. Install Ubuntu Server (or CentOS) on VirtualBox or VMware, take a screenshot of your running login screen, and save it as install_success.png.
+=>Download Ubuntu Server ISO (ubuntu.com/download/server) or CentOS Stream ISO.
+Create a new VM in VirtualBox (2GB+ RAM, 20GB+ disk), attach the ISO, boot, follow the installer prompts.
+After install and first login, screenshot the login/shell screen and save as install_success.png.
+
+2. Change the hostname of your Linux VM to 'myfoodiebox' using the hostnamectl command, then verify the change by running the hostname command.
+=>sudo hostnamectl set-hostname myfoodiebox
+hostname
+
+3. Configure a static IP address for your VM's network interface (e.g., enp0s3 or eth0) so that it always gets the same IP on reboot.<br><br><em><strong>Hint:</strong> Edit /etc/netplan/*.yaml (Ubuntu) or /etc/sysconfig/network-scripts/ifcfg-eth0 (CentOS), then restart networking.</em>
+=>network:
+  version: 2
+  ethernets:
+    enp0s3:
+      dhcp4: no
+      addresses:
+        - 192.168.1.50/24
+      routes:
+        - to: default
+          via: 192.168.1.1
+      nameservers:
+        addresses: [8.8.8.8, 1.1.1.1]
+sudo netplan apply
+
+4. Enable SSH access on your Linux VM and connect to it from your host machine using an SSH client (like PuTTY or ssh command). Show the output of whoami after login.
+=>sudo apt install openssh-server -y     # Ubuntu
+# or
+sudo dnf install openssh-server -y     # CentOS
+sudo systemctl enable --now ssh        # Ubuntu
+sudo systemctl enable --now sshd       # CentOS
+
+5. Create a new user named 'zomatouser' and add them to a new group called 'foodies'. Set their password and verify group membership using the groups command.
+=>sudo groupadd foodies
+sudo useradd -m -G foodies zomatouser
+sudo passwd zomatouser
+groups zomatouser
