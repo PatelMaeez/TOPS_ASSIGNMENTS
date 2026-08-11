@@ -1,0 +1,35 @@
+1. Open a terminal and use the 'ls', 'cd', and 'pwd' commands to navigate to the /home directory, then list all user folders present. Take a screenshot of your terminal showing the commands and output.
+==>pwd
+cd /home
+ls
+pwd
+
+2. Create a new directory called 'myplaylist' inside your home folder, then use 'touch' to create three empty files named spotify.txt, youtube.txt, and wynk.txt inside it. Set the permissions so only you (the owner) can read and write these files, but others cannot access them.<br><br><em><strong>Hint:</strong> Use 'chmod 600' on each file after creating them.</em>
+=>mkdir ~/myplaylist
+cd ~/myplaylist
+touch spotify.txt youtube.txt wynk.txt
+chmod 600 spotify.txt
+chmod 600 youtube.txt
+chmod 600 wynk.txt
+ls -l
+chmod 600 spotify.txt youtube.txt wynk.txt
+
+3. Change the ownership of the 'myplaylist' directory and all its files to another user on your system using the 'chown' command. If you are the only user, create a new user first.<br><br><em><strong>Hint:</strong> Use 'sudo adduser newusername' to create a user if needed.</em>
+=>sudo adduser newusername
+sudo chown -R newusername ~/myplaylist
+ls -l ~/myplaylist
+
+4. Inside your home directory, create a symbolic link named 'favmusic' that points to the spotify.txt file you created earlier. Then, create a hard link named 'spotify_hardlink' to the same file. Show the output of 'ls -l' and 'ls -li' to demonstrate the difference between the links.
+=>cd ~
+ln -s ~/myplaylist/spotify.txt favmusic
+ln ~/myplaylist/spotify.txt spotify_hardlink
+ls -l
+ls -li
+
+5. Suppose you want to share your 'myplaylist' folder with a group of friends on the same Linux system. First, create a new group called 'musiclovers' using the 'groupadd' command, add your user to this group, and then change the group ownership of 'myplaylist' to 'musiclovers' using 'chgrp'. Set the permissions so that only group members can read and write files in this directory, but others cannot.<br><br><em><strong>Hint:</strong> Use 'chmod 770' on the directory after changing the group.</em>
+=>sudo groupadd musiclovers
+sudo usermod -aG musiclovers $(whoami)
+sudo chgrp -R musiclovers ~/myplaylist
+chmod 770 ~/myplaylist
+ls -ld ~/myplaylist
+groups
