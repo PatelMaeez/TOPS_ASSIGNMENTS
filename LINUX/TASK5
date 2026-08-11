@@ -1,0 +1,26 @@
+1. Create two 200MB partitions using fdisk or parted, then use the lsblk command to verify their creation.
+=>lsblk
+sudo fdisk -l
+sudo fdisk /dev/sdb
+sudo partprobe /dev/sdb
+lsblk
+
+2. Initialize both partitions as physical volumes using the pvcreate command and confirm their status with pvs.
+=>sudo pvcreate /dev/sdb1 /dev/sdb2
+sudo pvs
+
+3. Create a new volume group named musicvg using the two physical volumes, then display its details with vgdisplay.
+=>sudo vgcreate musicvg /dev/sdb1 /dev/sdb2
+sudo vgdisplay musicvg
+
+4. Create a logical volume called playlistlv of size 300MB inside musicvg, format it with ext4, and mount it to /mnt/playlist.
+=>sudo lvcreate -n playlistlv -L 300M musicvg
+sudo mkfs.ext4 /dev/musicvg/playlistlv
+sudo mkdir -p /mnt/playlist
+sudo mount /dev/musicvg/playlistlv /mnt/playlist
+df -h /mnt/playlist
+
+5. Resize playlistlv by adding 50MB more space using lvextend, then expand the filesystem and show the updated size with df -h.<br><br><em><strong>Hint:</strong> Use resize2fs after lvextend to update the filesystem size.</em>
+=>sudo lvextend -L +50M /dev/musicvg/playlistlv
+sudo resize2fs /dev/musicvg/playlistlv
+df -h /mnt/playlist
