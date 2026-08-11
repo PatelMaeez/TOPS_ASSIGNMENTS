@@ -1,0 +1,34 @@
+1. Boot up a RHEL 8 virtual machine and perform a custom installation using the graphical installer, making sure to select 'LVM' as the partitioning scheme for the root (/) partition.
+=>During the RHEL 8 graphical installer:
+
+At "Installation Destination," select your disk, choose "I will configure partitioning", then click Done.
+On the manual partitioning screen, change the scheme dropdown (top-left) from "Standard Partition" to "LVM".
+Let the installer auto-create mount points (click "Click here to create them automatically"), or manually set /, /boot, and swap. /boot stays as a standard partition (LVM doesn't support booting from an LV directly on BIOS/most setups) — the installer handles this automatically.
+Confirm the summary, click "Begin Installation."
+
+2. Inside your RHEL 8 system, use the 'lsblk' and 'vgs' commands to verify that your root partition is managed by LVM and note down the Volume Group and Logical Volume names.
+=>lsblk
+sudo vgs
+sudo lvs
+
+3. Add a new virtual disk to your RHEL 8 VM, then use 'pvcreate', 'vgextend', and 'lvextend' to increase the size of your existing root Logical Volume by at least 1GB, and resize the filesystem to use the new space.<br><br><em><strong>Hint:</strong> Use 'df -h' before and after to confirm the size change.</em>
+=>df -h /
+lsblk
+sudo pvcreate /dev/sdb
+sudo vgextend rhel /dev/sdb
+sudo vgs
+sudo lvextend -L +1G /dev/rhel/root
+sudo xfs_growfs /
+df -h /
+
+4.Create a new Logical Volume called 'musicdata' of 500MB in your existing Volume Group, format it with ext4, mount it at /mnt/music, and add an entry to /etc/fstab so it mounts automatically on boot.<br><br><em><strong>Constraint:</strong> Use only command-line tools (no GUI) for th
+=>sudo lvcreate -n musicdata -L 500M rhel
+sudo mkfs.ext4 /dev/rhel/musicdata
+sudo mkdir -p /mnt/music
+sudo mount /dev/rhel/musicdata /mnt/music
+df -h /mnt/music
+sudo blkid /dev/rhel/musicdata
+echo 'UUID=paste-uuid-here  /mnt/music  ext4  defaults  0 0' | sudo tee -a /etc/fstab
+sudo umount /mnt/music
+sudo mount -a
+df -h /mnt/music
