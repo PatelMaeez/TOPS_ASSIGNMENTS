@@ -1,0 +1,16 @@
+1. Open the terminal on your system and run the command 'uname -a' to display your Linux kernel version and system information. Take a screenshot of the output.
+=>Linux ubuntu-vm 6.8.0-45-generic #45-Ubuntu SMP ... x86_64 x86_64 x86_64 GNU/Linux
+
+2. Research and list three key differences between Ubuntu, CentOS, and Debian Linux distributions, focusing on package management tools, default desktop environments, and typical use cases.<br><br><em><strong>Hint:</strong> Look for terms like apt, yum, GNOME, KDE, server vs desktop usage.</em>
+=>Aspect	              Ubuntu	                            CentOS	                                                          Debian
+Package manager	    APT (apt, .deb)                  	YUM/DNF (yum/dnf, .rpm)                                          	APT (apt, .deb)
+Default desktop	    GNOME (customized)	        Often none (server-focused);                           GNOME if desktop variant installed	GNOME (vanilla), but very flexible
+Typical use case	Beginner-friendly desktop      stability-focused (RHEL-compatible)                    Rock-solid stability, used as the base for many distros (including Ubuntu itself)
+                  + cloud/server workloads	                     	
+
+3. Switch between the CLI (terminal) and GUI (desktop environment) on your Linux system. Create a text file named 'my_linux_journey.txt' using both methods: first with the 'touch' command in CLI, then by right-clicking and creating a new text file in the GUI. Note which method you found faster and why.
+=>touch my_linux_journey.txt
+  GUI method: Right-click on Desktop or File Manager → New → Text Document → name it my_linux_journey.txt.
+
+4. Imagine you are helping a friend who only uses GUI apps like Spotify and Zomato on their phone. Write a short guide (5-6 lines) explaining why learning the Linux CLI can be powerful for tasks like installing software, managing files, or troubleshooting issues.
+=>The CLI (Command Line Interface) lets you do in one line what might take five clicks in a GUI — like installing an app with sudo apt install spotify-client instead of hunting through an app store. It's also the only way to fix things when the GUI itself breaks or won't load. CLI commands can be automated and repeated (scripts), so tasks like backing up files or updating software happen instantly instead of manually every time. You get precise control — moving, renaming, or searching thousands of files with one command instead of dragging them one by one. And when troubleshooting, error messages in the terminal actually tell you what's wrong, whereas GUIs often just show a vague popup. In short: GUI is great for casual use, but CLI is where real control and speed live.
