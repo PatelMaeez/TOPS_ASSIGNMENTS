@@ -1,0 +1,14 @@
+1. Use the ifconfig or ip command to display the current IP address and network interfaces on your Linux system, then take a screenshot of the output.
+=>
+
+2. Configure a static IP address for your system using nmcli so that your device always gets the same IP (for example, 192.168.1.50/24 with gateway 192.168.1.1 and DNS 8.8.8.8).<br><br><em><strong>Hint:</strong> Use 'nmcli con mod' to set ipv4.addresses, ipv4.gateway, and ipv4.dns, then bring the connection down and up to apply changes.</em>
+
+
+3. Explain in your own words the difference between DNS and DHCP, and give a real-world example of how each is used in an app like Zomato or Flipkart.
+
+
+4. Enable the firewall on your system using ufw, then allow incoming connections only on port 80 (HTTP) and block all others. Show the status output after applying these rules.
+
+
+5. Use firewalld or iptables to temporarily block all outgoing traffic to a specific website (for example, www.spotify.com) and then verify that you cannot ping the site from your terminal.<br><br><em><strong>Hint:</strong> You may need to use the site's IP address instead of the domain name.</em>
+
