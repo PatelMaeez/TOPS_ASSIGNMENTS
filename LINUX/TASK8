@@ -1,0 +1,27 @@
+1. Create a new directory called InstaPhotos in your home folder and add a file named selfie.jpg inside it. Set the permissions so only you (the owner) can read and write the file, but no one else can access it.
+=>mkdir -p ~/InstaPhotos
+touch ~/InstaPhotos/selfie.jpg
+chmod 600 ~/InstaPhotos/selfie.jpg
+
+2. Simulate a shared Zomato recipe folder: create a directory called ZomatoRecipes and add a file recipe.txt inside it. Change the permissions so that everyone can read and write the file, but only you can delete it.<br><br><em><strong>Hint:</strong> Use the chmod command for permissions and the sticky bit for delete protection.</em>
+==>mkdir -p ~/ZomatoRecipes
+touch ~/ZomatoRecipes/recipe.txt
+chmod 666 ~/ZomatoRecipes/recipe.txt   # everyone can read & write
+chmod +t ~/ZomatoRecipes               # sticky bit on directory
+
+3. Change the group ownership of a file named playlist.txt (in your current directory) to a group called musiclovers, so that all group members can collaborate on editing a Spotify-style playlist.
+=>groupadd musiclovers          # (created if missing)
+touch /root/playlist.txt
+chgrp musiclovers /root/playlist.txt
+chmod 664 /root/playlist.txt  # owner+group can edit
+
+4. Use the chmod command to make a script file called paytm_pay.sh executable by everyone, but only editable by you. Then verify the permissions using the ls -l command.
+=>echo '#!/bin/bash
+echo "Paytm payment simulated"' > /root/paytm_pay.sh
+chmod 755 /root/paytm_pay.sh
+ls -l /root/paytm_pay.sh
+
+5. A friend sent you a folder called MyntraOffers with files inside, but you can't open any of them. Use the chmod and chown commands to fix the permissions and ownership so that you (and only you) can access and modify all files in the folder.<br><br><em><strong>Hint:</strong> Use the -R flag to apply changes recursively.</em>
+=>chown -R root:root /root/MyntraOffers
+find /root/MyntraOffers -type d -exec chmod 700 {} \;
+find /root/MyntraOffers -type f -exec chmod 600 {} \;
