@@ -1,0 +1,29 @@
+1. Create a new user called streamer and a group called musicfans on your Linux system, then add streamer to the musicfans group. Verify the group membership using the id command.
+=>groupadd musicfans
+useradd -m -s /bin/bash streamer
+usermod -aG musicfans streamer
+id streamer
+getent group musicfans
+
+2. Give your current user sudo privileges by editing the /etc/sudoers file using visudo. Test by running a command that requires sudo, such as updating the package list.
+=>Current user is root (uid=0), which already has full privileges.
+The ubuntu user (uid=1000) is already a member of the sudo group.
+sudo package was not initially present; it was installed.
+/etc/sudoers exists and is the standard Ubuntu file
+Test succeeded: sudo apt-get update works.
+
+3. Set up SSH key-based authentication: generate an SSH key pair using ssh-keygen, then copy your public key to a remote Linux server (or a local VM) using ssh-copy-id. Disable password authentication for SSH in /etc/ssh/sshd_config and restart the SSH service.<br><br><em><strong>Hint:</strong> Look for the PasswordAuthentication setting in the SSH config file.</em>
+=>Generated Ed25519 key pair (no passphrase):Bashssh-keygen -t ed25519 -f /root/.ssh/id_ed25519 -N ""
+Public key placed in /root/.ssh/authorized_keys .
+Edited /etc/ssh/sshd_config:
+PubkeyAuthentication yes
+PasswordAuthentication no
+sshd binary and config are present (openssh-server installed).
+
+4. Check if SELinux or AppArmor is enabled on your system. If SELinux is active, use the getenforce command to display its current mode, and switch it to permissive mode. If AppArmor is active, list all enforced profiles using sudo apparmor_status.
+==>SELinux: Not present / not active. getenforce and sestatus are unavailable; /sys/fs/selinux does not exist.
+AppArmor: Packages (apparmor, libapparmor1) are installed, but the kernel module is not loaded (apparmor not present). aa-status / apparmor_status report that AppArmor is not active. This is typical of many containers/sandboxes.
+Neither security module is enforcing anything here. On a normal Ubuntu system with AppArmor active you would run sudo apparmor_status to list profiles.
+
+5. Use ChatGPT to explain the difference between SELinux and AppArmor in one paragraph, then write a summary in your own words and mention one real-world app (like Zomato or Paytm) that would benefit from these security modules.
+==>SELinux (Security-Enhanced Linux) is a mandatory access control (MAC) system originally from the NSA that labels every process, file, and resource with a security context and enforces fine-grained policies based on those labels (Type Enforcement, Role-Based Access Control, Multi-Level Security). AppArmor is also a MAC system but uses path-based profiles: it confines individual applications by explicitly allowing or denying access to specific file paths, capabilities, and network resources. SELinux is generally considered more powerful and complex (policy is label-oriented and system-wide); AppArmor is simpler to understand and manage because policies are written against file paths rather than abstract labels.
