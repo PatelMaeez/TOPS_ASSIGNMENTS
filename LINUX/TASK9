@@ -1,0 +1,28 @@
+1. Create a new user account called zomatoadmin on your Linux system, and configure it so that this user can run only the apt-get update and apt-get upgrade commands using sudo without entering a password.<br><br><em><strong>Hint:</strong> Edit the /etc/sudoers file using visudo and use the NOPASSWD directive for specific commands.</em>
+=>useradd -m -s /bin/bash zomatoadmin
+  zomatoadmin ALL=(ALL) NOPASSWD: /usr/bin/apt-get update, /usr/bin/apt-get upgrade
+
+2. Modify the sudo privileges for your existing user so that they cannot run sudo rm -rf / but can run all other sudo commands.<br><br><em><strong>Constraint:</strong> Use command-specific restrictions in the sudoers file to block only the dangerous command.</em>
+=>ubuntu ALL=(ALL) ALL, !/bin/rm -rf /, !/usr/bin/rm -rf /, !/bin/rm -rf /*, !/usr/bin/rm -rf /*
+
+3. Simulate a scenario where a user tries to run a command with sudo that they are not allowed to. Take a screenshot of the error message and explain in 2-3 lines why the error occurs based on your sudoers configuration.
+=>ubuntu ALL=(ALL) ALL, !/bin/rm -rf /, !/usr/bin/rm -rf /, !/bin/rm -rf /*, !/usr/bin/rm -rf /*
+sudo: The "no new privileges" flag is set, which prevents sudo from running as root.
+sudo: If sudo is running in a container, you may need to adjust the container configuration to disable the flag.
+Sorry, user zomatoadmin is not allowed to execute '/usr/bin/whoami' as root on <hostname>.
+
+4. Set up a group called myntragroup and add two users to it. Grant sudo privileges to this group so that all members can restart the networking service (systemctl restart networking) but cannot edit any files in /etc.
+=>groupadd myntragroup
+useradd -m -s /bin/bash myntrauser1
+useradd -m -s /bin/bash myntrauser2
+usermod -aG myntragroup myntrauser1
+usermod -aG myntragroup myntrauser2
+%myntragroup ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart networking, /bin/systemctl restart networking
+
+5. Use ChatGPT to generate a sample /etc/sudoers entry that allows a user called movieadmin to run all commands as root except for shutting down or rebooting the system. Copy the AI's suggestion, test it on your system, and write one line about whether it worked as expected.
+=>movieadmin ALL=(ALL) ALL, !/sbin/shutdown, !/usr/sbin/shutdown, !/sbin/reboot, !/usr/sbin/reboot, !/sbin/poweroff, !/usr/sbin/poweroff, !/sbin/halt, !/usr/sbin/halt, !/usr/bin/systemctl poweroff, !/usr/bin/systemctl reboot, !/usr/bin/systemctl halt, !/usr/bin/systemctl shutdown
+
+/etc/sudoers.d/zomatoadmin
+/etc/sudoers.d/ubuntu-restrict
+/etc/sudoers.d/myntragroup
+/etc/sudoers.d/movieadmin
