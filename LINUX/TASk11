@@ -1,0 +1,35 @@
+1. Reboot your CentOS 7 or RHEL 8 virtual machine and, during startup, press the appropriate key to access the GRUB2 boot menu; take a screenshot of the GRUB menu screen.
+=>
+
+2. Use the 'journalctl -b' command to view the system logs from the current boot and identify the timestamp when the multi-user.target was reached.<br><br><em><strong>Hint:</strong> Search for 'Reached target Multi-User System' in the output.</em>
+==>journalctl -b | grep -i "Reached target Multi-User System"
+  No journal files were found.
+-- No entries --
+
+3. Simulate a boot failure by editing the /etc/fstab file and adding a fake mount entry, then reboot your VM and document the error message that appears during boot.<br><br><em><strong>Constraint:</strong> Restore your original /etc/fstab after testing to avoid permanent boot issues.</em>
+==>cp /etc/fstab /etc/fstab.bak
+echo "/dev/doesnotexist /mnt/fake xfs defaults 0 0" >> /etc/fstab
+reboot
+      Failed to mount /mnt/fake.
+      Dependency failed for Local File Systems.
+      You are in emergency mode...
+RESTORE:
+cp /etc/fstab.bak /etc/fstab
+systemctl daemon-reload
+reboot
+
+
+4. Use the 'systemctl list-units --failed' command after booting to identify any failed services, and write down the name of one failed service and the command you would use to check its status.
+=>systemctl list-units --failed
+System has not been booted with systemd as init system (PID 1). Can't operate.
+Failed to connect to bus: Host is down
+
+5. Suppose your system is stuck at the emergency shell prompt during boot. Use ChatGPT to generate a step-by-step recovery plan for this scenario, then try following those steps on your VM and note any differences or extra steps you had to take.
+=>Enter the root password when prompted
+mount -o remount,rw /
+cat /etc/fstab
+vi /etc/fstab          
+xfs_repair /dev/...    
+systemctl daemon-reload
+systemctl default
+exit
