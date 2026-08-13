@@ -1,14 +1,39 @@
 1. Use the ifconfig or ip command to display the current IP address and network interfaces on your Linux system, then take a screenshot of the output.
-=>
+=>lo               UNKNOWN        127.0.0.1/8 ::1/128 
+dummy0           DOWN           
+eth0             UP             172.16.0.2/24 fe80::16:3eff:fe00:1/64 
+sit0@NONE        DOWN           
+
+default via 172.16.0.1 dev eth0 
+172.16.0.0/24 dev eth0 proto kernel scope link src 172.16.0.2 
 
 2. Configure a static IP address for your system using nmcli so that your device always gets the same IP (for example, 192.168.1.50/24 with gateway 192.168.1.1 and DNS 8.8.8.8).<br><br><em><strong>Hint:</strong> Use 'nmcli con mod' to set ipv4.addresses, ipv4.gateway, and ipv4.dns, then bring the connection down and up to apply changes.</em>
-
+==>nmcli con show                          # list connections
+nmcli con mod "Wired connection 1" \
+  ipv4.addresses 192.168.1.50/24 \
+  ipv4.gateway 192.168.1.1 \
+  ipv4.dns 8.8.8.8 \
+  ipv4.method manual
+nmcli con down "Wired connection 1"
+nmcli con up "Wired connection 1"
 
 3. Explain in your own words the difference between DNS and DHCP, and give a real-world example of how each is used in an app like Zomato or Flipkart.
+==>DHCP (Dynamic Host Configuration Protocol) is the service that automatically hands out IP addresses, subnet masks, gateways and DNS server addresses to devices when they join a network.
+DNS (Domain Name System) is the phone-book that translates human-readable names (zomato.com) into the numeric IP addresses computers actually use.
+Real-world examples:
 
+Zomato / Flipkart – DHCP: When your phone joins home Wi-Fi or mobile data, the router/carrier’s DHCP server gives it a temporary IP so it can talk on the network. You never type an IP yourself.
+Zomato / Flipkart – DNS: When the app (or browser) requests https://www.zomato.com or https://www.flipkart.com, DNS resolves those names to the real server IPs so the connection can be made. Without DNS you would have to remember long numbers instead of domain names.
 
 4. Enable the firewall on your system using ufw, then allow incoming connections only on port 80 (HTTP) and block all others. Show the status output after applying these rules.
-
+=>ufw default deny incoming
+ufw default allow outgoing
+ufw allow 80/tcp
+# + iptables:
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -P INPUT DROP
 
 5. Use firewalld or iptables to temporarily block all outgoing traffic to a specific website (for example, www.spotify.com) and then verify that you cannot ping the site from your terminal.<br><br><em><strong>Hint:</strong> You may need to use the site's IP address instead of the domain name.</em>
 
