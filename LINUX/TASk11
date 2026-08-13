@@ -1,5 +1,5 @@
 1. Reboot your CentOS 7 or RHEL 8 virtual machine and, during startup, press the appropriate key to access the GRUB2 boot menu; take a screenshot of the GRUB menu screen.
-=>
+=>https://github.com/PatelMaeez/TOPS_ASSIGNMENTS/blob/main/images/Screenshot%202026-08-13%20120449.png
 
 2. Use the 'journalctl -b' command to view the system logs from the current boot and identify the timestamp when the multi-user.target was reached.<br><br><em><strong>Hint:</strong> Search for 'Reached target Multi-User System' in the output.</em>
 ==>journalctl -b | grep -i "Reached target Multi-User System"
