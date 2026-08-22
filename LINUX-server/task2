@@ -1,0 +1,38 @@
+1. Install Apache or Nginx on your Linux server and verify the installation by accessing the default web page via your browser.
+=>Apache was already present from the previous steps. It was started with:
+Bashservice apache2 start
+Accessing http://localhost returns HTTP 200 and the standard “Apache2 Ubuntu Default Page: It works”.
+
+2. Create a folder named myflipkart in your web server's root directory and place an index.html file inside it that displays 'Welcome to MyFlipkart Deals!'.
+=>/var/www/myflipkart/index.html
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyFlipkart Deals</title>
+    <link rel="icon" href="/myflipkart/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <h1>Welcome to MyFlipkart Deals!</h1>
+</body>
+</html>
+
+3. Update your web server configuration so that visiting http://localhost/myflipkart shows your custom index.html page instead of the default server page.<br><br><em><strong>Hint:</strong> For Apache, use the Alias directive; for Nginx, use a new location block.</em>
+=># /etc/apache2/conf-available/myflipkart.conf
+Alias /myflipkart /var/www/myflipkart
+
+<Directory /var/www/myflipkart>
+    Options Indexes FollowSymLinks
+    AllowOverride None
+    Require all granted
+</Directory>
+a2enconf myflipkart
+service apache2 reload
+
+4. Add a favicon to your static site by placing a favicon.ico file in the correct location and updating your HTML to reference it.<br><br><em><strong>Constraint:</strong> Use any small image and rename it to favicon.ico for this exercise.</em>
+=>A small existing .ico file was copied and renamed:
+Bashcp /usr/local/lib/python3.12/dist-packages/pygame/pygame.ico /var/www/myflipkart/favicon.ico
+The HTML already references it with:
+HTML<link rel="icon" href="/myflipkart/favicon.ico" type="image/x-icon">
+http://localhost/myflipkart/favicon.ico returns HTTP 200.
