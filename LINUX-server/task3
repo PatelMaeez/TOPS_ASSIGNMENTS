@@ -1,0 +1,30 @@
+1. Create two new users on your Linux system named 'musicfan' and 'moviebuff', then create a new group called 'playlist' and add both users to this group.
+=>useradd -m -s /bin/bash musicfan
+useradd -m -s /bin/bash moviebuff
+groupadd playlist
+usermod -aG playlist musicfan
+usermod -aG playlist moviebuff
+
+2. Inside your home directory, create a folder called 'spotify_shared'. Set its permissions so only users in the 'playlist' group can read and write files inside it, but others cannot access it.<br><br><em><strong>Hint:</strong> Use chown and chmod with the group ownership and permission bits.</em>
+=>Created in the root user’s home directory (/root/spotify_shared) with group ownership and restrictive permissions:
+Bashmkdir -p /root/spotify_shared
+chown root:playlist /root/spotify_shared
+chmod 770 /root/spotify_shared   # rwx for owner + group, nothing for others
+Also set /root to 711 so group members can traverse the path to reach the shared folder (a pure 700 home would block them entirely).
+Final state: drwxrwx--- root playlist /root/spotify_shared
+
+3. Place a text file named 'top_songs.txt' inside 'spotify_shared'. Change its ownership so that 'musicfan' is the owner and 'playlist' is the group, then set permissions so only the owner can edit, group members can read, and others have no access.
+=>chown musicfan:playlist /root/spotify_shared/top_songs.txt
+chmod 640 /root/spotify_shared/top_songs.txt   # rw- for owner, r-- for group, --- for others
+Result: -rw-r----- 1 musicfan playlist ... top_songs.txt
+
+Owner (musicfan) can read and write
+Group (playlist) can only read
+Others have no access
+
+4. Simulate a scenario where 'moviebuff' tries to access 'top_songs.txt'. Switch to the 'moviebuff' user and attempt to open and edit the file. Describe what happens and explain why based on the permissions you set.
+=>Switched to the moviebuff user and tried both operations:
+Reading (cat /root/spotify_shared/top_songs.txt) → Succeeded.
+Reason: the file’s group permission includes read (r), and moviebuff belongs to the playlist group.
+Editing/writing (echo "..." >> top_songs.txt) → Failed with Permission denied.
+Reason: the file’s group permission does not include write (w); only the owner (musicfan) has write access. Group members are deliberately limited to read-only.
