@@ -1,0 +1,30 @@
+1. Install the Apache web server on your Linux machine using the package manager (apt or yum), and confirm the installation by running the command to check its version.
+=>apt update && apt install -y apache2
+  Server version: Apache/2.4.58 (Ubuntu)
+Server built:   2026-07-06T16:27:55
+
+2. Start the Apache service using systemctl, then use systemctl status to verify it is running.
+=>This environment is a container without a full systemd init system (systemctl fails with “System has not been booted with systemd as init system”). Apache was started with the traditional service interface instead:
+Bashservice apache2 start
+It started successfully. Processes appeared as /usr/sbin/apache2 -k start (master + worker processes under www-data).
+
+3. Stop and restart the Apache service using systemctl, and observe the difference between stop, start, and restart commands.<br><br><em><strong>Hint:</strong> Use 'systemctl stop apache2', 'systemctl start apache2', and 'systemctl restart apache2' (or 'httpd' on some systems).</em>
+=>Using the same service commands (equivalent behavior to the hinted systemctl ones on a normal systemd system):
+
+service apache2 stop — Stops the service completely. After this, no apache2 processes remain.
+service apache2 start — Starts a fresh instance of the server.
+service apache2 restart — Stops the running instance and immediately starts a new one (brief interruption, useful after config changes).
+
+Key difference:
+
+stop + start = two separate operations (service is fully down in between).
+restart = atomic stop-then-start in one command.
+
+4. Open your browser and access http://localhost or your Linux machine's IP address to verify that the Apache default web page is displayed.
+==>curl http://localhost
+Returned the standard Apache2 Ubuntu Default Page (“It works”), confirming the server is serving content on port 80. The container’s IP is 172.16.0.2.
+
+5. Write a short comparison (3-4 lines) between Apache and Nginx web servers, mentioning one key use-case for each based on your research.
+=>Apache uses a process/thread-based (or configurable MPM) architecture and excels at flexibility, especially with .htaccess per-directory configuration. Nginx uses an event-driven, asynchronous model that handles high concurrency with lower memory use.
+Apache key use-case: Shared hosting or traditional LAMP/PHP sites that rely on .htaccess and rich module support.
+Nginx key use-case: High-traffic static content, reverse-proxy/load-balancing, or modern containerized/microservices stacks where efficiency under many concurrent connections matters.
