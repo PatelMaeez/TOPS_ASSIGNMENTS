@@ -1,0 +1,48 @@
+1. Create a new directory called mysite in your home folder, place an index.html file inside it, and set permissions so only your user can read and access the site files.
+=>mysite:mkdir -p /root/mysite
+
+cat > /root/mysite/index.html << 'EOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Private Site</title>
+</head>
+<body>
+    <h1>Welcome to My Private Site</h1>
+    <p>This site is restricted to the owner only.</p>
+</body>
+</html>
+
+chown -R root:www-data /root/mysite
+chmod 750 /root/mysite          # owner rwx, group (www-data) r-x, others ---
+chmod 640 /root/mysite/index.html # owner rw, group r, others ---
+chmod 711 /root                 # allow path traversal (x) without listing
+2. Configure your Apache or Nginx server to serve the mysite directory as a website, then test if you can access it from your browser while logged in as your user.
+=>cat > /etc/apache2/conf-available/mysite.conf << 'EOF'
+Alias /mysite /root/mysite
+
+<Directory /root/mysite>
+    Options Indexes FollowSymLinks
+    AllowOverride None
+    Require all granted
+</Directory>
+
+a2enconf mysite
+service apache2 reload
+
+3. Change the permissions of the mysite directory so that another user on the system cannot access the site files directly. Try to access the files as the other user and note the result.<br><br><em><strong>Hint:</strong> Use chmod and su or a different terminal window for the second user.</em>
+=>useradd -m -s /bin/bash otheruser
+su - otheruser -c 'ls -ld /root/mysite; ls /root/mysite; cat /root/mysite/index.html'
+results:    drwxr-x--- 2 root www-data 4096 ... /root/mysite
+ls: cannot open directory '/root/mysite': Permission denied
+cat: /root/mysite/index.html: Permission denied
+
+4. Document the steps you took to restrict access to your hosted site, including the commands used, permission settings, and screenshots or outputs showing successful and failed access attempts.
+=>Step,							  	Action			                        	Commands / Settings			                        		                			Outcome
+Create site       Directory + index.html in home	        	"mkdir /root/mysite			create HTML				                          				Files owned by root
+Restrict to owner  	Initial tight perms              		"chmod 700 dir, chmod 600 file"		Only root could access
+Allow web server			Final perms for serving	  		"chown root:www-data, chmod 750 dir, chmod 640 file, chmod 711 /root        	Apache (www-data) can read; regular users cannot
+Apache config		      	Alias the path		    			Alias /mysite /root/mysite + <Directory> + a2enconf + reload				            http://localhost/mysite/ returns 200 and the custom page
+Test other user		Switch user and attempt access			su - otheruser -c 'ls ...; cat .	                                      Permission denied on both directory listing and file read
+Confirm web still works				After restriction				curl http://localhost/mysite/			                                            Still HTTP 200 – site remains publicly reachable via the web server
