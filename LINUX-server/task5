@@ -1,0 +1,24 @@
+1. Check the current SELinux status on your Linux system using the getenforce and sestatus commands, and write down what each output means.
+=>Command    Output                        Meaning
+getenforce → Enforcing            SELinux is active and denies actions that violate policy.
+getenforce → Permissive           SELinux is active but only logs violations; it does not block them.
+getenforce → Disabled            SELinux is completely turned off.
+
+2. Switch SELinux to permissive mode temporarily using the setenforce command, then try creating a new file in /var/www/html and note any differences in error messages or permissions compared to enforcing mode.<br><br><em><strong>Hint:</strong> Use setenforce 0 for permissive and setenforce 1 to return to enforcing.</em>
+=>setenforce 0   # would switch to permissive
+setenforce 1   # would switch back to enforcing
+Enforcing mode: Creating or writing a file in /var/www/html as a non-privileged user (or even as root in some cases) can produce an SELinux denial in addition to normal Unix permission errors. You would see messages like “Permission denied” and corresponding AVC denials in the audit log.
+Permissive mode (setenforce 0): The same action is allowed by SELinux. The operation succeeds (subject to normal Unix permissions), but the denial is still recorded in the audit log so you can later create a policy.
+
+3. List all files in /var/www/html and use the ls -Z command to display their SELinux security contexts. Change the context of one file to httpd_sys_content_t using chcon and verify the change.<br><br><em><strong>Hint:</strong> Use chcon --type=httpd_sys_content_t filename</em>
+=>ls -Z /var/www/html
+chcon -t httpd_sys_content_t /var/www/html/somefile.html
+ls -Z /var/www/html/somefile.html
+
+4. A user is unable to upload images to a folder for their food review blog (like Zomato) hosted in /srv/foodie/images. Use the audit2why and audit2allow tools to analyze SELinux denial logs and suggest a solution to allow uploads.<br><br><em><strong>Hint:</strong> Check /var/log/audit/audit.log for recent denials.</em>
+=>grep denied /var/log/audit/audit.log | tail -20
+ausearch -m avc -ts recent | audit2why
+ausearch -m avc -ts recent | audit2allow -M foodie_uploads
+# This creates foodie_uploads.pp and foodie_uploads.te
+semodule -i foodie_uploads.pp
+If the denial is more complex, the policy module created by audit2allow is the clean long-term fix.
