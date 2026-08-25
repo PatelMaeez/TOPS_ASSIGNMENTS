@@ -1,0 +1,28 @@
+1 Create a backup of your Music folder (or any folder with at least 3 files) using the tar command and compress it with gzip, saving the output as music_backup.tar.gz in your home directory.
+=>tar -czvf ~/music_backup.tar.gz Music/
+  Music/
+Music/song1.mp3
+Music/song2.mp3
+Music/cover.jpg
+Music/lyrics.txt
+
+2. Extract the contents of a tar.gz file (for example, music_backup.tar.gz) into a new directory called restored_music and verify that all files are restored correctly.
+=>mkdir -p ~/restored_music
+tar -xzvf ~/music_backup.tar.gz -C ~/restored_music
+diff -r ~/Music ~/restored_music/Music
+All 4 files restored correctly under ~/restored_music/Music/.
+
+3. Write a shell command that creates a compressed backup of all .jpg images from your Downloads folder into a file named images_backup.tar.gz, excluding any files larger than 5MB.<br><br><em><strong>Hint:</strong> Use the find command with size filtering and tar with --files-from.</em>
+=>find ~/Downloads -maxdepth 1 -name "*.jpg" -size -5M -print > /tmp/jpg_list.txt
+tar -czvf ~/images_backup.tar.gz --files-from=/tmp/jpg_list.txt
+Included: photo1.jpg, photo2.jpg, photo3.jpg
+Excluded: large_photo.jpg (6 MB)
+Archive: /root/images_backup.tar.gz
+
+4. Simulate a restore scenario: delete one file from your original Music folder, then use your music_backup.tar.gz archive to restore only the deleted file without overwriting the rest.
+=>rm ~/Music/song2.mp3    
+tar -xzvf ~/music_backup.tar.gz -C ~/ Music/song2.mp3
+
+Before restore: song2.mp3 was missing
+After restore: song2.mp3 is back with original content (“Song 2 content”)
+Other files in ~/Music were left untouched
