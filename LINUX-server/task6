@@ -1,0 +1,42 @@
+1. Use the systemctl command to check the status of the sshd service on your Linux system and write down whether it is active, inactive, or failed.
+=># 1. Check sshd
+sudo systemctl status sshd       
+● ssh.service - OpenBSD Secure Shell server
+     Loaded: loaded (/lib/systemd/system/ssh.service; enabled; vendor preset: enabled)
+     Active: active (running) since Sat 2020-05-23 10:12:10 IST; 15h ago
+       Docs: man:sshd(8)
+             man:sshd_config(5)
+   Main PID: 2093 (sshd)
+      Tasks: 1 (limit: 38036)
+     Memory: 2.5M
+     CGroup: /system.slice/ssh.service
+             └─2093 sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups
+
+
+2. Start the nginx service using systemctl, then immediately stop it. After each action, verify the status and note the changes.<br><br><em><strong>Hint:</strong> Use 'sudo systemctl start nginx' and 'sudo systemctl stop nginx'.</em>
+=> nginx start / stop + verify
+sudo systemctl start nginx
+sudo systemctl status nginx
+sudo systemctl stop nginx
+sudo systemctl status nginx
+
+3. Enable the cron service to start automatically on boot, then reboot your system and confirm that the service is running after reboot.
+=> Enable cron and reboot 
+sudo systemctl enable cron          # or crond on some distros
+sudo reboot
+# after reboot:
+systemctl is-active cron
+
+4. List all currently running services using systemctl and identify any service related to networking (like NetworkManager or networking). Write the current status of that service.
+=>systemctl list-units --type=service --state=running
+systemctl status NetworkManager
+Loaded: loaded (/lib/systemd/system/NetworkManager.service; enabled)
+   Active: active (running) since Fri, 08 Mar 2013 12:50:04 +0100; 3 days ago
+
+5. Simulate a real-world scenario: Imagine you are troubleshooting why Spotify Web cannot stream music on your Linux machine. Use systemctl to check if the firewall (ufw or firewalld) service is running, and if it is, disable it temporarily. Document each command used and the result.<br><br><em><strong>Constraint:</strong> Only disable the firewall if you are on a safe, non-production environment.</em>
+=>Firewall check (only on a safe test system!)
+systemctl status ufw                # or firewalld
+# if it is active and you are on a safe non-production host:
+sudo systemctl stop ufw             # or firewalld
+# remember to re-enable it later:
+# sudo systemctl start ufw
