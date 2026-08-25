@@ -1,0 +1,25 @@
+1. Install firewalld on your Linux system, start the service, and verify its status using systemctl and firewall-cmd commands.
+=>sudo dnf install -y firewalld       
+sudo systemctl enable --now firewalld
+sudo systemctl status firewalld
+sudo firewall-cmd --state
+
+2 Add a new rule to firewalld to allow incoming HTTP (port 80) traffic, then use firewall-cmd to confirm the rule is active.<br><br><em><strong>Hint:</strong> Use the --permanent and --reload options to make changes persistent.</em>
+=>Allow HTTP (port 80) permanently
+sudo firewall-cmd --permanent --add-service=http
+# or: sudo firewall-cmd --permanent --add-port=80/tcp
+sudo firewall-cmd --reload
+sudo firewall-cmd --list-all
+
+3. Temporarily block all incoming traffic on port 8080 using firewalld, then test by attempting to access a simple web server (e.g., Python's http.server) running on that port.
+=>sudo firewall-cmd --add-rich-rule='rule family="ipv4" port port="8080" protocol="tcp" reject'
+
+4. List all currently active firewalld zones and display the services and ports allowed in the public zone.
+=>sudo firewall-cmd --get-active-zones
+sudo firewall-cmd --zone=public --list-all
+
+5. Remove a custom rule you added earlier (such as the HTTP port 80 rule) and verify that the change has taken effect using firewall-cmd.
+=>sudo firewall-cmd --permanent --remove-service=http
+# or: sudo firewall-cmd --permanent --remove-port=80/tcp
+sudo firewall-cmd --reload
+sudo firewall-cmd --list-all
