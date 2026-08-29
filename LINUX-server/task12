@@ -1,0 +1,62 @@
+1. Install MariaDB on your Linux system and verify the installation by running the command to check the MariaDB server version.
+=>sudo apt update
+sudo apt install -y mariadb-server
+mariadb  Ver 15.1 Distrib 10.11.14-MariaDB, for debian-linux-gnu (x86_64)
+10.11.14-MariaDB-0ubuntu0.24.04.1
+
+2. Create a new MariaDB database named foodie_app and a table restaurants with columns id (INT, primary key), name (VARCHAR), cuisine (VARCHAR), and rating (FLOAT). Insert 3 sample restaurant records.
+=>CREATE DATABASE IF NOT EXISTS foodie_app;
+USE foodie_app;
+
+CREATE TABLE IF NOT EXISTS restaurants (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  cuisine VARCHAR(50),
+  rating FLOAT
+);
+
+INSERT INTO restaurants (name, cuisine, rating) VALUES
+  ('Bella Italia', 'Italian', 4.7),
+  ('Spice Route', 'Indian', 4.2),
+  ('Sushi Zen', 'Japanese', 3.9);
+Result after insert:
+id  name          cuisine   rating
+1   Bella Italia  Italian   4.7
+2   Spice Route   Indian    4.2
+3   Sushi Zen     Japanese  3.9
+
+3. Write and execute a SQL query in MariaDB to find all restaurants in the foodie_app database with a rating greater than 4.0 and display their name and cuisine.
+=>SELECT name, cuisine 
+FROM restaurants 
+WHERE rating > 4.0;
+Result:
+name          cuisine
+Bella Italia  Italian
+Spice Route   Indian
+
+4. Grant SELECT and INSERT permissions on the foodie_app database to a new MariaDB user named zomato_user with password zomato123, then test the permissions by connecting as that user and inserting a new restaurant.
+=>CREATE USER IF NOT EXISTS 'zomato_user'@'localhost' IDENTIFIED BY 'zomato123';
+GRANT SELECT, INSERT ON foodie_app.* TO 'zomato_user'@'localhost';
+FLUSH PRIVILEGES;
+GRANT USAGE ON *.* TO `zomato_user`@`localhost` ...
+GRANT SELECT, INSERT ON `foodie_app`.* TO `zomato_user`@`localhost`
+Test as zomato_user (connected with -u zomato_user -pzomato123):
+INSERT INTO restaurants (name, cuisine, rating) 
+VALUES ('Taco Fiesta', 'Mexican', 4.1);
+
+id  name          cuisine   rating
+1   Bella Italia  Italian   4.7
+2   Spice Route   Indian    4.2
+3   Sushi Zen     Japanese  3.9
+4   Taco Fiesta   Mexican   4.1
+
+5. Use ChatGPT or Copilot to generate a SQL query that updates the rating of all restaurants with cuisine 'Italian' to 4.5 in your MariaDB table, then run the query and verify the update.<br><br><em><strong>Hint:</strong> Paste your prompt and the AI-generated query in your submission along with the result.</em>
+=>UPDATE restaurants 
+SET rating = 4.5 
+WHERE cuisine = 'Italian';
+Verification (SELECT * FROM restaurants):
+textid  name          cuisine   rating
+1   Bella Italia  Italian   4.5
+2   Spice Route   Indian    4.2
+3   Sushi Zen     Japanese  3.9
+4   Taco Fiesta   Mexican   4.1
