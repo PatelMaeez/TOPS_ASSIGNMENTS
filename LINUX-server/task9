@@ -1,0 +1,26 @@
+1. Create a cronjob that runs every day at 8:00 AM and appends the current date and time to a file named mylog.txt in your home directory.
+==> Every day at 8:00 AM - append current date/time to ~/mylog.txt
+0 8 * * * /bin/date >> /root/mylog.txt
+0 8 * * * → every day at 08:00
+Appends the output of date to ~/mylog.txt
+
+2. Set up a cronjob to back up a folder named 'music' from your Downloads directory to a 'backup_music' folder inside your Documents every Sunday at 11:30 PM.<br><br><em><strong>Hint:</strong> Use the cp -r command in your cronjob.</em>
+=> Every Sunday at 11:30 PM - backup music folder
+30 23 * * 0 /bin/cp -r /root/Downloads/music /root/Documents/backup_music
+30 23 * * 0 → every Sunday at 23:30
+Uses cp -r as requested
+Creates/overwrites ~/Documents/backup_music
+
+3. Write a cronjob that deletes all .tmp files from your Desktop every hour and logs the deleted filenames to a file called deleted_tmp.log.
+=>Every hour - delete .tmp files from Desktop and log them
+0 * * * * /usr/bin/find /root/Desktop -name "*.tmp" -type f -print -delete >> /root/deleted_tmp.log 2>&1
+0 * * * * → at minute 0 of every hour
+-print -delete lists the files before deleting them so they appear in the log
+
+4. Temporarily disable a cronjob that prints 'Time for a break!' every 2 hours, without deleting the job. Then, re-enable it after 5 minutes.<br><br><em><strong>Hint:</strong> Use the comment (#) character to disable and enable lines in your crontab.</em>
+==> Every 2 hours - print 'Time for a break!' (temporarily disabled with #)
+# 0 */2 * * * /bin/echo "Time for a break!"
+
+5. Use ChatGPT or another AI tool to generate a cron expression for running a script every weekday at 7:45 PM, then test it by creating a cronjob that echoes 'Dinner Reminder' into dinner.txt at the scheduled time.
+=> Every weekday at 7:45 PM - Dinner Reminder
+45 19 * * 1-5 /bin/echo "Dinner Reminder" >> /root/dinner.txt
