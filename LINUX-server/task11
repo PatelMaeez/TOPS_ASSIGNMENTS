@@ -1,0 +1,37 @@
+1. Open your Linux terminal and use the ps command to display all currently running processes for your user. Save the output to a file named my_processes.txt.
+=>ps -u $(whoami) > ~/my_processes.txt
+# or more detailed:
+ps -u $(whoami) -o pid,user,cmd > ~/my_processes.txt
+Result: File created at /root/my_processes.txt containing the current user’s processes.
+
+2. Start the Spotify client (or any music player app available on your Linux system), then use the top command to find its process ID (PID) and note it down.<br><br><em><strong>Hint:</strong> Look for the process name in the top list or use pgrep if needed.</em>
+=>pgrep -a sleep
+# or
+ps aux | grep sleep
+PID found: 177
+
+3. Use the kill command to terminate the process you found in the previous step. Verify that the process has stopped by running ps or top again.
+=>kill 177
+ps -p 177          # → “Process 177 no longer exists”
+pgrep sleep        # → no output
+
+4. Run a long-running command like ping google.com in the background using &. Then, bring it to the foreground and stop it using Ctrl+Z and the fg command.<br><br><em><strong>Hint:</strong> Use the jobs command to see background jobs.</em>
+=># Start in background
+ping -c 100 google.com &     # (or any long command)
+# or, since ping was unavailable here:
+sleep 30 &
+jobs -l          # list background jobs with PIDs
+fg               # bring the most recent job to the foreground
+# Press Ctrl+Z   # suspend the foreground job (sends SIGTSTP)
+bg               # resume the suspended job in the background
+kill %1          # kill job number 1
+
+5. Suppose you accidentally started a heavy process that is slowing down your system (e.g., a big file copy or a simulation). Use the nice and renice commands to lower its priority and explain in one line how this helps system performance.
+=># Start a process with lower priority (nice value +10)
+nice -n 10 ./heavy_simulation &
+renice -n 19 -p <PID>
+PID  NI CMD
+380  10 sleep 20          # started with nice -n 10
+380 (process ID) old priority 10, new priority 19
+PID  NI CMD
+380  19 sleep 20          # after renice -n 19
