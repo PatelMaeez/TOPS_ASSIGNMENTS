@@ -1,0 +1,13 @@
+1. Install ufw on your Linux system (if not already installed) and enable it, then verify its status using the appropriate commands.
+=>
+
+2. Configure ufw to allow incoming SSH connections only on port 22 and block all other incoming connections.
+
+
+3. Add a rule in ufw to allow outgoing HTTP and HTTPS traffic (ports 80 and 443), but block all other outbound connections.<br><br><em><strong>Hint:</strong> Use 'ufw allow out' and 'ufw deny out' commands to control outbound traffic.</em>
+
+
+4. List all currently active ufw rules on your system and save the output to a file named firewall_rules.txt.
+
+
+5. Write a short explanation (3-4 lines) describing how your current ufw configuration would impact running a local web server (like a development server for a Zomato-style food delivery app).
