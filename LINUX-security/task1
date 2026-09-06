@@ -1,0 +1,45 @@
+1. Install the OpenSSH server package on your Linux system and verify that the sshd service is running by connecting to localhost using the ssh command.
+=>apt-get update && apt-get install -y openssh-server
+service ssh start
+ps aux | grep sshd
+useradd -m -s /bin/bash testuser
+echo "testuser:password123" | chpasswd
+mkdir -p /home/testuser/.ssh
+chown -R testuser:testuser /home/testuser/.ssh
+service ssh restart
+apt-get install -y sshpass
+sshpass -p 'password123' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null testuser@localhost echo "SSH connection successful"
+
+2. Generate a new SSH key pair using ssh-keygen, and add your public key to the ~/.ssh/authorized_keys file of your user account to enable key-based authentication.
+=>ssh-keygen -t ed25519 -f /root/.ssh/id_ed25519 -N "" -C "testkey"
+  Generating public/private ed25519 key pair.
+Your identification has been saved in /root/.ssh/id_ed25519
+Your public key has been saved in /root/.ssh/id_ed25519.pub
+The key fingerprint is:
+SHA256:4HdeZ0FuZ6i+wd5H3Kqn1SfDc4ga9xnED5XINNEZFdA testkey
+...
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ5zjViVVyZc5q8Gts/VtLN+Jjd23HOeAek6GpezVN0h testkey
+
+cat /root/.ssh/id_ed25519.pub >> /home/testuser/.ssh/authorized_keys
+chmod 600 /home/testuser/.ssh/authorized_keys
+chown testuser:testuser /home/testuser/.ssh/authorized_keys
+ls -la /home/testuser/.ssh/
+ssh -i /root/.ssh/id_ed25519 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o PasswordAuthentication=no testuser@localhost echo "Key-based SSH connection successful"
+
+3. Edit the /etc/ssh/sshd_config file to disable password authentication by setting PasswordAuthentication no, then restart the sshd service and test that you can only log in using your SSH key.
+=>sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+grep PasswordAuthentication /etc/ssh/sshd_config
+service ssh restart
+# Password attempt (must fail)
+sshpass -p 'password123' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o PubkeyAuthentication=no testuser@localhost echo "Password worked" 2>&1 || true
+
+# Key attempt (must succeed)
+ssh -i /root/.ssh/id_ed25519 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o PasswordAuthentication=no testuser@localhost echo "Key-based still works"
+
+4. Document each step you took to configure SSH key-based authentication and disable password login, including the exact commands and configuration changes you made.<br><br><em><strong>Hint:</strong> Use screenshots or command outputs to support your documentation.
+=>Package installed: openssh-server (and sshpass for testing).
+Service managed with: service ssh start / service ssh restart.
+Key generated: /root/.ssh/id_ed25519 (private) + corresponding .pub.
+Authorized key added for user testuser.
+Critical sshd_config change: PasswordAuthentication no.
+Final state: Only public-key authentication is accepted for the test user; password login is refused.
