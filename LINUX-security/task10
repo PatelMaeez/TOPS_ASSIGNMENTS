@@ -1,0 +1,61 @@
+1. Install BIND9 DNS server on your Linux machine and verify the installation by checking the version with the named -v command.
+=>apt-get install -y bind9 bind9utils dnsutils
+named -v
+Output:
+textBIND 9.18.39-0ubuntu0.24.04.7-Ubuntu (Extended Support Version)
+
+2. Configure a basic DNS zone file in /etc/bind/ for a custom domain like myzomatoclone.local, mapping it to 127.0.0.1, and restart the DNS service to apply changes.<br><br><em><strong>Hint:</strong> Edit named.conf.local and create a new zone file using db.local as a template.</em>
+=>Zone file /etc/bind/db.myzomatoclone.local:
+text$TTL    604800
+@       IN      SOA     ns.myzomatoclone.local. admin.myzomatoclone.local. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      ns.myzomatoclone.local.
+@       IN      A       127.0.0.1
+ns      IN      A       127.0.0.1
+foodsearch IN  CNAME   myzomatoclone.local.
+Added to /etc/bind/named.conf.local:
+textzone "myzomatoclone.local" {
+    type master;
+    file "/etc/bind/db.myzomatoclone.local";
+};
+Validation:
+Bashnamed-checkconf
+named-checkzone myzomatoclone.local /etc/bind/db.myzomatoclone.local
+→ OK
+Restarted service:
+Bashservice named start
+
+3. Set your system's DNS resolver to use your local BIND9 server and test domain resolution for myzomatoclone.local using the dig or nslookup command.
+=>echo "nameserver 127.0.0.1" > /etc/resolv.conf
+dig @127.0.0.1 myzomatoclone.local +short
+nslookup myzomatoclone.local 127.0.0.1
+Result:
+text127.0.0.1
+Name:	myzomatoclone.local
+Address: 127.0.0.1
+
+4. Add a CNAME record in your zone file to create an alias foodsearch.myzomatoclone.local that points to myzomatoclone.local, then verify the alias works with dig.
+=>
+foodsearch IN  CNAME   myzomatoclone.local.
+Verification:
+Bashdig @127.0.0.1 foodsearch.myzomatoclone.local +short
+textmyzomatoclone.local.
+127.0.0.1
+5. Find and fix the error in this zone file snippet: 'myzomatoclone.local. IN A 127.0.0.1 foodsearch IN CNAME myzomatoclone.local.' — the CNAME is not resolving as expected.<br><br><em><strong>Hint:</strong> Check the syntax and placement of the CNAME record.</em>
+=>myzomatoclone.local. IN A 127.0.0.1 foodsearch IN CNAME myzomatoclone.local.
+Problems:
+
+Two records are written on a single line without a newline — BIND treats this as invalid syntax.
+The CNAME owner name foodsearch is missing the trailing dot or proper relative context in this jammed format.
+A CNAME should not appear on the same line as an A record.
+
+Correct syntax (separate lines):
+textmyzomatoclone.local.    IN    A       127.0.0.1
+foodsearch              IN    CNAME   myzomatoclone.local.
+or fully qualified:
+textfoodsearch.myzomatoclone.local.  IN  CNAME  myzomatoclone.local.
