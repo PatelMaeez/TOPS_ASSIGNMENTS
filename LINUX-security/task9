@@ -1,0 +1,40 @@
+1. Install Samba on your Linux system and create a shared folder named 'music-share' that is accessible from Windows machines on your local network.
+=>apt-get install -y samba samba-common-bin smbclient
+mkdir -p /srv/music-share
+chmod 775 /srv/music-share
+chown root:partyuser /srv/music-share
+
+2. Configure Samba to allow only users 'partyuser' and 'guestuser' to access the 'music-share' folder, and set a Samba password for each user.<br><br><em><strong>Hint:</strong> Use the smbpasswd command to set Samba passwords after creating the Linux users.</em>
+=>useradd -M -s /sbin/nologin partyuser
+useradd -M -s /sbin/nologin guestuser
+echo -e "partypass\npartypass" | smbpasswd -a -s partyuser
+echo -e "guestpass\nguestpass" | smbpasswd -a -s guestuser
+smbpasswd -e partyuser
+smbpasswd -e guestuser
+
+3. Edit the smb.conf file to make the 'music-share' folder read-only for 'guestuser' but read/write for 'partyuser'.
+=>[music-share]
+   path = /srv/music-share
+   browseable = yes
+   read only = yes
+   valid users = partyuser guestuser
+   write list = partyuser
+   force user = partyuser
+   create mask = 0664
+   directory mask = 0775
+
+4. From a Windows machine or VM, connect to the 'music-share' Samba share using the 'partyuser' account and copy a sample MP3 file into the share. Then verify from Linux that the file appears in the shared folder.
+=>smbclient //localhost/music-share -U partyuser%partypass -c "put /tmp/sample.mp3 party_anthem.mp3"
+-rw-rw-r-- 1 partyuser partyuser 32 ... party_anthem.mp3
+-rw-rw-r-- 1 partyuser partyuser 32 ... party2.mp3
+NT_STATUS_ACCESS_DENIED opening remote file \should_fail.mp3
+
+5. Restart the Samba service and use the smbstatus command to check if any clients are currently connected to your Samba share.<br><br><em><strong>Hint:</strong> If no clients are connected, try accessing the share from another device first.</em>
+=>service smbd restart
+service nmbd restart
+smbstatus
+smbstatus output (no persistent clients at the exact moment of check — short-lived smbclient sessions close immediately):
+textSamba version 4.19.5-Ubuntu
+...
+No locked files
+The share is active. Connecting from a real Windows machine or keeping an interactive smbclient session open would show the client under the “Service / pid / Machine” section.
