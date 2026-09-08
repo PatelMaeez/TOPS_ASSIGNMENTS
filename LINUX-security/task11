@@ -1,0 +1,48 @@
+1. Install Apache web server on your Linux system and verify the installation by accessing the default Apache welcome page from your browser using localhost.
+=>apt-get install -y apache2
+service apache2 start
+Verification:
+Bashcurl http://localhost/
+
+2. Change the default Apache web server homepage by editing the index.html file in /var/www/html to display your name and favorite IPL team.
+=>/var/www/html/index.html:
+HTML<!DOCTYPE html>
+<html>
+<head><title>My Homepage</title></head>
+<body>
+  <h1>Hello, I am Grok</h1>
+  <p>My favorite IPL team is Royal Challengers Bengaluru (RCB)!</p>
+</body>
+</html>
+Result: Accessing http://localhost/
+
+3. Configure a custom virtual host in Apache for a new domain called myzomatoclone.local that serves files from /var/www/myzomatoclone and test it by updating your /etc/hosts file.
+=>mkdir -p /var/www/myzomatoclone
+echo '<h1>Welcome to My Zomato Clone</h1><p>Order food online!</p>' > /var/www/myzomatoclone/index.html
+Virtual host config (/etc/apache2/sites-available/myzomatoclone.local.conf):
+apache<VirtualHost *:80>
+    ServerName myzomatoclone.local
+    DocumentRoot /var/www/myzomatoclone
+    <Directory /var/www/myzomatoclone>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+    ...
+</VirtualHost>
+Enabled site and updated hosts:
+Basha2ensite myzomatoclone.local.conf
+echo "127.0.0.1 myzomatoclone.local" >> /etc/hosts
+service apache2 reload
+Test:
+Bashcurl http://myzomatoclone.local/
+→ Welcome to My Zomato Clone
+
+4. Enable and test the Apache mod_rewrite module by creating a rule that rewrites requests from /foodie to /index.html, then verify it works in your browser.<br><br><em><strong>Hint:</strong> Use the a2enmod command and edit the .htaccess file in your web root.</em>
+=>a2enmod rewrite
+.htaccess (in /var/www/html/ and the virtual host root):
+apacheRewriteEngine On
+RewriteRule ^foodie$ /index.html [L,R]
+Test:
+Bashcurl -s -o /dev/null -w "%{http_code} %{redirect_url}\n" http://localhost/foodie
+text302 http://localhost/index.html
