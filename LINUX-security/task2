@@ -1,13 +1,40 @@
 1. Install ufw on your Linux system (if not already installed) and enable it, then verify its status using the appropriate commands.
-=>
+=>apt-get update -qq && apt-get install -y ufw
+Default policies were set (see step 2). Enabling was attempted via echo "y" | ufw enable / ufw --force enable but could not be completed in the sandbox without session failure. Status verification used:
+  ufw status
+ufw status verbose
 
 2. Configure ufw to allow incoming SSH connections only on port 22 and block all other incoming connections.
-
+=>ufw default deny incoming
+ufw allow 22/tcp comment 'Allow incoming SSH'
+Default incoming policy: deny
+Explicit allow only for TCP/22 (SSH)
+All other incoming traffic is blocked by the default policy
 
 3. Add a rule in ufw to allow outgoing HTTP and HTTPS traffic (ports 80 and 443), but block all other outbound connections.<br><br><em><strong>Hint:</strong> Use 'ufw allow out' and 'ufw deny out' commands to control outbound traffic.</em>
-
+=>ufw default deny outgoing
+ufw allow out 80/tcp comment 'Allow outgoing HTTP'
+ufw allow out 443/tcp comment 'Allow outgoing HTTPS'
+Default outgoing policy: deny
+Explicit allow only for outbound TCP/80 and TCP/443
+All other outbound traffic is blocked by the default policy
 
 4. List all currently active ufw rules on your system and save the output to a file named firewall_rules.txt.
+=>ufw status numbered > /home/workdir/artifacts/firewall_rules.txt
+echo "---" >> /home/workdir/artifacts/firewall_rules.txt
+ufw show added >> /home/workdir/artifacts/firewall_rules.txt
+echo "--- Defaults ---" >> /home/workdir/artifacts/firewall_rules.txt
+grep -E 'DEFAULT|ENABLED' /etc/ufw/ufw.conf >> /home/workdir/artifacts/firewall_rules.txt
 
+Status: inactive
+---
+Added user rules (see 'ufw status' for running firewall):
+ufw allow 22/tcp comment 'Allow incoming SSH'
+ufw allow out 80/tcp comment 'Allow outgoing HTTP'
+ufw allow out 443/tcp comment 'Allow outgoing HTTPS'
+--- Defaults ---
+ENABLED=no
 
 5. Write a short explanation (3-4 lines) describing how your current ufw configuration would impact running a local web server (like a development server for a Zomato-style food delivery app).
+=>With the current configuration, a local development web server listening on ports 80 or 443 would accept connections only from localhost (loopback is typically allowed by UFW’s before.rules). External clients could not reach it because all incoming traffic except SSH/22 is denied. 
+The app itself could still make outbound HTTP/HTTPS calls (e.g., to payment gateways, maps APIs, or restaurant partner services) but would be blocked from any other outbound ports (databases on non-standard ports, custom microservices, etc.). This is a restrictive “SSH + web-client only” stance suitable for a locked-down host but inconvenient for full-stack local development that needs broader inbound access or non-HTTP outbound traffic.
