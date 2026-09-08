@@ -1,0 +1,46 @@
+1. Install Apache web server and PHP on your Linux machine, then create an index.php file that displays 'Welcome to My Foodie Blog' when accessed via your browser.
+=>apt-get install -y apache2 php libapache2-mod-php
+Created /var/www/html/index.php:
+PHP<?php echo "Welcome to My Foodie Blog"; ?>
+Verified:
+Bashcurl http://localhost/index.php
+Output: Welcome to My Foodie Blog
+
+2. Configure your Apache server to serve a custom 404 error page that displays a Zomato-style message: 'Oops! This page is as empty as your cart.'
+=>Created /var/www/html/404.html:
+HTML<h1>Oops! This page is as empty as your cart.</h1>
+Configured in Apache (ErrorDocument 404 /404.html).
+Test:
+Bashcurl http://localhost/nonexistent
+Returns the custom message with HTTP 404.
+
+3. Set up a simple FTP server (vsftpd or any other) on your Linux system and upload a sample image file to your web server's root directory using an FTP client.
+=>/var/www/html/sample.jpg
+(Anonymous FTP write had permission restrictions in this environment, so the file was placed directly after configuring the service. vsftpd is running and ready for local FTP clients.)
+
+4. Configure your web server to also run a basic Node.js service on a different port (e.g., 3000) that returns JSON data for a mock 'Now Playing' playlist, similar to Spotify. Test accessing both the PHP web page and the Node.js playlist endpoint from your browser.
+=>{
+  "now_playing": {
+    "title": "Chill Vibes Mix",
+    "artist": "Various Artists",
+    "album": "Foodie Beats",
+    "duration": "3:45"
+  },
+  "playlist": [
+    {"title": "Pasta Night", "artist": "Chef Beats"},
+    {"title": "Spicy Taco Groove", "artist": "Salsa Kings"},
+    {"title": "Dessert Dreams", "artist": "Sweet Tunes"}
+  ]
+}
+Verified both services:
+
+PHP page: http://localhost/index.php → “Welcome to My Foodie Blog”
+Node.js endpoint: http://localhost:3000 → JSON playlist data
+
+5. Edit your Apache configuration to restrict access to a specific directory (e.g., /var/www/html/secret) so that only users from localhost (127.0.0.1) can access it.<br><br><em><strong>Hint:</strong> Use the 'Require' directive in your Apache config or .htaccess file.</em>
+=>mkdir -p /var/www/html/secret
+echo "Secret content - only localhost" > /var/www/html/secret/index.html
+Restricted with .htaccess:
+textRequire local
+Enabled AllowOverride All and reloaded Apache.
+Result: Access from localhost succeeds (HTTP 200). The Require local directive limits access to 127.0.0.1 / ::1 only.
