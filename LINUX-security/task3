@@ -1,0 +1,41 @@
+1. List 3 real-life scenarios where automating tasks with crontab would be useful on a Linux server, and write one line explaining the benefit for each.
+=>1. Three real-life scenarios for crontab automation
+
+Daily database backups at off-peak hours → Ensures data is safely copied without impacting daytime performance or requiring manual intervention.
+Log rotation and cleanup of old application logs every night → Prevents disks from filling up and keeps the server healthy automatically.
+Certificate renewal checks (e.g., Let’s Encrypt) once a week → Avoids unexpected HTTPS outages by renewing certificates before they expire.
+
+2. Write a crontab entry that runs a script called update_playlist.sh every day at 2:00 AM to automatically update your music playlist backup, and explain what each part of the crontab line means.
+=> 0 2 * * * /path/to/update_playlist.sh
+
+0 – minute (0)
+2 – hour (2 AM)
+* – every day of the month
+* – every month
+* – every day of the week
+/path/to/update_playlist.sh – the command/script to run
+
+3. Create a shell script named backup_instagram_photos.sh that copies all files from /home/yourusername/InstagramPhotos to /home/yourusername/Backups/InstagramPhotos with today’s date in the backup folder name.<br><br><em><strong>Hint:</strong> Use the date command to generate a folder like InstagramPhotos_2024-06-10.</em>
+=>Created at /root/backup_instagram_photos.sh (adapted paths for the root user in this environment; replace /root with /home/yourusername on a normal system):
+Bash#!/bin/bash
+SOURCE="/root/InstagramPhotos"
+DEST_BASE="/root/Backups"
+DATE=$(date +%Y-%m-%d)
+DEST="${DEST_BASE}/InstagramPhotos_${DATE}"
+
+mkdir -p "$DEST"
+cp -r "$SOURCE"/* "$DEST"/ 2>/dev/null || cp -a "$SOURCE/." "$DEST"/
+
+echo "$(date): Backup completed successfully to $DEST"
+ls -la "$DEST"
+
+4. Schedule your backup_instagram_photos.sh script to run every Sunday at 11:30 PM using crontab, and redirect both standard output and errors to a log file named backup_log.txt in your home directory.
+=>30 23 * * 0 /root/backup_instagram_photos.sh >> /root/backup_log.txt 2>&1
+This entry was installed via crontab. It runs the script every Sunday (day-of-week 0) at 23:30 and appends both stdout and stderr to /root/backup_log.txt.
+
+5. After your backup runs, open backup_log.txt and submit the last 5 lines as proof that your backup and logging worked.<br><br><em><strong>Hint:</strong> Use the tail command to view the last lines of your log.</em>
+=>Tue Sep  8 02:27:22 UTC 2026: Backup completed successfully to /root/Backups/InstagramPhotos_2026-09-08
+total 16
+drwxr-xr-x 2 root root 4096 Sep  8 02:26 .
+drwxr-xr-x 3 root root 4096 Sep  8 02:26 ..
+-rw-r--r-- 1 root root   15 Sep  8 02:27 photo1.jpg
