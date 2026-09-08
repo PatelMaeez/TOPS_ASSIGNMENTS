@@ -1,0 +1,48 @@
+1. Check the current SELinux status on your Linux server using the getenforce and sestatus commands, and write down which mode (Enforcing, Permissive, or Disabled) is currently active.
+=>getenforce
+sestatus
+Results:
+textDisabled
+SELinux status:                 disabled
+Active mode: Disabled
+SELinux is completely disabled at the kernel level on this Ubuntu 24.04 system (no /sys/fs/selinux mount, no policy loaded). Ubuntu uses AppArmor by default. The SELinux userspace tools (selinux-utils, policycoreutils) were installed, and /etc/selinux/config exists with SELINUX=permissive, but the running kernel does not support SELinux.
+
+2. Switch SELinux to Enforcing mode using setenforce and verify the change with getenforce.<br><br><em><strong>Hint:</strong> You may need sudo privileges to change the mode.</em>
+=>setenforce 1
+getenforce
+Output:
+textsetenforce: SELinux is disabled
+Disabled
+The mode could not be changed because SELinux is disabled in the kernel. setenforce only works when SELinux is already active (Enforcing or Permissive). Enabling full SELinux on Ubuntu requires a SELinux-enabled kernel, policy packages (selinux-policy-default), and a reboot — none of which are feasible in this sandbox environment.
+
+3. Simulate an SELinux access denial by creating a new directory (e.g., /tmp/testapp), setting its context to a type not allowed for your web server (such as user_home_t), and then try to serve a file from it using your web server. Note the error message in /var/log/audit/audit.log or /var/log/messages.
+=>mkdir -p /tmp/testapp
+echo "Hello from testapp" > /tmp/testapp/index.html
+chcon -t user_home_t /tmp/testapp
+chcon: can't apply partial context to unlabeled file '/tmp/testapp'
+drwxr-xr-x 2 root root ? 4096 ... /tmp/testapp
+-rw-r--r-- 1 root root ?   19 ... index.html
+
+4. Use the chcon command to assign the correct SELinux context (e.g., httpd_sys_content_t) to your test directory or file so your web server can access it, then confirm the issue is resolved by reloading the page successfully.
+=>chcon -t httpd_sys_content_t /tmp/testapp
+
+5. Document the steps you took to identify and resolve the SELinux access denial, including the commands used, the error log entry, and a brief explanation of how SELinux contexts control access
+=>Steps performed:
+
+Installed SELinux userspace tools (selinux-utils, policycoreutils).
+Ran getenforce and sestatus → confirmed Disabled.
+Attempted setenforce 1 → failed with “SELinux is disabled”.
+Created /tmp/testapp with a test file.
+Attempted chcon -t user_home_t and chcon -t httpd_sys_content_t → both failed (unlabeled files, no SELinux kernel support).
+Checked for audit logs / AVC denials → none present.
+
+Why SELinux contexts matter (general explanation):
+
+SELinux uses security contexts (user:role:type:level) on processes and files. A process such as httpd_t is only allowed to read files labeled httpd_sys_content_t (or similar allowed types). If a file is labeled user_home_t, the kernel denies access even if traditional Unix permissions (rwx) would allow it. The denial is logged as an AVC (Access Vector Cache) message. Changing the label with chcon (temporary) or semanage fcontext + restorecon (persistent) restores access without weakening the overall policy.
+Conclusion for this environment:
+
+SELinux is Disabled and cannot be activated or tested for access denials. The commands and concepts above are the correct ones for a real SELinux-enabled system (e.g., RHEL, Fedora, or a properly configured Ubuntu with SELinux kernel). On a working SELinux system the sequence would be:
+
+setenforce 1
+Create directory → chcon -t user_home_t ... → observe AVC denial in audit log when Apache tries to serve the file
+chcon -t httpd_sys_content_t ... → access succeeds
