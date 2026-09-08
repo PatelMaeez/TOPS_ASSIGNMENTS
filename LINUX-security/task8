@@ -1,0 +1,36 @@
+1. Install the nfs-kernel-server package on your Linux VM and create a shared directory named /srv/music_share for sharing music files.
+=>apt-get install -y nfs-kernel-server nfs-common
+mkdir -p /srv/music_share
+chmod 777 /srv/music_share
+
+2. Configure /etc/exports to share /srv/music_share with read and write permissions to a specific client IP (use your own second VM or localhost for testing), then restart the NFS service.
+=>echo "/srv/music_share 127.0.0.1(rw,sync,no_subtree_check,no_root_squash)" > /etc/exports
+exportfs -ra
+Result of exportfs -v:
+text/srv/music_share  127.0.0.1(sync,...,rw,no_root_squash,...)
+
+3. On a client machine, mount the NFS share from your server to a local directory named ~/mnt/playlist and verify you can create and access files in the shared folder.
+=>mkdir -p ~/mnt/playlist
+mount -t nfs 127.0.0.1:/srv/music_share ~/mnt/playlist
+Observed error (expected in this environment):
+textmount.nfs: No such device for 127.0.0.1:/srv/music_share on /root/mnt/playlist
+
+4. Simulate a Zomato-style shared menu folder: add a subfolder called 'restaurant_menus' inside your NFS share, copy any 2 PDF or image files into it, and confirm they are visible from the client mount.
+=>mkdir -p /srv/music_share/restaurant_menus
+echo "sample menu 1" > /srv/music_share/restaurant_menus/menu1.pdf
+echo "sample menu 2" > /srv/music_share/restaurant_menus/menu2.jpg
+Contents of the share:
+text/srv/music_share/
+└── restaurant_menus/
+    ├── menu1.pdf
+    └── menu2.jpg
+These files would be visible on the client mount point once NFS is functional.
+
+5. Un-mount the NFS share from the client and update your /etc/exports file to restrict access to read-only, then remount and test that you cannot create or modify files in the shared folder.<br><br><em><strong>Hint:</strong> Use the 'ro' option in /etc/exports for read-only access.</em>
+=>umount ~/mnt/playlist
+Update /etc/exports to read-only:
+Bashecho "/srv/music_share 127.0.0.1(ro,sync,no_subtree_check,no_root_squash)" > /etc/exports
+exportfs -ra
+Verified export:
+text/srv/music_share  127.0.0.1(...,ro,...)
+After remounting on a working NFS system, write attempts (touch, echo > file, etc.) would fail with “Read-only file system”, confirming the ro restriction.
