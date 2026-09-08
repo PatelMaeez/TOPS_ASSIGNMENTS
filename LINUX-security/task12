@@ -1,0 +1,40 @@
+1. Install the kickstart package on your Linux server and verify the installation by running the appropriate command.
+=>On this Ubuntu-based system the classic system-config-kickstart / pykickstart packages are not available in the repositories (Kickstart is primarily a RHEL/CentOS/Rocky tool).
+Alternative performed:
+
+Created a standards-compliant ks.cfg manually (valid Kickstart syntax) and served it via HTTP. On a real Rocky/CentOS system you would run:
+Bashdnf install pykickstart system-config-kickstart
+ksvalidator ks.cfg
+
+2. Create a basic kickstart configuration file (ks.cfg) that automates the installation of CentOS or Rocky Linux with your preferred timezone, root password, and a user account named 'student'.
+Created at /var/www/html/kickstart/ks.cfg with:
+
+Timezone: Asia/Kolkata
+Root password: password123 (plaintext for lab use)
+User account: student / student123 (added to wheel group)
+Automatic partitioning (LVM)
+Network via DHCP
+
+3. Set up an HTTP server (using Apache or nginx) to serve your kickstart file, and confirm you can access ks.cfg from another machine on the network via a browser or curl.
+mkdir -p /var/www/html/kickstart
+# ks.cfg placed in the directory above
+service apache2 start
+Access test:
+Bashcurl -s -o /dev/null -w "HTTP %{http_code}\n" http://localhost/kickstart/ks.cfg
+→ HTTP 200
+The file is reachable at:
+texthttp://<server-ip>/kickstart/ks.cfg
+
+4. Modify your kickstart file to automatically install the GNOME desktop environment and add a post-install script that creates a text file /home/student/welcome.txt with the message 'Welcome to your automated Linux setup!'.<br><br><em><strong>Hint:</strong> Use the %post section in your ks.cfg for post-install commands.</em>
+=>%packages
+@^graphical-server-environment
+@gnome-desktop
+@core
+%end
+Post-install script (%post section):
+text%post
+mkdir -p /home/student
+echo "Welcome to your automated Linux setup!" > /home/student/welcome.txt
+chown student:student /home/student/welcome.txt
+chmod 644 /home/student/welcome.txt
+%end
