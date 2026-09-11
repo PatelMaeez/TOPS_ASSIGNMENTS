@@ -1,0 +1,173 @@
+                                                                                        Section A — Concept Application
+
+1. Explain the history and evolution of Linux, the key differences between Ubuntu, CentOS, Debian, and RHEL, why Linux is preferred over Windows in server environments, and when CLI usage is more appropriate than a GUI for server administration.
+Answer: Linux began in 1991 when Linus Torvalds released a free, open-source kernel inspired by UNIX, which later combined with GNU tools to form full operating systems; over time it grew into hundreds of distributions used across servers, embedded devices, and cloud infrastructure.
+Ubuntu is a Debian-based distro known for ease of use and strong community support, Debian itself is the stable upstream base emphasizing free software and reliability, CentOS was a free, community-rebuilt clone of RHEL (now replaced by CentOS Stream), and RHEL is Red Hat's commercially supported enterprise distribution with long-term support and certification.
+Linux is preferred over Windows on servers because it is free/open-source, more resource-efficient, highly stable for long uptimes, more secure due to its permission model and smaller attack surface, and it dominates cloud, container, and DevOps ecosystems. 
+CLI is preferable to GUI on servers because it consumes far fewer resources, can be scripted and automated, works reliably over low-bandwidth SSH connections, and is essential for remote/headless server management. GUIs are mainly useful for desktop use or occasional visual tools, not for production server administration.
+
+2. Explain the purpose of the ls, cd, pwd, mkdir, rm, cp, and mv commands, and describe how each is used in real server management.
+Answer: ls lists the contents of a directory (e.g., 'ls -l /etc' to view configuration files with permissions), helping admins quickly inspect what's present in a location. cd changes the current working directory, letting an admin navigate to folders like /var/log to check logs.
+pwd prints the current working directory, useful for confirming location before running destructive commands. mkdir creates new directories, such as setting up a project or backup folder structure. rm removes files or directories (with -r for recursive, -f to force), commonly used to clean up temporary files or old logs — used carefully since deletions are permanent.
+cp copies files or directories, often used to back up configuration files before editing them. mv moves or renames files/directories, used both for reorganizing data and for renaming files like config templates. Together these commands form the foundation of everyday file and directory management on a Linux server.
+
+3.  Explain the steps to install Ubuntu Server or CentOS, and justify why hostname configuration, static IP configuration, SSH setup during installation, and initial system verification are each important before the server goes live.
+Answer: Installing Ubuntu Server or CentOS typically involves booting from an ISO in VirtualBox/VMware, selecting language and keyboard layout, partitioning disks (or accepting LVM defaults), configuring network settings, creating an admin user, optionally installing SSH server and base packages, and completing installation followed by a reboot.
+Hostname configuration matters because it uniquely identifies the machine on the network and in logs, making it easier to manage in multi-server environments and avoiding naming conflicts. Static IP configuration is important so the server's address doesn't change on reboot, ensuring reliable remote access, DNS records, and firewall rules that depend on a fixed address.
+Enabling SSH during installation is critical because most servers are headless and administered remotely, so SSH access must be available from the very first boot. Initial system verification (checking updates, connectivity, disk space, and services) confirms the server is healthy and correctly configured before it is exposed to real workloads, preventing avoidable outages or misconfigurations in production.
+
+4. Explain how Linux users and groups work, the difference between user and group permissions, how useradd, groupadd, and passwd are used to manage them, and why user isolation matters on a multi-user system.
+Answer: In Linux, every user has a unique UID and belongs to a primary group plus optional secondary groups; groups let admins assign the same permissions to multiple users at once instead of configuring each individually. User permissions apply specifically to the file owner, while group permissions apply to all members of the file's associated group, allowing shared access (e.g., a dev team) without granting access to everyone else on the system. 
+useradd creates a new user account (e.g., 'useradd -m dev1' creates a home directory too), groupadd creates a new group (e.g., 'groupadd devteam'), and passwd sets or changes a user's password, which is required before the account can log in normally. Adding a user to a group with 'usermod -aG devteam dev1' grants them the group's permissions without merging their identities. User isolation matters because it prevents one user's mistakes, compromised credentials, or malicious actions from affecting other users' files or the system as a whole, which is essential for security and accountability on a shared server.
+
+5. Explain the purpose of the /, /etc, /var, and /home directories, and justify why the Linux directory structure separates files the way it does in server environments.
+Answer: The / (root) directory is the top of the entire filesystem hierarchy, under which every other directory and mount point resides. /etc holds system-wide configuration files (e.g., network settings, user account definitions, service configs) that control how the OS and installed software behave. /var stores variable data that changes frequently during system operation, such as logs (/var/log), spool files, and caches, which is important for monitoring and troubleshooting.
+/home contains personal directories for each user, keeping their files, settings, and data separate from system files. This separation exists so that system configuration, variable/log data, and user data can be backed up, secured, resized, or mounted on separate partitions independently — for example, /var can be given more disk space to handle log growth without risking the root filesystem filling up, and /home can be isolated so user data survives an OS reinstall.
+This structure improves security, maintainability, and scalability in server environments.
+
+6. Explain what LVM is, its core components (Physical Volume, Volume Group, Logical Volume), its advantages over traditional partitioning, and typical use cases in production servers.
+Answer: LVM (Logical Volume Manager) is a storage abstraction layer in Linux that allows flexible allocation and resizing of disk space without being tied to fixed physical partition boundaries. A Physical Volume (PV) is a raw disk or partition initialized for LVM use; a Volume Group (VG) pools one or more PVs together into a single storage resource; and a Logical Volume (LV) is a flexible 'virtual partition' carved out of the VG that is formatted with a filesystem (ext4, xfs) and mounted for use.
+LVM's key advantage over traditional partitioning is that logical volumes can be resized (grown or, with more care, shrunk) on the fly, new disks can be added to a volume group to expand available space, and features like snapshots are supported — all typically without downtime. Traditional partitions, by contrast, are rigid and require backup/restore or repartitioning to resize. Typical production use cases include expanding a /data or /var partition when a server starts running low on disk space, taking LVM snapshots before upgrades for easy rollback, and consolidating multiple physical disks into a single manageable storage pool for databases or application data.
+
+                                                                                            SECTION-B
+Task 1: Linux Installation, Hostname & Core Commands
+=>sudo hostnamectl set-hostname alphatech-server
+hostnamectl status
+sudo nano /etc/netplan/00-installer-config.yaml
+# Example content:
+network:
+  version: 2
+  ethernets:
+    enp0s3:
+      dhcp4: no
+      addresses: [192.168.1.50/24]
+      gateway4: 192.168.1.1
+      nameservers:
+        addresses: [8.8.8.8, 8.8.4.4]
+
+sudo netplan apply
+sudo apt update && sudo apt install openssh-server -y
+sudo systemctl enable ssh
+sudo systemctl start ssh
+sudo systemctl status ssh
+ip addr show
+ping -c 4 8.8.8.8
+ssh alphatech-admin@192.168.1.50   # test from another machine
+ls -l /etc                     # list /etc contents
+mkdir /testdir                 # create test directory
+cd /testdir
+touch file1.txt
+cp file1.txt file1_backup.txt  # copy
+mv file1_backup.txt file2.txt  # move/rename
+rm file2.txt                   # delete
+pwd
+
+
+
+Task 2: User & Group Management
+sudo groupadd devteam
+sudo useradd -m dev1
+sudo passwd dev1
+sudo useradd -m dev2
+sudo passwd dev2
+sudo usermod -aG devteam dev1
+sudo usermod -aG devteam dev2
+# Verify membership
+groups dev1
+groups dev2
+getent group devteam
+
+
+
+Task 3: File System Permissions & Network Configuration
+sudo mkdir -p /project/docs /project/scripts
+sudo chown -R dev1:devteam /project
+sudo chmod 750 /project
+sudo chmod 750 /project/docs /project/scripts
+ls -ld /project /project/docs /project/scripts
+touch /project/docs/readme.txt
+ln -s /project/docs/readme.txt /project/readme_symlink.txt   # symbolic link
+ln /project/docs/readme.txt /project/docs/readme_hardlink.txt # hard link
+ls -li /project/docs/readme.txt /project/docs/readme_hardlink.txt /project/readme_symlink.txt
+# (Same netplan config as Task 1, or nmcli on CentOS/RHEL)
+sudo nmcli con mod eth0 ipv4.addresses 192.168.1.50/24
+sudo nmcli con mod eth0 ipv4.gateway 192.168.1.1
+sudo nmcli con mod eth0 ipv4.dns "8.8.8.8 8.8.4.4"
+sudo nmcli con mod eth0 ipv4.method manual
+sudo nmcli con up eth0
+
+ip addr
+ip route
+ping -c 4 google.com
+hostnamectl status
+hostname
+
+
+
+Task 4: LVM Storage Configuration & System Verification
+sudo pvcreate /dev/sdb
+sudo vgcreate data_vg /dev/sdb
+sudo lvcreate -L 5G -n data_lv data_vg
+sudo pvs; sudo vgs; sudo lvs
+sudo mkfs.ext4 /dev/data_vg/data_lv
+sudo mkdir -p /data
+sudo mount /dev/data_vg/data_lv /data
+echo '/dev/data_vg/data_lv /data ext4 defaults 0 0' | sudo tee -a /etc/fstab
+df -h /data
+sudo lvextend -L +2G /dev/data_vg/data_lv
+sudo resize2fs /dev/data_vg/data_lv   # for ext4 (use xfs_growfs for xfs)
+df -h /data
+getent passwd dev1 dev2          # users created
+ip addr && ping -c 2 google.com  # network working
+systemctl status ssh             # SSH accessible
+mount | grep /data               # storage mounted
+ls -ld /project /project/docs /project/scripts   # Task 3 permissions intact
+
+                                        SECTION-C
+
+
+Issue 1: SSH failing to start after reboot
+sudo systemctl status ssh          # check status/error
+sudo journalctl -xeu ssh           # inspect logs for the failure reason
+sudo systemctl restart ssh         # restart the service
+sudo systemctl enable ssh          # ensure it starts on boot
+sudo systemctl status ssh          # confirm active (running)
+
+
+Issue 2: Permission Denied on /project
+ls -ld /project /project/docs /project/scripts   # check current ownership/perms
+sudo chown -R dev1:devteam /project              # correct ownership
+sudo chmod -R 750 /project                       # owner rwx, group r-x, others none
+su - dev1 -c 'ls /project'                        # validate access as dev1
+su - dev2 -c 'ls /project'                        # validate group access as dev2
+
+
+Issue 3: Disk 100% full
+df -h                              # identify the full filesystem
+du -sh /data/* | sort -rh | head   # find large consumers (optional)
+sudo lvextend -L +5G /dev/data_vg/data_lv
+sudo resize2fs /dev/data_vg/data_lv    # ext4 (or: sudo xfs_growfs /data)
+df -h /data                         # confirm new space is available
+
+
+Issue 4: Server cannot reach the internet
+ip addr                     # confirm IP address is assigned
+ip route                    # confirm default gateway is set
+cat /etc/resolv.conf        # confirm DNS servers are configured
+ping -c 4 192.168.1.1       # test gateway reachability
+ping -c 4 8.8.8.8           # test internet reachability (bypasses DNS)
+ping -c 4 google.com        # test DNS resolution + internet
+
+
+Issue 5: New users unable to log in
+getent passwd dev1 dev2      # confirm accounts exist
+sudo passwd -S dev1          # check password status (locked/expired?)
+sudo passwd -S dev2
+groups dev1                  # confirm group membership
+groups dev2
+sudo passwd dev1             # reset password if locked/not set
+sudo passwd dev2
+
+
+
+
