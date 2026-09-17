@@ -1,0 +1,100 @@
+1. Create a table listing 5 key cybersecurity terms (such as threat, vulnerability, risk, asset, attack vector) and write a one-line definition for each in your own words.
+=>
+Threat:
+A threat is anything that can potentially cause harm to a computer system, network, or data.
+
+Vulnerability:
+A vulnerability is a weakness in a system that an attacker could exploit.
+
+Risk:
+Risk is the possibility of damage or loss when a threat takes advantage of a vulnerability.
+
+Asset:
+An asset is anything valuable that an organization needs to protect, such as data, servers, applications, or devices.
+
+Attack Vector:
+An attack vector is the method or path an attacker uses to gain unauthorized access to a system.
+
+2. Research and find a real-world news article from the last 2 years about a major cyberattack on an Indian company or app (for example, a breach involving Zomato, Paytm, or IRCTC). Summarize what happened and identify one threat, one vulnerability, and one risk mentioned in the incident.
+=>
+Incident: IRCTC security and fraudulent-account activity
+
+A recent example involving an Indian digital platform is the security problem surrounding IRCTC's online ticketing system. In 2025, Indian Railways took extensive action against suspicious IRCTC accounts and automated activity. According to reports, approximately 3.03 crore suspicious IRCTC user IDs were deactivated during 2025, while security controls were strengthened to detect bots, brute-force activity and suspicious traffic.
+
+Nearly 13,000 suspicious emajl domains were also blocked.
+
+What happened?
+
+The IRCTC ticketing platform was being targeted by automated scripts/bots and fraudulent accounts, particularly around online and Tatkal ticket bookings. These activities could give malicious or unauthorized users an unfair advantage and potentially affect legitimate customers.
+
+Indian Railways responded by using measures such as:
+CAPTCHA mechanisms
+Aadhaar-based authentication
+Security audits
+Continuous monitoring of Internet traffic
+Blocking suspicious email domains
+Detection of automated/bot activity
+Identify the cybersecurity concepts
+
+Threat:
+Automated bots, brute-force attempts, and cybercriminals attempting to abuse the ticket-booking system.
+
+Vulnerability:
+Weaknesses that can be exploited through automated account creation, scripted requests, or inadequate protection against automated traffic.
+
+Risk:
+Unauthorized users could obtain tickets unfairly, legitimate customers could lose access to tickets, and the availability and reliability of the online booking service could be affected.
+
+Conclusion:
+The IRCTC case demonstrates why large online platforms need continuous monitoring. strong authentication, bot protection, security audits, and mechanisms for detecting suspicious activity
+
+3. Sign up for a free account on any online cybersecurity dashboard or threat intelligence tool (such as https://www.cybermap.kaspersky.com/ or https://threatmap.checkpoint.com/). Take a screenshot of the dashboard and list 3 types of information or metrics you see displayed.
+=>  https://github.com/PatelMaeez/TOPS_ASSIGNMENTS/blob/main/images/Screenshot%202025-12-10%20112927.png
+      i.No. of succesfull logins
+      ii.Brute force attack
+      iii.Geoloaction of the brute force attack
+
+4. Write a simple phishing email template targeting users of a popular app (for example, 'Your Paytm account is suspended, click here to verify'). Highlight the suspicious elements that make it a phishing attempt.<br><br><em><strong>Hint:</strong> Think about fake links, urgent language, or requests for sensitive info.</em>
+=>Subject: Your Paytm Account Requires Verification
+
+From: Paytm Security <security-alerts@paytm-update24.com>
+
+Reply-To: verify-account@paytm-verify.net
+
+Dear Paytm User,
+We have detected suspicious activity on your Paytm account associated with this email address.Due to multiple failed login attempts and an unusual transaction attempted from an unknown device, your account has been TEMPORARILY SUSPENDED.
+To restore access and avoid permanent closure of your account, you must verify your identity within the next 24 HOURS.
+Click here to verify your account:
+http://paytm-verification-portal.xyz/secure/verify
+Failure to complete verification will result in your account being permanently disabled and your wallet balance may be forfeited as per our updated policy.
+Paytm Customer Support
+[This is an automated message. Please do not reply to this email.]
+Suspicious elements
+Why it is suspicious
+Urgent deadline:
+Attackers often create urgency so users don't think carefully.
+"Unusual activity":
+Creates fear and encourages the user to act immediately.
+Account suspension threat:
+Makes the victim worried about losing access.
+Unexpected verification request:
+Legitimate services generally don't ask users to verify accounts through suspicious email links.
+Unknown sender domain:
+example-mail.com is not an official Paytm domain
+Generic greeting:
+"Dear Customer" instead of the user's name
+
+5. Use ChatGPT or another AI tool to generate a simulated phishing email for a fictional food delivery app (like 'FoodiePal'). Copy the AI-generated email and explain which parts are likely to trick users and why.
+=>Subject: Your FoodiePal account will be suspended
+From: FoodiePal Account Security <security@foodiepal-example.com>
+Hello FoodiePal User,
+We detected unusual login activity on your account from a new device.
+For your protection, please confirm your account information within 24 hours, otherwise your FoodiePal account may be temporarily suspended.
+[Confirm My Account]
+If you did not perform this login, please secure your account immediately.
+Thank you, FoodiePal Security Team
+Why could this trick users?
+1. Fear: The message says the account may be suspended.
+2. Urgency: The 24-hour deadline pressures the user to act quickly.
+3. Security warning: Mentioning "unusual login activity" makes the email appear legitimate.
+4. Call to action: The "Confirm My Account" button.encourages the user
