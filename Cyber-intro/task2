@@ -1,0 +1,104 @@
+1. Create a table listing 3 real-world examples each of phishing, ransomware, and insider threats that could affect apps like WhatsApp, Flipkart, or Paytm. For each, describe in 1-2 lines how the attack works.
+=>
+Phishing
+Fake Paytm message
+How the Attack Works
+An attacker sends a fake email/SMS pretending to be Paytm and asks the user to verify an account through a fraudulent website.
+
+Fake WhatsApp login
+A victim receives a fake WhatsApp verification message and is directed to a fraudulent page designed to steal login or verification information.
+Fake Flipkart offer
+An attacker sends a fake discount or prize message containing a fraudulent link that attempts to trick the user into providing personal information.
+
+Ransomware
+WannaCry
+Malware encrypts files on an infected computer and demands payment from the victim to restore access.
+
+Ransomware
+LockBit
+Attackers use ransomware to encrypt organizational data and may also threaten to publish stolen information.
+
+Ransomware
+Ryuk
+Ryuk has been used against organizations to encrypt important files and disrupt business operations until a ransom is demanded.
+
+Insider Threat
+Employee copying
+An employee with legitimate confidential data access may copy sensitive company information to a personal device or unauthorized storage
+
+Insider Threat
+Misuse of database access
+An authorized employee may access customer records beyond what is required for their job.
+
+Insider Threat
+Disgruntled employee
+A dissatisfied employee may intentionally delete, modify, or leak organizational information
+
+2. Use the Social Engineering Toolkit (SET) to simulate a basic phishing page that mimics a login screen for a popular app (e.g., Instagram or Zomato). Capture and display the entered credentials in your local environment.<br><br><em><strong>Hint:</strong> Use the 'Website Attack Vectors' option in SET and select 'Credential Harvester Attack Method'.</em>
+==>Steps
+● setoolkit
+● Social-Engineering Attacks
+○ Website Attart Vectors
+■ Credential Harvester Attack Method
+● Site Clone
+3. Demonstrate email spoofing by sending a test email to yourself using a tool like 'sendmail' or an online SMTP testing service. Show how the sender's name can be faked to look like a message from BookMyShow or IRCTC.<br><br><em><strong>Constraint:</strong> Do not use your real credentials or send emails to others — only test on your own email in a controlled setup.</em>
+=>Setup:
+● sudo apt install sendmail sendmail-bin
+● sudo sendmailconfig
+● sudo service sendmail start
+Send a spoofed test to your own address (local MTA):
+# Method 1: raw sendmail
+sendmail -t -i <<'EOF'
+To: your-own-address@gmail.com
+From: "BookMyShow Support" <support@bookmyshow.com>
+Subject: Your ticket is confirmed - Order #BK123456
+Dear customer, this is a spoofing test in a controlled lab. Please
+ignore.
+EOF
+# Method 2: set envelope sender explicitly with -f
+sendmail -f "IRCTC Alerts <no-reply@irctc.co.in>"
+your-own-address@gmail.com <<'EOF'
+Subject: E-Ticket PNR 1234567890
+This message was sent from your local sendmail to demonstrate
+spoofing.
+EOF
+
+
+4. Research and implement at least two prevention techniques against phishing or email spoofing (such as enabling 2FA or checking email headers) on your own email account. Take screenshots or write a short note explaining how you applied each technique.
+=>Technique 1: Enable Two-Factor Authentication
+● Two-factor authentication (2FA) adds another security layer in
+addition to a password.
+Even if an attacker obtains a password through phishing, the attacker may
+still be unable to access the account without the second authentication
+factor.
+Technique 2: Check Email Headers and Links
+5. Explain how a phishing attack could target a Zomato or Swiggy user, and write a step-by-step guide for a new user on how to recognize and avoid such attacks. Include at least 3 warning signs to look for in fake emails or websites.
+=>Example Attack Scenario
+An attacker could send a fake message claiming:
+"Your food delivery account has been suspended. Verify your account immediately to continue using the service." The message could contain a link leading to a fraudulent website that visually resembles a food-delivery application.
+The attacker may try to convince the victim to enter information such as a username, password, OTP, or payment information.
+Step-by-Step Guide to Recognize and Avoid the Attack:
+Step 1 – Check the sender
+Look carefully at the email address, phone number, or account that sent the
+message.
+Step 2 – Check the link
+Do not immediately click a link. Check whether the destination belongs to
+the legitimate service.
+Step 3 – Look for urgency
+Messages saying "your account will be deleted in 10 minutes" or "verify
+within 24 hours" are common social-engineering techniques.
+Step 4 – Never share OTPs
+A legitimate support representative should not ask you to disclose an OTP
+received on your phone.
+Step 5 – Open the official application
+Instead of using a link received in an unexpected message, open the
+official food-delivery application directly.
+Step 6 – Report suspicious messages
+Use the email provider or application reporting mechanism to report
+suspected phishing.
+Three Major Warning Signs:
+1. Suspicious or misspelled website domain
+2. Urgent threats or unrealistic offers
+3. Requests for passwords, OTPs, card information, or other sensitive
+information
+
