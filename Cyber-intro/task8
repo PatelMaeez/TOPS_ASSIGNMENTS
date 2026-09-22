@@ -1,0 +1,60 @@
+1. Open the Windows Defender Security Center on your laptop or desktop and take a screenshot showing the status of Virus & Threat Protection, Firewall & Network Protection, and App & Browser Control.
+==>I opened Windows Security on my Windows computer and checked the
+following sections:
+● Virus & threat protection
+● Firewall & network protection
+● App & browser control
+Steps
+1. Press Windows + I to open Settings.
+2. Go to Privacy & security → Windows Security.
+3. Select Virus & threat protection and check its status.
+4. Go back and select Firewall & network protection.
+5. Check the status of the Domain, Private, and Public network firewall.
+6. Select App & browser control and check the available protection
+settings.
+
+
+2. Create a new user account on your Windows system and set a strong password that meets at least 3 out of 4 complexity requirements (uppercase, lowercase, number, special character).
+=>1. Open Settings.
+2. Go to Accounts → Other users.
+3. Select Add account.
+4. Choose the option to add a user without requiring a Microsoft
+account, if a local account is desired.
+5. Enter the username.
+6. Set a strong password.
+7. Complete the account creation process.
+Password Requirements
+The password should contain at least three of the following four character
+types:
+● Uppercase letters: A-Z
+● Lowercase letters: a-z
+● Numbers: 0-9
+● Special characters: ! @ # $ %
+
+
+3. Disable file sharing for the Public folder in Windows and verify that it is no longer accessible from another device on the same network.<br><br><em><strong>Hint:</strong> Use the 'Advanced sharing settings' in the Network and Sharing Center.</em>
+=>Steps
+1. Open Control Panel.
+2. Select Network and Sharing Center.
+3. Select Change advanced sharing settings.
+4. Expand the appropriate network profile.
+5. Under All Networks, locate Public folder sharing.
+6. Select:
+○ Turn off Public folder sharing
+7. Click Save changes.
+
+
+4. Configure the Windows Firewall to block all incoming connections for a specific app of your choice (for example, Spotify or Chrome) and test that the app cannot access the internet.<br><br><em><strong>Hint:</strong> Go to Windows Defender Firewall > Allow an app or feature through Windows Defender Firewall, and adjust the settings.</em>
+=>Steps
+1. Open Control Panel.
+2. Go to System and Security → Windows Defender Firewall.
+3. Select Advanced settings.
+4. Select Outbound Rules.
+5. Click New Rule.
+6. Select Program and browse to the application's executable file, such
+as Chrome's chrome.exe.
+7. Select Block the connection.
+8. Apply the rule to the required network profiles.
+9. Give the rule a name such as:
+○ Block Chrome Internet Access
+10. Save the firewall rule.
