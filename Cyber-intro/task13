@@ -1,0 +1,41 @@
+1. Scan for available Wi-Fi networks on your laptop or phone and list the SSIDs you find, noting which ones are open (unsecured) and which require a password.
+=>Wi-Fi Networks Found
+No. SSID / Wi-Fi Name Security
+1 [Enter Wi-Fi name] Password Protected
+2 [Enter Wi-Fi name] Password Protected
+3 [Enter Wi-Fi name] Open / Unsecured
+4 [Enter Wi-Fi name] Password Protected
+
+2. Set up a mobile hotspot on your phone, connect a laptop to it, and check what IP address your laptop receives from the hotspot.<br><br><em><strong>Hint:</strong> On Windows, use 'ipconfig' in Command Prompt; on Mac/Linux, use 'ifconfig' in Terminal.</em>
+=>On your phone, turn on Mobile Hotspot / Personal Hotspot.
+Connect your laptop to that hotspot’s Wi-Fi name (SSID) using the password shown on the phone.
+Check the IP address the laptop received:
+
+3. Research and explain in your own words what WPA2 and WPA3 are, and list two differences between them relevant to security.
+=>WPA2 (Wi-Fi Protected Access 2) is the long-standing security standard used by most Wi-Fi networks since around 2004. It encrypts traffic using AES and authenticates devices with a pre-shared key (the Wi-Fi password) via a 4-way handshake.
+WPA3 is the newer standard (finalized 2018, required for new Wi-Fi devices since 2020). It keeps AES encryption but significantly improves how devices prove they know the password and how session keys are created.
+Two important security differences:
+
+Resistance to offline password cracking
+In WPA2 an attacker can capture the handshake once and then try millions of password guesses offline on a powerful computer.
+WPA3 uses SAE (Simultaneous Authentication of Equals). Every password guess must interact with the router in real time and is rate-limited, making brute-force attacks far harder.
+Forward secrecy
+With WPA2, if an attacker later learns the Wi-Fi password, they can decrypt previously recorded traffic.
+WPA3 generates unique session keys that cannot be recovered from the password alone, so past traffic stays protected even if the password is later compromised.
+
+4. Find a news article or real-world case from the past 3 years where a public Wi-Fi network was used in a cyber attack, and summarize how the attack happened and what could have prevented it.On your phone, turn on Mobile Hotspot / Personal Hotspot.
+=>How the attack happened:
+
+Attackers gained control of the captive-portal Wi-Fi gateway equipment used by hotels and conference centres.
+They manipulated DNS and HTTP traffic so that users connecting to the legitimate public Wi-Fi were redirected to attacker-controlled pages.
+Victims were shown fake Microsoft 365 login pages or fake “Windows update / ClickFix” prompts.
+Credentials, session tokens, and malware (keyloggers, remote-access tools, information stealers) were delivered.
+Corporate travellers’ Microsoft 365 accounts were targeted across multiple countries.
+
+What could have prevented or reduced the damage:
+
+Using a trusted VPN before doing any sensitive activity on public Wi-Fi.
+Avoiding entering work credentials or clicking “update” prompts that appear on public networks.
+Hotels and venues keeping their captive-portal equipment patched and monitored.
+Enabling multi-factor authentication (MFA) on Microsoft 365 accounts so stolen passwords alone are not enough.
+Preferring mobile data or a personal hotspot instead of public Wi-Fi for important work.
