@@ -1,0 +1,64 @@
+1. Download the latest Ubuntu Desktop ISO image and create a bootable USB drive using Rufus or Balena Etcher.
+=>Steps
+1. Visit the official Ubuntu Desktop website.
+2. Download the latest Ubuntu Desktop ISO image.
+3. Insert a USB drive into the computer.
+4. Open Rufus or Balena Etcher.
+5. Select the downloaded Ubuntu ISO file.
+6. Select the USB drive as the target device.
+7. Start the process and wait until the bootable USB is created.
+8. Safely eject the USB after the process is completed
+
+2. Install Ubuntu Desktop on a virtual machine using VirtualBox or VMware Player, and take a screenshot of the desktop after successful installation.
+=>Steps
+1. Open VMware Workstation.
+2. Select Create a New Virtual Machine.
+3. Select the downloaded Ubuntu ISO file.
+4. Set the virtual machine name to Ubuntu Desktop.
+5. Allocate suitable resources, for example:
+○ RAM: 4 GB
+○ CPU: 2 processor cores
+○ Storage: 25–30 GB
+6. Start the virtual machine.
+7. Select Install Ubuntu.
+8. Choose the appropriate keyboard layout and installation options.
+9. Create the required user account.
+10. Complete the installation.
+11. Restart the virtual machine when prompted.
+12. Log in to Ubuntu and verify that the desktop loads successfully.
+
+
+3. During installation, set up a user account named 'cyberstudent' with a strong password (at least 8 characters, mix of letters, numbers, and symbols).
+=>During the Ubuntu installation, I created the following user account:
+Setting Value
+Username cyberstudent
+Password A strong password containing letters, numbers, and
+symbols
+Password Example
+A suitable format would be:
+Cyber@2026!Student
+Important: The password shown above is only an example. I should use a
+unique password for my actual account and should not share my real
+password in the assignment.
+Security Requirements
+The password should:
+● Contain at least 8 characters.
+● Include uppercase and lowercase letters
+● Include numbers.
+● Include special characters.
+● Not contain easily guessable personal information.
+
+
+4. After installing Ubuntu, open the terminal and run the command 'uname -a' to display OS details. Save the output to a text file named os-info.txt.
+=>
+After logging into Ubuntu, I opened the Terminal using:
+● Ctrl + Alt + T
+I ran:
+● uname -a
+This command displays information about the Linux kernel and operating
+system environment.
+Save the Output to os-info.txt
+I used:
+● uname -a > os-info.txt
+To check the contents of the file:
+● cat os-info.txt
