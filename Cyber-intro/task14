@@ -1,0 +1,60 @@
+1. Create a backup of your WhatsApp chat history on your Android device, then locate and verify the backup file in your Google Drive or local storage.
+=>Steps
+1. Open WhatsApp on the Android phone.
+2. Go to Settings → Chats → Chat backup.
+3. Select the Google Account where the backup should be stored.
+4. Choose the backup frequency, such as Daily.
+5. Tap Back up to create a backup immediately.
+6. Wait until the backup process is completed.
+
+2. Simulate accidental photo deletion by moving 3 images from your phone's gallery to the trash, then restore them using your phone's built-in recovery feature.<br><br><em><strong>Hint:</strong> Check the 'Recently Deleted' or 'Trash' folder in your gallery app.</em>
+=>Steps
+1. Open the phone's Gallery/Photos application.
+2. Select three photos.
+3. Tap Delete.
+4. Confirm deletion.
+5. Open Trash/Recently Deleted.
+6. Select the three deleted photos.
+7. Tap Restore.
+8. Check the gallery to confirm that the photos have returned.
+
+3. Write a step-by-step guide (with screenshots if possible) on how to schedule automatic backups of your contacts to Google Account or iCloud, so you never lose them if your phone is lost.
+=>Android – Google Account
+● Google Contacts can automatically synchronize contacts with a
+Google Account.
+Steps
+1. Open Settings on the Android phone.
+2. Go to Google → All services → Backup & restore or Google Contacts
+sync, depending on the phone.
+3. Make sure Google Contacts sync is enabled.
+4. Select the Google Account that should store the contacts.
+5. Enable synchronization for contacts.
+6. Open Google Contacts and verify that the contacts are synchronized.
+
+4. Use Google Takeout to export and download a backup of your YouTube playlist data, then extract the ZIP and list the names of all playlists you backed up.
+=>Steps
+1. Open Google Takeout.
+2. Select YouTube and YouTube Music.
+3. Select the data categories to export.
+4. Choose ZIP as the file format.
+5. Select the export option.
+6. Wait for Google to prepare the archive.
+7. Download the ZIP file.
+8. Extract the ZIP file.
+9. Locate the YouTube playlist-related data.
+10. Open the exported files and identify my playlists.
+
+
+5. Test restoring a deleted file from Google Drive's Trash: upload a sample file, delete it, then recover it from Trash and confirm it's accessible.
+=>Steps
+1. Open Google Drive.
+2. Create or upload a sample file, for example:
+○ backup-test.txt
+3. Verify that the file opens normally.
+4. Delete the file.
+5. Open the Trash section in Google Drive.
+6. Locate backup-test.txt.
+7. Right-click/select the file and choose Restore.
+8. Return to My Drive.
+9. Locate backup-test.txt.
+10. Open the file to confirm that it is accessible.
