@@ -1,0 +1,50 @@
+1. Install Ubuntu (or any Linux distribution) on your system using a virtual machine tool like VirtualBox, and take a screenshot of your successful login to the Linux terminal.
+=>Steps
+1. Download the Ubuntu Desktop ISO.
+2. Open VMware Workstation/VirtualBox.
+3. Create a new virtual machine.
+4. Select the Ubuntu ISO as the installation media.
+5. Allocate suitable RAM, CPU, and storage.
+6. Install Ubuntu and create a user account.
+7. After installation, open the Terminal.
+8. Log in using the created Linux user accoun
+
+2. Open the Linux terminal and use the commands pwd, ls, and cd to navigate to your Downloads folder, then list all files present in it.<br><br><em><strong>Hint:</strong> Use 'cd ~/Downloads' to move to the Downloads directory.</em>
+=>1. Check the current directory
+● pwd
+2. Move to the Downloads directory
+● cd ~/Downloads
+3. List the files
+● ls
+The ls command displays the files and directories present in the current
+directory
+
+3. Create a new directory named 'music_playlist' inside your home directory, and inside it, create three empty files named song1.mp3, song2.mp3, and song3.mp3 using a single Linux command.
+=>The required directory is music_playlist, and it should contain:
+● song1.mp3
+● song2.mp3
+● song3.mp3
+mkdir -p ~/music_playlist touch ~/music_playlist/song1.mp3
+~/music_playlist/song2.mp3 ~/music_playlist/song3.mp3
+Verify the files
+● ls -l ~/music_playlist
+
+
+4. Change the permissions of the 'music_playlist' directory so that only you (the owner) have read, write, and execute permissions, and no one else has any permissions.<br><br><em><strong>Hint:</strong> Use the chmod command with the correct numeric code.</em>
+=>The requirement is:
+● Owner: Read, Write, Execute
+● Group: No permissions
+● Others: No permissions
+The correct numeric permission is:
+700
+Use:
+● chmod 700 ~/music_playlist
+
+5. Use the man command in the Linux terminal to find out what the 'grep' command does, and write a one-line summary in your own words.
+=>Open the manual page:
+● man grep
+To search inside the manual, you can type:
+● /pattern
+One-line summary
+● grep searches text for lines that match a specified pattern and
+displays the matching lines.
