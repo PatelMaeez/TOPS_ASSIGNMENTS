@@ -1,0 +1,68 @@
+1. Draw the OSI model on paper or using any drawing tool, label all 7 layers, and write one real-world example protocol (like HTTP, TCP, IP, etc.) next to each layer.
+=>┌─────────────────────────────────────────────────────────────┐
+│  Layer 7: Application                                       │
+│  Example: HTTP / HTTPS, DNS, SMTP, FTP, WhatsApp protocol   │
+├─────────────────────────────────────────────────────────────┤
+│  Layer 6: Presentation                                      │
+│  Example: TLS/SSL (encryption), JPEG, MPEG, ASCII           │
+├─────────────────────────────────────────────────────────────┤
+│  Layer 5: Session                                           │
+│  Example: NetBIOS, RPC, TLS session management              │
+├─────────────────────────────────────────────────────────────┤
+│  Layer 4: Transport                                          │
+│  Example: TCP, UDP                                          │
+├─────────────────────────────────────────────────────────────┤
+│  Layer 3: Network                                           │
+│  Example: IP (IPv4/IPv6), ICMP                              │
+├─────────────────────────────────────────────────────────────┤
+│  Layer 2: Data Link                                         │
+│  Example: Ethernet, Wi-Fi (802.11), PPP                     │
+├─────────────────────────────────────────────────────────────┤
+│  Layer 1: Physical                                          │
+│  Example: Copper cable, Fiber, Radio waves (Wi-Fi/4G/5G)    │
+└─────────────────────────────────────────────────────────────┘
+
+2. Create a table listing 5 popular apps you use (such as WhatsApp, Instagram, Zomato, Flipkart, Paytm) and for each, identify two network protocols that are likely used when you interact with the app (for example, HTTPS, TCP, UDP, DNS, etc.).
+=>App                  Protocol 1                   Protocol 2                                                                      Typical use
+WhatsApp              HTTPS                         TCP + DNS                                                    Secure messaging, media transfer, name resolution of WhatsApp servers"
+Instagram             HTTPS                         TCP + DNS                                                    Loading feed, uploading photos/videos, resolving Instagram/CDN domains"
+Zomato                HTTPS                         TCP + DNS                                                    Searching restaurants, placing orders, secure payment tokens"
+Flipkart              HTTPS                         TCP + DNS                                                    Browsing products, checkout, secure payment, image/CDN loading"
+Paytm                 HTTPS                         TCP + DNS (sometimes UDP for some real-time features)        UPI payments, QR scanning, balance checks, secure transaction APIs"
+
+3. Use the command prompt or terminal to run 'ping' and 'tracert' (Windows) or 'traceroute' (Linux/Mac) to www.youtube.com, then explain which OSI layers are involved in these commands and how.
+=># ping www.youtube.com
+PING www.youtube.com (142.251.151.4): 56 data bytes
+64 bytes from 142.251.151.4: icmp_seq=0 ttl=116 time=12.3 ms
+...
+
+# traceroute www.youtube.com   (or tracert on Windows)
+ 1  192.168.1.1 (your router)
+ 2  isp-gateway...
+ ...
+15  142.251.151.4 (YouTube)
+
+4. Write a short scenario describing how a message sent from your device to a friend's device on WhatsApp travels through each OSI layer, mentioning what happens at each step.<br><br><em><strong>Hint:</strong> Start from Application layer (your message in WhatsApp) down to Physical layer (actual data sent over WiFi/mobile network), then back up to Application layer on your friend's phone.</em>
+=>You type “Hi” in WhatsApp and hit Send. Your friend’s phone receives it.
+Down the stack on your phone (Encapsulation):
+
+Application (Layer 7) – WhatsApp app takes your text “Hi”, adds its own headers (message ID, chat ID, encryption keys) and prepares the data to be sent.
+Presentation (Layer 6) – The message is encrypted (end-to-end encryption using the Signal protocol / TLS-like mechanisms) and possibly compressed.
+Session (Layer 5) – A session is maintained with WhatsApp’s servers (or the relay servers) so the connection stays alive.
+Transport (Layer 4) – The encrypted data is placed inside a TCP segment (reliable delivery, ports are chosen).
+Network (Layer 3) – A source IP (your phone’s IP) and destination IP (WhatsApp server or relay) are added → IP packet.
+Data Link (Layer 2) – The IP packet is framed for your current network (Wi-Fi frame or mobile network frame) with MAC addresses.
+Physical (Layer 1) – The bits are turned into radio waves and transmitted over Wi-Fi or the mobile (4G/5G) network.
+
+Across the network:
+
+The packets travel through your router → ISP → internet routers → WhatsApp’s servers (or directly peer-to-peer in some cases) → your friend’s ISP → friend’s phone.
+Up the stack on your friend’s phone (Decapsulation):
+
+Physical – Radio waves are received and turned back into bits.
+Data Link – Frame is checked and the IP packet is extracted.
+Network – IP header is examined; packet is delivered to the correct device.
+Transport – TCP reassembles the segments in order.
+Session – Session information is restored.
+Presentation – Data is decrypted.
+Application – WhatsApp app receives the plaintext “Hi” and shows the message on the screen.
