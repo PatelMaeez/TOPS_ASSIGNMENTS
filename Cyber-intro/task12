@@ -1,0 +1,44 @@
+1. Draw a simple network diagram showing how a router, modem, and switch connect together in a typical home setup. Label each device and explain the role of each in one line on your diagram.
+=>Internet (ISP)
+      │
+      │  (coaxial / fiber / DSL cable)
+      ▼
+┌─────────────┐
+│    MODEM    │  ← Converts ISP signal into Ethernet data
+└──────┬──────┘
+       │  Ethernet cable
+       ▼
+┌─────────────┐
+│   ROUTER    │  ← Creates local network, assigns IPs (DHCP), provides Wi-Fi & NAT
+└──────┬──────┘
+       │  Ethernet cable(s)
+       ▼
+┌─────────────┐
+│   SWITCH    │  ← Connects multiple wired devices on the same local network
+└──────┬──────┘
+       │
+   ┌───┴───┬──────────┬──────────┐
+   ▼       ▼          ▼          ▼
+ PC-1    PC-2     Laptop     Smart TV / Console
+ (wired) (wired)  (wired)    (wired)
+
+Wi-Fi devices (phones, tablets, laptops) connect wirelessly directly to the Router.
+
+2. Log in to your home WiFi router's admin panel (usually at 192.168.0.1 or 192.168.1.1) and find the section that shows connected devices. List the names or MAC addresses of at least 3 devices currently connected to your network.<br><br><em><strong>Hint:</strong> If you don't have access to a physical router, search online for a router admin demo page and use that for this task.</em>
+=>Device Name       Type            MAC Address        Notes
+whattestfortplin    Wired        94-DE-80-5F-B7-41       Sample wired client
+(Wireless Client 1),Wireless     45-87-EA-7F-C8-78     Phone / laptop
+(Wireless Client 2),Wireless      21-EB-4A-3E-B9-65    Tablet / smart device
+
+3. Create a table comparing routers, modems, and switches. Include at least 4 points for each: main function, where it is used (home/office), whether it assigns IP addresses, and if it supports WiFi.
+=>Point                          Router                                                              Modem                                  Switch
+Main function    Connects different networks, routes traffic,provides NAT & firewall      Converts ISP signal (cable/fiber/DSL) into Ethernet data,Connects multiple devices within the same network at high speed
+Where it is used  Homes, offices, cafés, almost every network                        Homes and offices (between ISP and router)                  Homes (extra ports), offices, gaming cafés, data centers"
+Assigns IP addresses?    Yes (usually acts as DHCP server)                                        No (or very rarely)                                      No
+Supports Wi-Fi?    Yes (most home routers have built-in Wi-Fi)                                  No (modem itself has no Wi-Fi)                            No (pure switches are wired only)
+
+4. Imagine you are setting up a small gaming café. Choose and specify which devices (router, modem, switch) you would need, how many of each, and briefly explain the reason for each choice.<br><br><em><strong>Hint:</strong> Consider the number of computers, internet connection, and need for wired vs wireless access.</em>
+=>Device      Quantity                                                                      Reason
+Modem        1                                                     Needed to connect to the ISP’s internet line (fiber/cable). One high-speed modem is enough.
+Router      1 (good quality, preferably with strong CPU & QoS)    Handles internet sharing, DHCP, firewall, and prioritizes gaming traffic. Also provides staff/guest Wi-Fi."
+Switch      1–2 (Gigabit or 2.5G managed switch with 16–24 ports)        All gaming PCs should be wired for lowest latency and stable high bandwidth. One or two switches give enough Ethernet ports.
