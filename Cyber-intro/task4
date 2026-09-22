@@ -1,0 +1,44 @@
+1. Open your computer or laptop and take a clear photo or screenshot of the System Information or About page that shows your processor (CPU), RAM, and storage details.
+=>https://github.com/PatelMaeez/TOPS_ASSIGNMENTS/blob/main/images/system-information-viewer-704c268fff00467bbd7592423335bf62.webp
+
+2. Draw and label a diagram (on paper or digitally) showing the main hardware components inside a computer cabinet, including CPU, RAM, motherboard, hard drive/SSD, power supply, and at least two ports (USB, HDMI, etc.).
+=>                    ┌─────────────────────────────────────┐
+                    │           COMPUTER CABINET          │
+                    │                                     │
+     Power Supply   │  ┌──────────────┐                   │
+     (PSU) ────────►│  │ Power Supply │                   │
+                    │  └──────────────┘                   │
+                    │                                     │
+                    │  ┌──────────────────────────────┐   │
+                    │  │        MOTHERBOARD           │   │
+                    │  │                              │   │
+                    │  │   ┌─────┐     ┌──────────┐   │   │
+                    │  │   │ CPU │     │   RAM    │   │   │
+                    │  │   └─────┘     └──────────┘   │   │
+                    │  │                              │   │
+                    │  │   ┌──────────────────────┐   │   │
+                    │  │   │   GPU / Graphics Card│   │   │
+                    │  │   └──────────────────────┘   │   │
+                    │  │                              │   │
+                    │  │   ┌────────────┐             │   │
+                    │  │   │ SSD / HDD  │             │   │
+                    │  │   └────────────┘             │   │
+                    │  └──────────────────────────────┘   │
+                    │                                     │
+                    │  Front / Rear Ports:                │
+                    │  • USB ports                        │
+                    │  • HDMI / DisplayPort               │
+                    │  • Ethernet, Audio jacks, etc.      │
+                    └─────────────────────────────────────┘
+
+3. List the hardware components you would check or upgrade to make your laptop run faster for gaming or video editing, and explain in one line why each upgrade helps.<br><br><em><strong>Hint:</strong> Think about RAM, SSD, GPU, and cooling.</em>
+=>Component                                                                    Why upgrading helps
+RAM (16 GB → 32 GB or more)                                         Allows more programs and larger video files / game assets to stay in memory, reducing stuttering and lag."
+SSD (replace HDD or add a fast NVMe SSD)                            Dramatically faster loading of games, applications, and video project files; almost eliminates long wait times."
+GPU (Graphics Card),Handles graphics rendering and video effects   the single biggest upgrade for higher frame rates in games and faster video export times.
+Cooling (better cooler / more fans)                                Prevents thermal throttling so the CPU and GPU can maintain high performance for longer without slowing down.
+
+4. Research the difference between SSD and HDD storage, then write a short comparison (3 points) explaining which one is better for a student who wants fast boot times and why.
+=>Speed – SSDs are 5–10× faster than HDDs at reading and writing data. A computer with an SSD typically boots in 10–20 seconds; an HDD often takes 40–90+ seconds.
+Reliability & Noise – SSDs have no moving parts, so they are quieter, more shock-resistant, and less likely to fail from physical impact (important for a laptop a student carries around).
+Which is better? – SSD is clearly better for a student who wants fast boot times. The speed difference is dramatic and immediately noticeable every time you turn on the computer or open programs. The only remaining advantage of HDDs is lower cost per gigabyte for pure bulk storage, but for the main system drive, an SSD is the superior choice.
