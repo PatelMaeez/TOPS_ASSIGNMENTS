@@ -1,0 +1,89 @@
+1. Draw a simple network diagram showing how your smartphone connects to Instagram — include your device, Wi-Fi router, ISP, and Instagram's server, and label each part.
+=>┌──────────────┐       Wi-Fi        ┌──────────────┐      Internet       ┌──────────────┐       ┌─────────────────────┐
+│  Smartphone  │ ─────────────────► │  Wi-Fi       │ ──────────────────► │     ISP      │ ────► │  Instagram Servers  │
+│  (Your phone)│                    │  Router      │                     │  (e.g. Airtel│       │  (Facebook/Meta)    │
+│              │ ◄───────────────── │  (Home/      │ ◄────────────────── │   /Jio/etc.) │ ◄──── │                     │
+│  IP: private │       Wi-Fi        │   Mobile)    │      Internet       │              │       │  Public IP + CDN    │
+└──────────────┘                    └──────────────┘                     └──────────────┘       └─────────────────────┘
+       │                                   │                                      │                        │
+       │                                   │                                      │                        │
+   Your device                        Default Gateway                        Routes traffic            Instagram app
+   (client)                           (router’s IP)                          to the internet          servers / CDN
+
+2. List the IP address of your device and your default gateway using the 'ipconfig' command (Windows) or 'ifconfig' (Linux/Mac), and explain what each means in 1-2 lines.
+=>
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . :
+
+Wireless LAN adapter Local Area Connection* 2:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . :
+
+Ethernet adapter VMware Network Adapter VMnet1:
+
+   Connection-specific DNS Suffix  . :
+   Link-local IPv6 Address . . . . . : fe80::6fe:7336:2723:9fb8%18
+   IPv4 Address. . . . . . . . . . . : 192.168.40.1
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . :
+
+Ethernet adapter VMware Network Adapter VMnet8:
+
+   Connection-specific DNS Suffix  . :
+   Link-local IPv6 Address . . . . . : fe80::7c53:8a0e:4d67:3bc0%8
+   IPv4 Address. . . . . . . . . . . : 192.168.152.1
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . :
+
+Wireless LAN adapter Wi-Fi:
+
+   Connection-specific DNS Suffix  . :
+   Link-local IPv6 Address . . . . . : fe80::56ad:7d33:c1e:e1ea%15
+   IPv4 Address. . . . . . . . . . . : 192.168.100.4
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . : fe80::1%15
+                                       192.168.100.1
+
+Ethernet adapter Bluetooth Network Connection:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . :
+
+
+3. Simulate a Zomato food order journey by writing the steps/data packets that travel from your device to Zomato's server and back, mentioning protocols like HTTP, TCP/IP, and DNS wherever relevant.<br><br><em><strong>Hint:</strong> Think about what happens when you search for a restaurant and place an order.</em>
+=>DNS Lookup
+Your phone asks: “What is the IP address of www.zomato.com (or the Zomato app API)?”
+→ Uses DNS protocol → receives Zomato’s public IP (or CDN IP).
+TCP Connection
+Phone starts a reliable connection to Zomato’s server using TCP (usually on port 443 for HTTPS).
+→ TCP three-way handshake (SYN → SYN-ACK → ACK).
+HTTPS / HTTP Request – Search
+You type a restaurant name. The app sends an encrypted HTTPS (HTTP over TLS) request containing the search query.
+→ Data travels: Phone → Wi-Fi Router → ISP → Internet → Zomato servers.
+→ Zomato replies with a list of restaurants (JSON data) over the same HTTPS connection.
+HTTPS Request – Place Order
+You select items and tap “Place Order”.
+→ Another HTTPS request is sent with order details, delivery address, payment info (tokenized), etc.
+→ Protocols involved: TCP/IP (transport + network) + HTTPS (application).
+Server Processing & Response
+Zomato’s servers process the order, talk to payment gateways and the restaurant, then send back a confirmation (order ID, ETA, etc.) over the same HTTPS connection.
+Return Path
+The reply packets travel back: Zomato servers → Internet → ISP → your router → your phone.
+The Zomato app displays the confirmation.
+
+Key protocols at each layer:
+
+DNS – Name → IP resolution
+TCP – Reliable, ordered delivery of data
+IP – Addressing and routing across networks
+HTTPS (HTTP + TLS) – Encrypted application data (search queries, order details, payment tokens)
+
+4. Use the 'ping' command to check the connection between your computer and www.spotify.com, then explain what the results mean for network troubleshooting.
+=>PING www.spotify.com (151.101.3.42): 56 data bytes
+64 bytes from 151.101.3.42: icmp_seq=0 ttl=57 time=28.4 ms
+64 bytes from 151.101.3.42: icmp_seq=1 ttl=57 time=27.9 ms
+...
+--- www.spotify.com ping statistics ---
+4 packets transmitted, 4 packets received, 0.0% packet loss
+round-trip min/avg/max = 27.9/28.1/28.4 ms
