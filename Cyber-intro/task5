@@ -1,0 +1,33 @@
+1. Create a table comparing at least three types of operating systems (such as Windows, Linux, and Android) based on their main features, target devices, and examples of apps you use on each.
+=>Feature                                                        Windows                                                                        Linux (e.g. Ubuntu),Android
+Main features              User-friendly GUI, strong app compatibility, frequent updates, proprietary"               Open-source, highly customizable, strong security & privacy, free","Touch-optimized, app-centric, Google services integration, mobile-first"
+Target devices              Desktops, laptops, some tablets & 2-in-1s                                                Desktops, laptops, servers, embedded devices Smartphones, tablets, some TVs & wearables"
+Example apps                        Microsoft Edge, Spotify, Adobe Photoshop, Zoom                                   Firefox, LibreOffice, VLC, GIMP, Telegram   Instagram, WhatsApp, Zomato, YouTube, Paytm"
+
+2. Identify the operating system running on your phone and your laptop/desktop. Write down two unique features of each OS that affect your daily use of popular apps like Instagram or Zomato.
+=>Device                  Operating System                                        Unique feature 1                  Unique feature 2                                                                          How it affects Instagram / Zomato
+Phone                          Android                Deep Google account integration & background app refresh      Granular app permissions (can restrict camera, location, storage per app)                  Instagram can auto-upload photos in the background; Zomato can track location precisely even when the app is closed (if permission is given).
+Laptop                         Windows                 Full multitasking with multiple windows & desktop apps        Strong support for keyboard + mouse productivity tools                                    You can keep Instagram open in a browser tab while using Zomato in another window or desktop app; easier to manage multiple accounts or large food-order lists.
+
+3. List three security risks that are specific to mobile operating systems like Android or iOS, and explain how these risks could impact apps you use (for example, WhatsApp or Paytm).
+=>Malicious or poorly vetted apps from third-party stores / sideloading
+Impact: A fake WhatsApp or Paytm app could steal chat messages, login credentials, or UPI/payment details the moment you open it.
+Excessive or abused app permissions (especially location, contacts, SMS, accessibility)
+Impact: A compromised Instagram or Zomato app (or a malicious update) could silently read your messages, track your real-time location, or intercept OTPs used by WhatsApp and Paytm.
+Unpatched OS vulnerabilities + delayed security updates (more common on Android due to fragmentation)
+Impact: Attackers can exploit known bugs to gain access to your device, potentially reading WhatsApp end-to-end encrypted chats after they are decrypted on the phone or draining money via Paytm if the app’s secure storage is compromised.
+
+4. Research and describe how a cloud-based operating system (such as Chrome OS or a virtual desktop environment) is different from a traditional desktop OS. Give one example of how this difference changes the way you access apps like YouTube or Flipkart.
+=>The operating system, apps, and most data live on your local hard drive/SSD. You install software, and it runs using your device’s CPU, RAM, and storage.
+Cloud-based OS (Chrome OS, Windows 365 Cloud PC, Amazon WorkSpaces, etc.):
+
+The core operating system and most applications run on remote servers in a data centre. Your local device mainly acts as a thin client that streams the interface. Files and settings are stored in the cloud by default.
+Key differences:
+Processing power and storage are mostly in the cloud, not on your device.
+You need a continuous internet connection for full functionality.
+Updates, security patches, and app installations happen on the server side.
+
+Example with YouTube or Flipkart:
+On a traditional desktop OS you download and install a native YouTube or Flipkart app (or use the browser), and the video or product pages are processed partly on your machine.
+
+On a cloud-based OS (e.g. Chrome OS or a virtual desktop), the YouTube player or Flipkart website runs almost entirely on Google’s or the cloud provider’s servers. Your laptop only receives the video stream or webpage pixels. This means even a low-powered, cheap laptop can play 4K YouTube smoothly or handle heavy Flipkart product filters, but the experience stops working (or becomes very limited) if your internet connection drops.
