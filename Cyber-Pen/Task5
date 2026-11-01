@@ -1,0 +1,76 @@
+1. Use Nmap to scan the open ports and running services on a provided virtual machine, and document all findings in a table.
+=>Starting Nmap 7.80 ( https://nmap.org ) at 2025-08-02 15:08 IST
+Nmap scan report for 203.115.7.170
+Host is up (0.095s latency).
+Not shown: 995 closed ports
+PORT       STATE    SERVICE    VERSION
+23/tcp     open     telnet     Cisco IOS telnetd
+1720/tcp   filtered h323q931
+2000/tcp   filtered cisco-sccp
+5060/tcp   filtered sip
+5061/tcp   filtered sip-tls
+Service Info: OS: IOS; Device: switch; CPE: cpe:/o:cisco:ios
+
+2. Run a vulnerability scan on the same system using OpenVAS or Nessus (free trial), and export the list of detected vulnerabilities with severity levels.
+=>>https://www.stationx.net/wp-content/uploads/2024/03/nessus-NFS-share-vulnerability.png
+
+3. Pick any one high or critical vulnerability found in your scan and research its real-world impact using CVE details; write a short summary explaining how an attacker could exploit it and what data or features could be at risk.
+=>Insecure Data Storage
+Sensitive data (session tokens, payment details, personal info, location history) stored in plaintext on the device (e.g., SharedPreferences, unencrypted SQLite, or easily accessible files).
+Impact: An attacker with physical access, malware, or a compromised device can extract the data, leading to account takeover, financial fraud, or privacy breaches.
+Insecure Communication / Lack of Proper TLS
+
+4. Write a prioritized recommendation list for the system owner: for each vulnerability, suggest a specific fix or mitigation (e.g., patch software, close unused port, change configuration), and order them from most to least urgent.<br><br><em><strong>Hint:</strong> Focus on vulnerabilities with the highest CVSS scores or those that allow remote code execution first.</em>
+=>Finding 1: SQL Injection (Search / Filter Functionality)
+Risk Rating: High
+Description: The product search and order-filter endpoints accept user-supplied input that is concatenated directly into SQL
+queries. An attacker can inject malicious SQL to extract, modify, or delete data from the underlying database.
+Sample Evidence / Output:
+Request: GET /api/search?q=pizza' OR '1'='1
+Response excerpt: {"results":[{"order_id":1001,"user":"userA@example.com",...},
+{"order_id":1002,"user":"userB@example.com",...}]} (unexpected full dataset returned)
+Potential Impact: Full or partial database compromise, exposure of customer PII, order history, and possible authentication
+bypass.
+
+5. Present your vulnerability assessment report to a peer as if they are the system owner, and answer at least two of their questions about your findings or recommendations.
+=>Executive Summary
+A vulnerability assessment was performed on a fictional food-delivery style application (similar to Zomato) and related
+e-commerce components. The overall risk posture is assessed as High. Two significant issues were identified that could
+allow unauthorized access to customer order data and potential compromise of backend databases. If exploited, these
+weaknesses could lead to exposure of personal and payment-related information, damage to customer trust, and possible
+regulatory consequences. Immediate remediation of the high-risk findings is strongly recommended before any production
+release or further feature rollout.
+Severity Count Business Impact Summary
+High 2 Potential data exposure & unauthorized access to customer records
+Medium / Low 0 None identified in this limited assessment
+2. Findings
+Finding 1: SQL Injection (Search / Filter Functionality)
+Risk Rating: High
+Description: The product search and order-filter endpoints accept user-supplied input that is concatenated directly into SQL
+queries. An attacker can inject malicious SQL to extract, modify, or delete data from the underlying database.
+Sample Evidence / Output:
+Request: GET /api/search?q=pizza' OR '1'='1
+Response excerpt: {"results":[{"order_id":1001,"user":"userA@example.com",...},
+{"order_id":1002,"user":"userB@example.com",...}]} (unexpected full dataset returned)
+Potential Impact: Full or partial database compromise, exposure of customer PII, order history, and possible authentication
+bypass.
+Finding 2: Insecure Direct Object Reference (IDOR) – Order Details
+Risk Rating: High
+Description: The order-details API endpoint uses a sequential or predictable order identifier in the URL (e.g.,
+/api/orders/10482). The application does not adequately verify that the authenticated user is authorized to view the
+requested order. By changing the ID, a user can access other customers’ order details.
+Sample Evidence / Output:
+Authenticated as User A → Request: GET /api/orders/10483
+Response: {"order_id":10483,"customer":"User B","address":"...","items":[...],"payment_last4":"4242"}
+Potential Impact: Unauthorized disclosure of other customers’ personal data, delivery addresses, and partial payment
+information; violation of privacy expectations and possible regulatory issues.
+3. Recommendations
+For SQL Injection:
+• Use parameterized queries (prepared statements) or a trusted ORM for all database access.
+• Never concatenate user input directly into SQL strings.
+• Apply strict input validation and least-privilege database accounts as additional layers of defense.
+For Insecure Direct Object Reference (IDOR):
+• Enforce authorization checks on every request that accesses an object (order, profile, etc.).
+• Verify that the currently authenticated user owns or has explicit permission to view the requested resource.
+• Prefer indirect references (e.g., random tokens or mapped IDs) instead of sequential database primary keys where
+practical.
