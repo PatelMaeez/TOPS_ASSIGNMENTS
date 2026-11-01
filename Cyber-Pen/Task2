@@ -1,0 +1,32 @@
+1. List 5 common vulnerabilities that can be found in popular apps like Instagram, Zomato, or Paytm, and briefly describe how each one could impact users if not fixed.
+=>1. Five common vulnerabilities in apps like Instagram, Zomato, or PaytmThese are drawn from patterns in the OWASP Mobile Top 10 (2024) and real-world mobile/web app issues:
+Insecure Data Storage
+Sensitive data (session tokens, payment details, personal info, location history) stored in plaintext on the device (e.g., SharedPreferences, unencrypted SQLite, or easily accessible files).
+Impact: An attacker with physical access, malware, or a compromised device can extract the data, leading to account takeover, financial fraud, or privacy breaches.
+Insecure Communication / Lack of Proper TLS
+Traffic sent over HTTP, weak TLS configurations, missing certificate pinning, or acceptance of invalid certificates.
+Impact: Man-in-the-middle attacks can intercept credentials, payment details, or private messages, enabling account compromise or data theft.
+Broken Authentication / Authorization (including IDOR)
+Weak session management, missing server-side authorization checks, or insecure direct object references that let one user access another user’s data/orders.
+Impact: Unauthorized access to other users’ profiles, order history, payment methods, or private content; potential for account takeover or privacy violations at scale.
+Improper Credential Usage / Hardcoded Secrets
+API keys, tokens, or credentials embedded in the app binary or configuration.
+Impact: Attackers reverse-engineer the app, extract the secrets, and abuse backend APIs, leading to data breaches, abuse of paid services, or further attacks on backend systems.
+Insufficient Input/Output Validation (Injection-style issues)
+Poor sanitization of user input in search, forms, deep links, or API parameters (SQL injection, XSS in WebViews, command injection, etc.).
+Impact: Attackers can inject malicious payloads to steal data, execute unauthorized actions, escalate privileges, or compromise other users’ sessions.
+
+2. Install Nessus Essentials on your Windows or Linux system, create an account, and take a screenshot of the Nessus dashboard after your first successful login.
+=>https://cdn.lo4d.com/t/screenshot/ipr/nessus-home.png
+
+3. Configure Nessus to scan your own laptop or a test virtual machine for vulnerabilities, then generate and save the scan report as a PDF.<br><br><em><strong>Hint:</strong> Use the 'Basic Network Scan' template and select your device's IP address as the target.</em>
+=>https://www.stationx.net/wp-content/uploads/2024/03/nessus-NFS-share-vulnerability.png
+
+4. Compare Nessus and OpenVAS by listing 3 features or differences between them that would matter if you were scanning a real-world app like Flipkart or Myntra.
+=>When assessing a large e-commerce platform (complex infrastructure, many assets, compliance needs, high accuracy requirements):
+Licensing / Scale limits
+Nessus Essentials is free but capped at a small number of IP addresses (commonly cited as 5–16 depending on current Tenable policy). OpenVAS (Greenbone Community Edition) is free with no host/IP limit. For anything beyond a tiny lab, this quickly forces a paid Nessus license or a switch to OpenVAS.
+Ease of use, reporting quality, and false-positive rate
+Nessus generally offers a more polished UI, faster setup, cleaner professional reports, and lower false-positive rates. OpenVAS is fully functional but typically requires more tuning, has a steeper initial setup, and produces more noise that needs manual review—important when producing client-ready findings for a large retail target.
+Plugin coverage, update speed, and compliance features
+Both have strong vulnerability coverage, but Nessus is often preferred for rapid daily plugin updates, accuracy claims, and richer built-in compliance templates (CIS, PCI-DSS, etc.) in paid versions. OpenVAS provides good open-source coverage and full self-hosting control, but commercial/compliance features and support are stronger or more convenient on the Tenable side for enterprise-style assessments.
