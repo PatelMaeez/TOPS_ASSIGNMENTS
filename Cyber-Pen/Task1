@@ -1,0 +1,28 @@
+1. Install Nmap on your system and run a basic scan of your local network (use 'nmap -sn <your subnet>/24') to discover active devices. Save the output to a file named scan_results.txt.
+=>Starting Nmap 7.80 ( https://nmap.org ) at 2025-08-02 15:08 IST
+Nmap scan report for 203.115.7.170
+Host is up (0.095s latency).
+Not shown: 995 closed ports
+PORT       STATE    SERVICE    VERSION
+23/tcp     open     telnet     Cisco IOS telnetd
+1720/tcp   filtered h323q931
+2000/tcp   filtered cisco-sccp
+5060/tcp   filtered sip
+5061/tcp   filtered sip-tls
+Service Info: OS: IOS; Device: switch; CPE: cpe:/o:cisco:ios
+
+2. Pick any popular app you use daily (like Instagram, Zomato, or Paytm) and write one paragraph describing what information a penetration tester might try to gather during the reconnaissance phase for that app.
+=>During the reconnaissance phase for Instagram, a penetration tester would gather publicly available information such as the company’s official domains and subdomains (instagram.com and related assets), IP address ranges and hosting providers (via WHOIS, DNS lookups, and certificate transparency logs), technology stack details (web servers, CDN usage like Facebook’s infrastructure, mobile app frameworks from APK/IPA analysis or app-store metadata), publicly disclosed employee or developer information from LinkedIn/GitHub, historical data from the Wayback Machine or security advisories, API endpoints and mobile app behaviors observable through traffic analysis or public documentation, third-party integrations, and any previously reported vulnerabilities or bug-bounty scope details.
+The goal is to map the external attack surface and identify potential entry points without active exploitation.
+
+3. Use Nmap to perform a port scan on a public test server (such as scanme.nmap.org) with the command 'nmap -sS scanme.nmap.org' and list all open ports you find in your submission.<br><br><em><strong>Hint:</strong> Only scan approved test targets like scanme.nmap.org, never random IPs.</em>
+==>Command executed: nmap -sS scanme.nmap.orgOpen ports found:
+22/tcp – ssh
+80/tcp – http
+9929/tcp – nping-echo
+(1 host up; 997 closed TCP ports.)
+
+4. After completing a scan, write a short report (5-7 lines) summarizing what you discovered, including the number of hosts found, open ports, and any potential risks you noticed. Format your report as if you were submitting it to a client.
+=>Reconnaissance / Port Scan Summary – scanme.nmap.org
+
+Date: 1 November 2026One host was discovered and is currently up. Three TCP ports are open: 22 (SSH), 80 (HTTP), and 9929 (nping-echo). The presence of SSH and a web server expands the external attack surface and warrants further service version detection, banner grabbing, and vulnerability assessment in subsequent phases. No other open ports were identified in the default scan. Recommend restricting unnecessary services and applying least-privilege access controls where feasible.This scan was performed only against the approved test target scanme.nmap.org.
