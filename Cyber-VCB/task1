@@ -1,0 +1,56 @@
+1. List 3 common hacking methodologies (such as phishing, brute force, SQL injection) and for each, write one real-world example of how it could be used to compromise an account on an app like Instagram or Paytm.
+=>1. Three Hacking Methodologies with Real-World-Style Examples
+
+Phishing
+An attacker sends an SMS or email pretending to be Instagram (“Your account will be suspended — verify now”) with a link to a fake login page that looks identical to Instagram’s. The victim enters their username and password, which gets sent straight to the attacker, who then logs into the real account.
+
+Brute Force
+An attacker writes a script that automatically tries thousands of common passwords or PIN combinations against a login form (e.g., a Paytm PIN screen) until one works. This succeeds especially against short PINs (4–6 digits) or weak, reused passwords, unless the app locks the account after a few failed attempts.
+
+SQL Injection
+If an app’s login form doesn’t sanitize input, an attacker can type something like ' OR '1'='1 into the username field. If the backend builds its database query by directly pasting in user input, this can trick the database into returning a valid user record without a correct password, letting the attacker bypass login entirely.
+
+2. Simulate a simple brute force attack by writing a Python script that tries all 4-digit PIN combinations (0000-9999) to guess a preset password variable. Print the number of attempts taken to find the correct PIN.<br><br><em><strong>Constraint:</strong> Do not use external libraries for this task.</em>
+=>"""
+Educational simulation of a brute-force attack on a 4-digit PIN.
+This only tries PINs against a variable stored in this same script -
+it does not attack any real system, app, or network service.
+"""
+
+# The "correct" PIN is preset here, just like a password stored on a server.
+correct_pin = "4927"
+
+attempts = 0
+found = False
+
+for guess in range(10000):                 # 0000 to 9999
+    pin_str = str(guess).zfill(4)           # pad with leading zeros, e.g. "7" -> "0007"
+    attempts += 1
+
+    if pin_str == correct_pin:
+        found = True
+        break
+
+if found:
+    print(f"PIN cracked: {pin_str}")
+    print(f"Number of attempts taken: {attempts}")
+else:
+    print("PIN not found (this shouldn't happen for a 4-digit search space).")
+
+3. Research and describe the steps involved in a phishing attack targeting users of a popular food delivery app like Zomato or Swiggy. Include at least 4 steps and explain what the attacker and victim do at each stage.
+=>Reconnaissance (Attacker): The attacker studies how Zomato/Swiggy communicate with customers — emails about order confirmations, refund notices, delivery-partner onboarding, etc. — to make the fake message convincing.
+Bait creation and delivery (Attacker): The attacker sends an SMS/email/WhatsApp message claiming something like “Your Zomato order refund of ₹499 is pending — click to claim” with a link to a cloned login page hosted on a lookalike domain.
+Victim interaction (Victim): The victim, expecting a real refund or worried about a cancelled order, clicks the link and sees a page that looks identical to Zomato’s real login/payment screen, so they enter their login credentials or card/UPI details.
+Data capture (Attacker): The fake page silently submits the entered data to a server controlled by the attacker instead of Zomato’s actual servers.
+Exploitation (Attacker): The attacker uses the stolen credentials to log into the victim’s real account (to place fraudulent orders, access saved payment methods) or uses captured card/UPI details directly for unauthorized transactions.
+
+4. Given the following fake login page HTML code, identify and explain two ways a hacker could use this page for credential harvesting.<br><br><em><strong>Hint:</strong> Think about what happens to the data entered by the user and how it could be sent to an attacker.</em>
+=>A form action pointing to an attacker-controlled endpoint: The <form> tag’s action attribute (or a JavaScript fetch/XMLHttpRequest call) sends the submitted username/password to a server the attacker owns, rather than to the real app’s servers — even though the page visually looks identical to the legitimate one.
+Client-side scripts that log or exfiltrate input before/instead of submission: A hidden <script> block can attach an event listener (e.g., onsubmit or oninput) that copies whatever the user types into the field and sends it (via an image pixel request, a background fetch, or a hidden iframe) to the attacker, sometimes in addition to showing a fake “login successful” message so the victim doesn’t suspect anything.
+
+5. Use ChatGPT or another AI tool to generate a list of 5 recent real-world hacking incidents involving Indian apps or websites. For each incident, write one line about the hacking methodology used.
+=>Tata Electronics (June 2026): A threat group called World Leaks claimed a large-scale data extortion/exfiltration attack, reportedly leaking over 200,000 files (630+ GB), allegedly including Apple and Tesla-related trade secrets.
+Bank of Baroda (July 2026): An employee’s email account was compromised and used to access certain internal data without authorization — a case of account/credential compromise rather than a direct system breach.
+NPCIL-linked leak (reported July 2026): The group “World Leaks” claimed exposure of files related to the Kudankulam Nuclear Power Plant, again via a data-extortion-style breach.
+Voney app (reported Feb 2026): A threat actor using the handle @N1KA claimed a breach affecting over 152,000 users, allegedly leaking sensitive bank-linked data — consistent with exploitation of a vulnerable backend or weak API security.
+MoChhatua (Indian local governance app): Hackers claimed a breach of this regional public-distribution-services app, in a pattern similar to other Indian government-app breaches this year, generally attributed to poor backend/API security on public sector platforms.
