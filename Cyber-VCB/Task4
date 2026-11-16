@@ -1,0 +1,13 @@
+1. Use the nslookup command to find the IP address of www.flipkart.com and note down any additional DNS information you discover.
+
+
+2. Perform a Google dorking search to find any public Instagram profiles from your college domain (e.g., site:instagram.com "@yourcollege.ac.in") and list the first 3 results you find.<br><br><em><strong>Hint:</strong> Try different queries to refine your results.</em>
+
+
+3. Use the whois tool (online or command line) to gather registration details for the domain zomato.com and summarize the organization name, country, and registration date.
+
+
+4. Identify all subdomains of myntra.com using a free online tool like SecurityTrails or crt.sh and list at least 3 subdomains you find.
+
+
+5. Pick any one method of footprinting (DNS lookup, whois, Google dorking, subdomain enumeration) and record a short screen capture (max 2 minutes) showing your process and findings for a popular Indian app domain (not the same as above).
