@@ -1,0 +1,33 @@
+1. List 5 different types of cyber security threats you might encounter while using popular apps like Instagram, WhatsApp, or Zomato, and give a real-life example for each.
+=>Threat	Example
+Phishing	Fake “WhatsApp Gold” or “WhatsApp Pink” update messages circulated via forwarded links, tricking users into installing malware disguised as a new feature.
+Account Takeover / Credential Stuffing	Attackers reuse leaked email-password combos from unrelated breaches to log into Instagram accounts where users reused the same password.
+Malicious Third-Party Apps/Plugins	Fake “Instagram follower booster” apps that ask for your login credentials, then use the account to spam followers or sell access.
+Man-in-the-Middle (MITM) on Public Wi-Fi	A user placing a Zomato order over unsecured airport/café Wi-Fi can have their session data or payment details intercepted if the connection isn’t properly encrypted.
+SIM Swap Fraud	Attackers trick a telecom provider into issuing a duplicate SIM for a victim’s number, then use OTPs sent to that number to reset passwords on linked apps like Paytm or banking apps.
+
+2. Simulate a phishing attack scenario by designing a fake login page for an app you use (for example, a mock Instagram or Flipkart login screen in HTML). Explain how a user could be tricked and what signs would help spot the threat.<br><br><em><strong>Hint:</strong> Do not collect or submit any real credentials—just create the page design and description.</em>
+=>The message would typically arrive via SMS, email, or a shared link claiming something urgent (“your account will be disabled,” “you’ve won a prize,” etc.), creating pressure to act fast without checking carefully.
+The page’s layout, logo, colors, and fonts are copied closely enough that a quick glance looks legitimate.
+
+Signs that would help spot it (all deliberately present in the demo above):
+
+Misspelled brand name (“Instagrom” instead of “Instagram”) — a classic phishing tell.
+Suspicious URL — a domain like instagrom-login-secure.tk instead of instagram.com, often using odd top-level domains (.tk, .xyz) or extra words stuffed into the domain.
+No HTTPS padlock, or a certificate warning in the browser.
+Unsolicited urgency in the message that brought you there (fear of account suspension, fake prize, fake refund).
+Generic or broken form behavior — real apps rarely ask you to “log in again” from a random link you didn’t initiate yourself.
+
+3. Research and write a short report (150-200 words) on a recent cyber attack that affected a major Indian tech platform (such as Paytm, IRCTC, or PhonePe). Describe the type of threat, how it was carried out, and what was done to fix it.
+=>Bank of Baroda Data Breach (July 2026)
+
+In July 2026, India’s state-owned Bank of Baroda confirmed a cybersecurity incident after a threat group calling itself TripleX claimed to have leaked roughly 1 TB of the bank’s data on the dark web, including customer details, Aadhaar numbers, loan records, and internal audit documents. Preliminary findings indicated the breach originated from a compromised employee email system rather than the bank’s core banking network. The threat group was said to be behind the breach, and the bank acknowledged that an employee’s lack of digital hygiene had led to the email account being compromised, triggering the data breach. 
+etvbharat
+deccanherald
+
+This falls under the category of account/credential compromise (likely via phishing or weak password hygiene) rather than a direct exploitation of banking infrastructure.
+
+The bank stated the matter was promptly identified and immediate containment measures were implemented, and it maintained that its core banking system remained secure as a forensic probe began. The incident highlights a recurring lesson in cybersecurity: even a single weak link — one employee’s inbox — can expose large volumes of sensitive organizational data, regardless of how secure the core systems are. 
+
+4. Pick any one cyber security threat (like ransomware, phishing, or DDoS) and create a simple infographic or poster (hand-drawn or digital) that explains how it works, who is at risk, and how to prevent it.
+=>Malicious software that locks or encrypts your files, then demands payment (usually cryptocurrency) to restore access.
