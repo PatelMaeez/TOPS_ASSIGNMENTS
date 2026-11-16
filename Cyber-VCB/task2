@@ -1,0 +1,26 @@
+1. Create a table listing and describing the main types of hackers (such as white hat, black hat, grey hat, script kiddie, hacktivist, and state-sponsored) and give one real-world example or news headline for each type.
+=>1. Types of Hackers — Table
+Type	Description	Real-World Example / Headline
+White Hat	Ethical hackers who test systems with permission to find and fix vulnerabilities, often employed or hired by companies (“penetration testers” or bug bounty hunters)	Companies like Google and Meta run public bug bounty programs; researchers are regularly credited (and paid) for responsibly disclosing flaws in products like Chrome or Facebook
+Black Hat	Hackers who break into systems illegally for personal gain, theft, or damage, without authorization	The 2017 Equifax breach, where attackers exploited an unpatched vulnerability to steal data of ~147 million people
+Grey Hat	Hackers who probe or access systems without permission (technically illegal) but without malicious intent — often to expose a flaw, sometimes disclosing it publicly instead of privately	Researchers who find and publicly tweet about a company’s unpatched vulnerability before the company fixes it, bypassing responsible disclosure norms
+Script Kiddie	Inexperienced hackers who use pre-built tools or scripts written by others, without deep technical understanding, often just to cause disruption or show off	Low-skill DDoS attacks on gaming servers or school websites using downloaded “booter” tools
+Hacktivist	Hackers motivated by political or social causes, using hacking as a form of protest (website defacement, leaks, DDoS)	The collective “Anonymous” defacing government or corporate websites in protest of specific policies or events
+
+2. Pick any popular app you use (Instagram, Paytm, Zomato, etc.) and describe a scenario for each type of hacker: how would a white hat, black hat, and grey hat hacker interact with this app? Write 2-3 sentences per scenario.
+=>White Hat: A security researcher signs up for Instagram’s official bug bounty program and discovers that a certain API endpoint leaks private account data under specific conditions. They responsibly report it directly to Meta’s security team with a proof-of-concept, and receive a bounty payout once it’s patched.
+
+Black Hat: An attacker creates a phishing page mimicking Instagram’s login screen and distributes it via fake “copyright violation” emails. Victims who enter their credentials have their accounts stolen and used for scams, spam, or sold on dark web marketplaces.
+
+Grey Hat: A hobbyist hacker finds that Instagram’s password-reset flow has a timing flaw that could allow account takeovers, but instead of privately reporting it, they post a proof-of-concept on Twitter/X to pressure Instagram into fixing it faster — technically unauthorized testing, but without any intent to actually harm users.
+
+3. Given the following user actions, classify each as white hat, black hat, grey hat, or other: reporting a bug to the company, stealing user data, testing your own account for vulnerabilities, defacing a website for a political cause, and participating in a government cyber operation.<br><br><em><strong>Hint:</strong> Use your table from Task 1 for quick reference.</em>
+=>Action	Classification
+Reporting a bug to the company	White Hat
+Stealing user data	Black Hat
+Testing your own account for vulnerabilities	White Hat (or simply “other/benign” — testing your own property isn’t unauthorized, but the mindset/skillset is white-hat style)
+Defacing a website for a political cause	Hacktivist
+Participating in a government cyber operation	State-Sponsored
+
+4. Interview-style: Imagine you are explaining to your non-technical friend the difference between a white hat and a black hat hacker using a cricket match analogy. Write your explanation in 4-5 sentences.
+=>Imagine a cricket team hires a video analyst to study their own batting weaknesses by bowling at them in the nets, pointing out flaws so they can fix their technique before a real match — that’s a white hat hacker: someone with permission, working to make the team stronger. A black hat hacker, on the other hand, is like someone who sneaks into the opposing team’s dressing room the night before the match to steal their game plan or sabotage their equipment, purely to make them lose — with no permission and bad intent. Both people might have similar skills in understanding the game, but the white hat uses them to help within the rules, while the black hat breaks the rules entirely for personal advantage or harm. So next time you hear “hacker,” think of it less as one single villain and more like asking “are they practicing with the team, or sabotaging the opponent?”
