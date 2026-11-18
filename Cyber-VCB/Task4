@@ -1,13 +1,21 @@
 1. Use the nslookup command to find the IP address of www.flipkart.com and note down any additional DNS information you discover.
-
+=>Flipkart’s infrastructure resolves to IP ranges owned by AS9752 – Flipkart Internet Pvt Ltd (e.g., 163.53.76.x, 103.243.32.x), based in India.
+Flipkart runs its own Autonomous System (ASN), meaning it manages a large chunk of its own IP address space rather than fully relying on a third-party CDN — fairly unusual and indicates serious infrastructure investment.
+Related hostnames discovered: 2.payments.flipkart.com, dl.flipkart.com, seller.flipkart.com, affiliate.flipkart.com, blog.flipkart.com, advertising.flipkart.com.
 
 2. Perform a Google dorking search to find any public Instagram profiles from your college domain (e.g., site:instagram.com "@yourcollege.ac.in") and list the first 3 results you find.<br><br><em><strong>Hint:</strong> Try different queries to refine your results.</em>
-
+site:instagram.com "@yourcollege.ac.in"
+site:instagram.com "yourcollege" bio
+site:instagram.com inurl:yourcollegeshortname
 
 3. Use the whois tool (online or command line) to gather registration details for the domain zomato.com and summarize the organization name, country, and registration date.
-
+=Organization	Zomato Media Pvt. / Zomato Ltd. (legal entity: now renamed Eternal Limited, CIN: L93030DL2010PLC198141)
+Country	India (registrant country listed as IN)
+Registration (Creation) Date	February 24, 2006
+Registrar privacy	Most contact fields are redacted/hidden behind WHOIS privacy (registered via 101Domain); only the registrant country is publicly visible
+Hosting	Uses Amazon Web Services (AWS) nameservers and infrastructure
 
 4. Identify all subdomains of myntra.com using a free online tool like SecurityTrails or crt.sh and list at least 3 subdomains you find.
-
-
-5. Pick any one method of footprinting (DNS lookup, whois, Google dorking, subdomain enumeration) and record a short screen capture (max 2 minutes) showing your process and findings for a popular Indian app domain (not the same as above).
+=>www.myntra.com — main web storefront
+touch.myntra.com — mobile/touch-optimized site (legacy m-site)
+partners.myntra.com — Myntra’s seller/partner onboarding portal
