@@ -1,0 +1,37 @@
+1. Use Google search operators to find publicly accessible PDF files about IPL cricket rules. List the exact search query you used and share 3 working links you found.
+=>filetype:pdf IPL rules regulations
+
+3 working links found (all official BCCI/IPL documents, publicly hosted on iplt20.com):
+
+TATA IPL 2026 – Clothing and Equipment Regulations
+https://documents.iplt20.com/bcci/documents/1774244844039_TATA_IPL_2026-Clothing_&_Equipment_Regulation.pdf
+TATA IPL 2024 – Match Playing Conditions
+https://documents.iplt20.com/bcci/documents/1740994305548_1710742982442_TATA IPL 2024 Match Playing Conditions .pdf
+IPL Anti-Discrimination Code – 2025
+https://testcf-documents.iplt20.com/bcci/documents/1742302814083_Anti_Discrimination_Code.pdf
+
+
+2. Search for login pages of Zomato by using Google dorking techniques. Write the search query you used and explain why it works.<br><br><em><strong>Hint:</strong> Try using 'inurl:login site:zomato.com'.</em>
+=>inurl:login site:zomato.com
+Why it works:
+site:zomato.com restricts Google’s index to only pages hosted on that domain.
+inurl:login filters those results down to URLs that literally contain the string “login” in the path (e.g., /login, /auth/login).
+Combined, this quickly surfaces the authentication entry point without manually browsing the site.
+
+3. Find exposed Excel files containing the word 'playlist' from Spotify-related domains using Google hacking methods. Share your search query and one result (URL) you found.
+>filetype:xlsx "playlist" site:spotify.com
+or more broadly, without restricting to one domain:
+filetype:xls OR filetype:xlsx "playlist" intext:spotify
+Why this pattern is used in real Google-hacking databases: filetype: narrows results to spreadsheet files, and a keyword like "playlist" targets files whose content (not just filename) mentions it — useful because organizations sometimes accidentally leave internal spreadsheets indexable if they’re uploaded to a public-facing storage bucket or CMS without access controls.
+
+4.Identify possible exposed admin panels for any Indian e-commerce site (like Flipkart or Myntra) using Google hacking. Write the dork you used and explain what makes such panels risky if left open.<br><br><em><strong>Hint:</strong> Use 'intitle:admin site:flipkart.com' or similar.</em>
+=>The dork pattern:
+intitle:admin site:flipkart.com
+or variants like:
+inurl:admin intitle:"login" site:myntra.com
+Why it works, mechanically: intitle: matches text in the page’s <title> tag (admin panels are frequently titled generically, e.g., “Admin Login” or “Dashboard”), which, combined with site:, narrows the hunt to one organization’s indexed pages only.
+Why such panels are risky if actually left open:
+Admin panels usually offer far more privilege than a customer login — user data access, inventory/pricing control, order management, sometimes even database or server-level actions.
+If an admin panel is accidentally indexable by Google, it often means it also lacks IP allow-listing, VPN gating, or other network-level protections — meaning anyone who finds the URL can attempt to log in, not just view it.
+Combined with weak/default/reused admin credentials (common in smaller deployments), an exposed panel turns a “just visible” issue into a full account/data compromise very quickly.
+This is why security teams run their own periodic Google-dork audits of their domains — to catch these before attackers do.
