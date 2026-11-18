@@ -1,0 +1,14 @@
+1. Install Nmap on your system and use it to scan your local Wi-Fi network for all connected devices. List the IP addresses and device names (if available) found in the scan.
+=>
+
+2. Use the 'arp -a' command in your terminal or command prompt to display the current ARP table. Identify at least two devices on your network and write down their IP and MAC addresses.
+=>
+
+3. Perform a port scan on your own computer using Nmap to find which common ports (like 22, 80, 443) are open. Summarize your findings in a table with port number, service, and status (open/closed).
+=>
+
+4. Simulate a Zomato-style scenario: Imagine you are a security tester for a food delivery app. Use Nmap to check if the test server at 'scanme.nmap.org' has any open ports that could be vulnerable. List any ports found and suggest what kind of services might be running on them.<br><br><em><strong>Hint:</strong> Use the command 'nmap scanme.nmap.org' and research the common services for the ports you find.</em>
+=>
+
+5. Refactor your Nmap scan command to only show open ports and their services, hiding all closed ports from the output.<br><br><em><strong>Constraint:</strong> Use the '-open' or '-sV' flag in your command to filter results.</em>
+=>
