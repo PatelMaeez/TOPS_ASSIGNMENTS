@@ -1,0 +1,35 @@
+1. Use Google advanced search operators to find all PDF files related to 'Java interview questions' from the site geeksforgeeks.org and list 3 working search queries you used.
+=>3 search queries tried:
+filetype:pdf "java interview questions" site:geeksforgeeks.org
+filetype:pdf site:geeksforgeeks.org java
+site:geeksforgeeks.org filetype:pdf interview questions
+Working PDF links:
+https://media.geeksforgeeks.org/courses/syllabus/eb7642a7fe5eaf77a4e1153fab34739e.pdf — Java Foundation course syllabus/brochure
+https://media.geeksforgeeks.org/courses/Brochure/java-foundation.pdf — Java Foundation course brochure
+https://media.geeksforgeeks.org/wp-content/cdn-uploads/20231207181624/Interview-101-for-Working-Professionals-Syllabus.pdf — Interview prep syllabus (covers Java, DSA, OOAD)
+
+2. Search for Instagram bug bounty reports from the past year by using Google search operators to restrict results to the site hackerone.com and only show pages updated in 2023.<br><br><em><strong>Hint:</strong> Use 'site:' and 'inurl:' along with a date filter.</em>
+=>Search queries used:
+site:hackerone.com inurl:reports instagram 2023
+site:hackerone.com "Instagram" after:2023-01-01 before:2024-01-01
+inurl:hackerone.com/reports "instagram" 2023
+Why the site: + inurl: + date combination works:
+site:hackerone.com restricts results to HackerOne’s domain.
+inurl:reports narrows it specifically to individual disclosed vulnerability report pages (HackerOne’s URL pattern is hackerone.com/reports/<id>), rather than blog posts or marketing pages.
+Google’s after:/before: date operators (or the UI’s “Tools → Any time → Custom range”) filter by the page’s indexed/crawled date, approximating “updated in 2023.”
+
+3. Find Flipkart coupon pages that are not linked from the main site by using Google dorking techniques to search for 'coupon' in the URL but exclude results containing 'expired'.
+=>inurl:coupon site:flipkart.com -expired
+Why it works:
+site:flipkart.com restricts results to Fipkart’s own domain only.
+inurl:coupon targets URLs that literally contain “coupon” in the path (like flipkart.com/myrewards?enableCoupon... or bank-partnership offer pages).
+-expired excludes pages whose text contains “expired,” filtering out stale deal listings so you mostly see pages Google still indexes as live/current.
+
+4. Use Google search operators to discover public Google Drive folders containing IPL cricket match highlights and list 2 queries that return actual folders.<br><br><em><strong>Hint:</strong> Try using 'site:drive.google.com' and filetype:mp4 or keywords like 'IPL'.</em>
+==>site:drive.google.com filetype:mp4 "IPL"
+intitle:"index of" "IPL" site:drive.google.com
+
+5. Use ChatGPT to generate 3 unique Google advanced search queries that could help you find leaked email addresses related to any Indian fintech app (like Paytm or PhonePe) and test at least one of them in Google. Paste the queries and describe your results.
+=>site:pastebin.com "paytm.com" email
+filetype:csv OR filetype:xlsx "phonepe" email
+intext:"@paytm.com" intext:password site:pastebin.com
