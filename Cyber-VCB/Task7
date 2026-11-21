@@ -1,0 +1,51 @@
+1. <p>Run a ping sweep of the host-only subnet from 'lab_client01' for a fictional hotel's lab, covering 192.168.56.1 to 192.168.56.254 once, and save the live addresses in 'hotel_sweep.txt'. Hint: `for i in $(seq 1 254); do (ping -c1 -W1 192.168.56.$i >/dev/null && echo 192.168.56.$i up) & done; wait`. Constraint: Scan only your own host-only subnet, never any other network.</p>
+=>
+First identify your Kali IP/subnet:
+● ip addr
+For example, if your Kali VM has:
+● 192.168.29.65/24
+scan only that authorized subnet:
+● nmap -sn 192.168.29.0/24 -oN network_scan.txt
+View the saved result:
+● cat network_scan.txt
+This performs host discovery and saves the results in:
+● network_scan.txt
+
+
+2. <p>Build 'hotel_inventory.csv' with columns ip, mac and role for every live host from your sweep, labelling 'lab_server01' as front_desk_server, 'lab_client01' as reception_pc and your laptop's host-only address as management_pc. Hint: Read MAC addresses with `ip neigh show` after the sweep, and the client's own with `ip -br link`.</p>
+=>#!/bin/bash
+# Step A: run this ON lab_server01 first, to restore normal ping behavior:
+#   sudo sysctl -w net.ipv4.icmp_echo_ignore_all=0
+#
+# Step B: then run THIS script ON lab_client01.
+# Requires hotel_sweep.txt and hidden_host_test.txt (from steps 1 and 3)
+# to already exist in the current directory.
+
+{
+  echo "######################################################"
+  echo "# FIRST SWEEP (hotel_sweep.txt) - before hiding anything"
+  echo "######################################################"
+  cat hotel_sweep.txt
+  echo
+
+
+
+echo "Combined proof written to network_scan_proof.txt:"
+cat network_scan_proof.txt
+
+3. <p>Hide 'lab_server01' from pings with `sudo sysctl -w net.ipv4.icmp_echo_ignore_all=1`, re-run the sweep from 'lab_client01', then run `ping -c 2` to its IP and show that it still appears in `ip neigh show`. Save all outputs as 'hidden_host_test.txt'. Hint: Ignoring ICMP does not stop ARP replies on the same subnet.</p>
+=> echo "######################################################"
+  echo "# HIDDEN HOST TEST (hidden_host_test.txt)"
+  echo "######################################################"
+  cat hidden_host_test.txt
+  echo
+
+4. <p>Finish by restoring ping on 'lab_server01' with `sudo sysctl -w net.ipv4.icmp_echo_ignore_all=0` and repeating the sweep so all your hosts are listed again. Save the first sweep, the hidden-host test and the final sweep in 'network_scan_proof.txt' and submit it with the other files.</p>
+=>  echo "######################################################"
+  echo "# FINAL SWEEP - after restoring ping on lab_server01"
+  echo "######################################################"
+  for i in $(seq 1 254); do
+    (ping -c1 -W1 192.168.56.$i >/dev/null 2>&1 && echo 192.168.56.$i up) &
+  done
+  wait
+} > network_scan_proof.txt
