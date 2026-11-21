@@ -1,5 +1,16 @@
 1. Install Nmap on your system and use it to scan your local Wi-Fi network for all connected devices. List the IP addresses and device names (if available) found in the scan.
-=>
+=>Task 2 — Scan your own local network
+First identify your Kali IP/subnet:
+● ip addr
+For example, if your Kali VM has:
+● 192.168.29.65/24
+scan only that authorized subnet:
+● nmap -sn 192.168.29.0/24 -oN network_scan.txt
+View the saved result:
+● cat network_scan.txt
+This performs host discovery and saves the results in:
+● network_scan.txt
+
 
 2. Use the 'arp -a' command in your terminal or command prompt to display the current ARP table. Identify at least two devices on your network and write down their IP and MAC addresses.
 =>
