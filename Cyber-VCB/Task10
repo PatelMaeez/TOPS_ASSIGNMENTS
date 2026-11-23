@@ -1,0 +1,88 @@
+1. <p>Prepare a VAPT target for a fictional BPO floor on 'lab_server01': create user 'bpo_app' (password 'Tops@Lab123'), '/srv/bpo_portal/config.env' containing 'APP_USER=bpo_app' and 'APP_PASS=Tops@Lab123', and serve the folder on port 8080 with `python3 -m http.server`. Write 'vapt_scope.txt' naming only 'lab_server01' and 'lab_client01' as in scope, with today's date.</p>
+=>sudo useradd -m bpo_app
+echo "bpo_app:Tops@Lab123" | sudo chpasswd
+
+sudo mkdir -p /srv/bpo_portal
+cat <<'EOF' | sudo tee /srv/bpo_portal/config.env
+APP_USER=bpo_app
+APP_PASS=Tops@Lab123
+EOF
+
+cd /srv/bpo_portal && python3 -m http.server 8080 &
+
+vapt_scope.txt:
+
+VAPT Scope - $(date +%Y-%m-%d)
+In scope:
+  - lab_server01
+  - lab_client01
+No other host is authorized for this engagement.
+
+2. <p>Do the vulnerability assessment half from 'lab_client01': confirm the server is live with `ping`, check ports 22 and 8080 with `/dev/tcp`, and use `curl` to show that '/config.env' is publicly readable. Save the commands and outputs in 'vapt_va_evidence.txt'. Constraint: Stay inside the hosts named in your scope file.</p>
+=>{
+  echo "=== Confirm server is live ==="
+  ping -c 3 lab_server01
+
+  echo "=== Port 22 check ==="
+  timeout 2 bash -c "echo > /dev/tcp/lab_server01/22" && echo "22/tcp open" || echo "22/tcp closed/filtered"
+
+  echo "=== Port 8080 check ==="
+  timeout 2 bash -c "echo > /dev/tcp/lab_server01/8080" && echo "8080/tcp open" || echo "8080/tcp closed/filtered"
+
+  echo "=== Publicly readable config.env ==="
+  curl -s http://lab_server01:8080/config.env
+} > vapt_va_evidence.txt
+
+cat vapt_va_evidence.txt
+
+3<p>Do the penetration-testing half: from 'lab_client01', log in over SSH as 'bpo_app' using the password you read from '/config.env', run `id` and `hostname`, then exit. Save the terminal output in 'vapt_pt_evidence.txt'. Constraint: Use only the credentials found in the exposed file; no password guessing.</p>
+=>{
+  echo "=== Credentials obtained from exposed config.env ==="
+  echo "APP_USER=bpo_app / APP_PASS=Tops@Lab123 (read via curl in VA step)"
+
+  echo "=== SSH login using those exact credentials ==="
+  sshpass -p 'Tops@Lab123' ssh -o StrictHostKeyChecking=no bpo_app@lab_server01 'id; hostname'
+} > vapt_pt_evidence.txt
+
+cat vapt_pt_evidence.txt
+
+4. <p>Finish by writing 'vapt_report_bpo.txt' with exactly four headings: Scope, Method, Findings and Recommendations. Findings must hold two entries (exposed config file, credential reuse into SSH), each with severity, evidence file name and one fix. Then remove 'config.env' from the served folder, re-run the `curl` to show 404, and paste it under Recommendations. Submit all files.</p>
+=>Scope
+-----
+lab_server01, lab_client01 (per vapt_scope.txt, dated <today>).
+
+Method
+------
+Vulnerability assessment performed from lab_client01 using ping, /dev/tcp
+port checks, and curl (vapt_va_evidence.txt). Penetration test performed
+by reusing the credential found in the exposed config file to authenticate
+over SSH (vapt_pt_evidence.txt). No automated scanners or password
+guessing were used.
+
+Findings
+--------
+1. Exposed configuration file over HTTP
+   Severity: High
+   Evidence file: vapt_va_evidence.txt
+   Fix: Remove config.env (or any secret) from any web-served directory;
+        store credentials in environment variables or a secrets manager,
+        never in a world-readable served folder.
+
+2. Credential reuse enabling SSH access
+   Severity: High
+   Evidence file: vapt_pt_evidence.txt
+   Fix: Rotate the bpo_app password immediately since it was exposed;
+        enforce unique, non-shared credentials between app config and
+        OS-level accounts; consider key-based SSH auth instead of
+        passwords.
+
+Recommendations
+----------------
+Remove the exposed file and verify remediation:
+
+    sudo rm /srv/bpo_portal/config.env
+    curl -i http://lab_server01:8080/config.env
+
+Expected result after fix (paste your actual output below this line):
+
+    HTTP/1.0 404 File not found
