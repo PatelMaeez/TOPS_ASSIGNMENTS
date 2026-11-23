@@ -1,0 +1,66 @@
+1. <p>Create a VirtualBox VM named 'lab_server01' for a fictional CA firm with remote staff: 1 vCPU, 1024 MB RAM, a 12 GB dynamically allocated disk, Adapter 1 on NAT and Adapter 2 on Host-only. Install the Ubuntu Server ISO provided by TOPS with OpenSSH server enabled and a user 'labadmin' (password 'Tops@Lab123'). Hint: If no host-only network exists, create one in VirtualBox's network manager with DHCP enabled; the default range is 192.168.56.0/24. Constraint: Install no desktop environment.</p>
+==>VBoxManage createvm --name lab_server01 --ostype Ubuntu_64 --register
+VBoxManage modifyvm lab_server01 --cpus 1 --memory 1024
+VBoxManage createhd --filename lab_server01.vdi --size 12288 --variant Standard
+VBoxManage storagectl lab_server01 --name "SATA" --add sata
+VBoxManage storageattach lab_server01 --storagectl "SATA" --port 0 --device 0 --type hdd --medium lab_server01.vdi
+
+# Host-only network (create if missing)
+VBoxManage list hostonlyifs | grep -q . || VBoxManage hostonlyif create
+VBoxManage hostonlyif ipconfig vboxnet0 --ip 192.168.56.1 --netmask 255.255.255.0
+VBoxManage dhcpserver add --ifname vboxnet0 --ip 192.168.56.100 --netmask 255.255.255.0 --lowerip 192.168.56.101 --upperip 192.168.56.199 --enable
+
+VBoxManage modifyvm lab_server01 --nic1 nat
+VBoxManage modifyvm lab_server01 --nic2 hostonly --hostonlyadapter2 vboxnet0
+
+VBoxManage storagectl lab_server01 --name "IDE" --add ide
+VBoxManage storageattach lab_server01 --storagectl "IDE" --port 0 --device 0 --type dvddrive --medium /path/to/ubuntu-server.iso
+
+VBoxManage startvm lab_server01
+
+2. <p>Connect to 'lab_server01' from your laptop terminal with `ssh labadmin@<host-only IP>`, then set its hostname to 'lab-server01' using `hostnamectl set-hostname` and confirm that the host-only address shows in `ip -br addr`. Hint: Read the address first from the VM console; the host-only address normally starts with 192.168.56.</p>
+=>From the VM console (after boot): ip -br addr → note the 192.168.56.x address.
+
+From laptop:
+
+ssh labadmin@192.168.56.x
+sudo hostnamectl set-hostname lab-server01
+ip -br addr        # confirm host-only IP shows under the adapter
+
+3. <p>Create a full clone of 'lab_server01' named 'lab_client01' with new MAC addresses generated, boot both VMs, set the clone's hostname to 'lab-client01', and prove that each VM can ping the other's host-only IP. Hint: If both VMs show the same host-only IP, run `sudo rm /etc/machine-id && sudo systemd-machine-id-setup` on the clone and reboot it.</p>
+=>VBoxManage clonevm lab_server01 --name lab_client01 --register
+# "new MAC addresses" is the default clone behavior; confirm with:
+VBoxManage showvminfo lab_client01 | grep -i mac
+
+VBoxManage startvm lab_server01
+VBoxManage startvm lab_client01
+
+4. <p>Finish by powering off 'lab_server01' and taking a snapshot named 'clean_base', then start it, create '/home/labadmin/snapshot_test.txt', power off and restore the snapshot so the file is gone. Save `systemd-detect-virt`, `ip -br addr`, `ls /home/labadmin`, `VBoxManage list vms` and `VBoxManage snapshot lab_server01 list` outputs in 'virtualization_proof.txt' and submit it.</p>
+==>VBoxManage controlvm lab_server01 poweroff
+VBoxManage snapshot lab_server01 take clean_base
+
+VBoxManage startvm lab_server01
+ssh labadmin@<its-ip> 'touch /home/labadmin/snapshot_test.txt; ls /home/labadmin'
+
+VBoxManage controlvm lab_server01 poweroff
+VBoxManage snapshot lab_server01 restore clean_base
+VBoxManage startvm lab_server01
+
+Collect into virtualization_proof.txt:
+
+{
+  echo "=== systemd-detect-virt (run inside the VM) ==="
+  ssh labadmin@<ip> systemd-detect-virt
+
+  echo "=== ip -br addr (inside VM) ==="
+  ssh labadmin@<ip> ip -br addr
+
+  echo "=== ls /home/labadmin (after restore - file should be GONE) ==="
+  ssh labadmin@<ip> ls /home/labadmin
+
+  echo "=== VBoxManage list vms ==="
+  VBoxManage list vms
+
+  echo "=== VBoxManage snapshot list ==="
+  VBoxManage snapshot lab_server01 list
+} > virtualization_proof.txt
