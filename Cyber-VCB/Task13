@@ -1,0 +1,58 @@
+1. <p>Launch a local IaaS-style instance for a fictional kirana chain's order portal: create a linked clone of 'lab_server01' from its 'clean_base' snapshot named 'cloud_instance01' with `VBoxManage clonevm lab_server01 --snapshot clean_base --options link --name cloud_instance01 --register`, set 1 vCPU and 768 MB RAM with `VBoxManage modifyvm`, and start it. Constraint: Keep 'lab_server01' and 'lab_client01' powered off while it runs.</p>
+=>VBoxManage clonevm lab_server01 --snapshot clean_base --options link --name cloud_instance01 --register
+VBoxManage modifyvm cloud_instance01 --cpus 1 --memory 768
+VBoxManage controlvm lab_server01 poweroff   # ensure both source VMs stay off
+VBoxManage controlvm lab_client01 poweroff
+VBoxManage startvm cloud_instance01
+
+2. <p>Deploy a static page on 'cloud_instance01': create '/srv/kirana_site/index.html' with the heading 'Kirana Bazaar Order Status' and three fictional order IDs, serve it with `python3 -m http.server 8080 --directory /srv/kirana_site`, and open it from your laptop browser at the instance's host-only IP. Hint: Create the folder with `sudo mkdir -p` and `sudo chown labadmin`, and keep the server running in a second SSH session.</p>
+=>ssh labadmin@<cloud_instance01-ip>
+sudo mkdir -p /srv/kirana_site
+sudo chown labadmin /srv/kirana_site
+cat > /srv/kirana_site/index.html <<'EOF'
+<!DOCTYPE html>
+<html><head><title>Kirana Bazaar Order Status</title></head>
+<body>
+<h1>Kirana Bazaar Order Status</h1>
+<ul>
+  <li>Order #KB-1001 — Dispatched</li>
+  <li>Order #KB-1002 — Packed</li>
+  <li>Order #KB-1003 — Delivered</li>
+</ul>
+</body></html>
+EOF
+
+3 <p>Estimate the monthly cost of the smallest general-purpose Linux instance with at least 1 GB RAM, running 24x7 in an India region, using the public pricing calculators of AWS, Azure and Google Cloud. Save 'aws_estimate.png', 'azure_estimate.png', 'gcp_estimate.png' and a 'cloud_cost_comparison.txt' with one line per provider: instance type and monthly estimate. Constraint: Do not sign in, create an account or start a trial.</p>
+=>Visit each provider's public calculator (no login required):
+
+AWS: calculator.aws → EC2 → India (Mumbai) region → smallest general-purpose instance with ≥1 GB RAM (typically t3.micro or t4g.micro, 1 GB RAM) → 24x7 usage.
+Azure: azure.microsoft.com/pricing/calculator → Virtual Machines → Central India → B1s (1 GB RAM) → 730 hrs/month.
+GCP: cloud.google.com/products/calculator → Compute Engine → asia-south1 (Mumbai) → e2-small (2 GB, smallest meeting ≥1 GB) or e2-micro if it meets the RAM minimum → 24x7.
+
+Screenshot each result page: aws_estimate.png, azure_estimate.png, gcp_estimate.png.
+
+cloud_cost_comparison.txt:
+
+AWS:   t3.micro (1 vCPU, 1 GB RAM), Mumbai region, 24x7 — approx $X.XX/month
+Azure: B1s (1 vCPU, 1 GB RAM), Central India, 24x7 — approx $X.XX/month
+GCP:   e2-small (2 vCPU, 2 GB RAM), asia-south1, 24x7 — approx $X.XX/month
+
+4. <p>Finish by proving the instance lifecycle from your laptop: `curl -i --max-time 5 http://<instance IP>:8080/` must return 200, power off 'cloud_instance01' and the same command must fail, then start it, restart the page server and the command must return 200 again. Save all three outputs and `VBoxManage list vms` in 'cloud_basics_proof.txt' and submit it with the earlier files.</p>
+=>{
+  echo "=== curl while instance is UP ==="
+  curl -i --max-time 5 http://<cloud_instance01-ip>:8080/
+
+  VBoxManage controlvm cloud_instance01 poweroff
+
+  echo "=== curl while instance is OFF (expect failure/timeout) ==="
+  curl -i --max-time 5 http://<cloud_instance01-ip>:8080/
+
+  VBoxManage startvm cloud_instance01
+  # SSH back in and restart: cd /srv/kirana_site && python3 -m http.server 8080 --directory /srv/kirana_site &
+
+  echo "=== curl after restart (expect 200 again) ==="
+  curl -i --max-time 5 http://<cloud_instance01-ip>:8080/
+
+  echo "=== VBoxManage list vms ==="
+  VBoxManage list vms
+} > cloud_basics_proof.txt
