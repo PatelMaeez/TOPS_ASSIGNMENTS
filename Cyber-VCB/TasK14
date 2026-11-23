@@ -1,0 +1,67 @@
+1. <p>Build a local storage 'bucket' for a fictional Surat textile showroom on 'lab_server01': create '/srv/buckets/surat-textiles' with sub-folders 'public' and 'private', put 'saree_01.txt' and 'saree_02.txt' in 'public', and place 'invoices_2026.csv' with five fictional rows in 'private' as the showroom's records table. Hint: `sudo mkdir -p /srv/buckets/surat-textiles/{public,private}`. Constraint: Use folders and files only; install no storage software.</p>
+=>sudo mkdir -p /srv/buckets/surat-textiles/{public,private}
+sudo touch /srv/buckets/surat-textiles/public/saree_01.txt
+sudo touch /srv/buckets/surat-textiles/public/saree_02.txt
+
+cat <<'EOF' | sudo tee /srv/buckets/surat-textiles/private/invoices_2026.csv
+invoice_id,customer,amount,date,status
+INV-2026-001,Fictional Textiles Pvt Ltd,45000,2026-01-10,Paid
+INV-2026-002,Surat Silk Traders,32000,2026-02-14,Pending
+INV-2026-003,Gujarat Garments Co,78000,2026-03-02,Paid
+INV-2026-004,Textile Mart,21000,2026-04-19,Overdue
+INV-2026-005,Weave House,56000,2026-05-07,Paid
+EOF
+
+2. <p>Create access roles for the bucket: users 'invoice_writer', 'report_reader' and 'audit_user' (password 'Tops@Lab123') and group 'role_reader' containing only 'report_reader'. Set 'private' and its files so 'invoice_writer' can read and write, 'role_reader' can only read, and 'audit_user' has no access. Hint: Use `chown invoice_writer:role_reader`, mode 2750 on the folder and 640 on files, and test with `sudo -u`.</p>
+=>sudo useradd -m invoice_writer
+sudo useradd -m report_reader
+sudo useradd -m audit_user
+echo "audit_user:Tops@Lab123" | sudo chpasswd
+
+sudo groupadd role_reader
+sudo usermod -aG role_reader report_reader
+
+sudo chown invoice_writer:role_reader /srv/buckets/surat-textiles/private
+sudo chown invoice_writer:role_reader /srv/buckets/surat-textiles/private/invoices_2026.csv
+sudo chmod 2750 /srv/buckets/surat-textiles/private       # setgid + rwxr-x---
+sudo chmod 640 /srv/buckets/surat-textiles/private/invoices_2026.csv
+
+# Test each role:
+sudo -u invoice_writer bash -c 'cat /srv/buckets/surat-textiles/private/invoices_2026.csv'           # should work
+sudo -u invoice_writer bash -c 'echo test >> /srv/buckets/surat-textiles/private/invoices_2026.csv'   # should work
+
+sudo -u report_reader bash -c 'cat /srv/buckets/surat-textiles/private/invoices_2026.csv'             # should work
+sudo -u report_reader bash -c 'echo test >> /srv/buckets/surat-textiles/private/invoices_2026.csv'    # should FAIL (permission denied)
+
+sudo -u audit_user bash -c 'cat /srv/buckets/surat-textiles/private/invoices_2026.csv'                # should FAIL (permission denied)
+
+3. <p>Publish only the 'public' folder with `python3 -m http.server 8080 --bind <host-only IP> --directory /srv/buckets/surat-textiles/public`, then prove from 'lab_client01' that `curl` downloads 'saree_01.txt' and that '/private/invoices_2026.csv' returns 404. Constraint: Serve the 'public' folder itself, never the bucket root.</p>
+=>python3 -m http.server 8080 --bind 192.168.56.x --directory /srv/buckets/surat-textiles/public &
+
+From lab_client01:
+
+curl -O http://192.168.56.x:8080/saree_01.txt      # should download successfully
+curl -i http://192.168.56.x:8080/private/invoices_2026.csv   # should return 404
+
+4. <p>Finish by saving 'local_bucket_proof.txt' with `ls -lR` of the bucket, the read and write tests for 'invoice_writer', 'report_reader' and 'audit_user' (the reader's write and the auditor's read must fail), and both `curl` results. Submit it.</p>
+=>{
+  echo "=== Directory listing ==="
+  ls -lR /srv/buckets/surat-textiles
+
+  echo "=== invoice_writer read/write test ==="
+  sudo -u invoice_writer bash -c 'cat /srv/buckets/surat-textiles/private/invoices_2026.csv'
+  sudo -u invoice_writer bash -c 'echo test_write >> /srv/buckets/surat-textiles/private/invoices_2026.csv'
+
+  echo "=== report_reader read (ok) / write (must fail) test ==="
+  sudo -u report_reader bash -c 'cat /srv/buckets/surat-textiles/private/invoices_2026.csv'
+  sudo -u report_reader bash -c 'echo test_write >> /srv/buckets/surat-textiles/private/invoices_2026.csv'
+
+  echo "=== audit_user read test (must fail) ==="
+  sudo -u audit_user bash -c 'cat /srv/buckets/surat-textiles/private/invoices_2026.csv'
+
+  echo "=== curl: public file (expect 200/download) ==="
+  curl -i http://192.168.56.x:8080/saree_01.txt
+
+  echo "=== curl: private file via public server (expect 404) ==="
+  curl -i http://192.168.56.x:8080/private/invoices_2026.csv
+} > local_bucket_proof.txt
