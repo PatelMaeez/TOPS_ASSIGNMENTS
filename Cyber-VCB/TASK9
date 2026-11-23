@@ -1,0 +1,34 @@
+1. <p>Plant three weaknesses on 'lab_server01' for a fictional software startup's dev server: '/srv/startup/app_config.env' holding 'DB_PASS=Dev@Lab123' set to `chmod 666`, a user 'qa_temp' with no password via `sudo passwd -d qa_temp`, and the folder served by `python3 -m http.server 8090 --directory /srv/startup`. Constraint: For this lab only; you remove all three in the final task.</p>
+=>World-writable secrets file:
+sudo mkdir -p /srv/startup
+echo "DB_PASS=Dev@Lab123" | sudo tee /srv/startup/app_config.env
+sudo chmod 666 /srv/startup/app_config.env
+Passwordless account:
+sudo useradd qa_temp 2>/dev/null   # if it doesn't exist yet
+sudo passwd -d qa_temp
+Unauthenticated file server exposing the folder:
+python3 -m http.server 8090 --directory /srv/startup &
+
+2.  <p>Scan 'lab_server01' for weaknesses with built-in commands only: `sudo apt update` then `apt list --upgradable`, `sudo ss -tlnp`, `find /srv -type f -perm -0002`, `sudo awk -F: '($2==""){print $1}' /etc/shadow` and `sudo passwd -S qa_temp`. Save the raw output in 'vuln_scan_raw.txt'. Constraint: Use no scanner; Nessus and OpenVAS come in a later session.</p>
+=>{
+  echo "=== apt update ==="; sudo apt update
+  echo "=== upgradable packages ==="; apt list --upgradable
+  echo "=== listening ports ==="; sudo ss -tlnp
+  echo "=== world-writable files under /srv ==="; find /srv -type f -perm -0002
+  echo "=== empty-password accounts ==="; sudo awk -F: '($2==""){print $1}' /etc/shadow
+  echo "=== qa_temp password status ==="; sudo passwd -S qa_temp
+} > vuln_scan_raw.txt
+
+3. <p>Build 'vuln_register.csv' with columns id, finding, evidence_line, severity (High, Medium or Low) and fix: one row for each planted weakness plus a fourth row giving the number of upgradable packages. Hint: Rate a world-writable file holding a password and an empty-password account as High.</p>
+=>id	finding	evidence_line	severity	fix
+1	World-writable file containing a plaintext credential	-rw-rw-rw- ... app_config.env (from find output)	High	chmod 640 /srv/startup/app_config.env and move the secret to an env var / vault, not a flat file
+2	Account with no password set	qa_temp row from the awk / passwd -S output	High	sudo passwd -l qa_temp (lock it), or set a strong password / disable account if unused
+3	Unauthenticated HTTP server exposing a directory	8090 line from ss -tlnp output	Medium (adjust to High if the exposed dir contains the secrets file — reasonable to argue either way; many instructors expect High here since it directly serves task 1's secret)	Stop the process (kill), remove it from startup, require auth/firewall rule if a file server is genuinely needed
+4	Outdated/unpatched packages	Count from apt list --upgradable (e.g., "N upgradable")	Low–Medium depending on count and whether any are security-flagged	sudo apt upgrade on a regular patch cycle
+
+4. <p>Finish by fixing the three weaknesses (file mode 640, `sudo passwd -l qa_temp`, stop the port 8090 server), re-running the same scan commands, and saving 'vuln_rescan_proof.txt' that shows none of the three remains. Submit all files.</p>
+=>sudo chmod 640 /srv/startup/app_config.env
+sudo passwd -l qa_temp
+# stop the port 8090 server:
+sudo ss -tlnp | grep 8090      # find its PID
+kill <PID>
