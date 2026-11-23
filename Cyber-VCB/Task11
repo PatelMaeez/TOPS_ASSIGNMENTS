@@ -1,0 +1,88 @@
+1. <p>Build a test site for a fictional Ahmedabad co-working space on 'lab_server01': in '/srv/cowork_site' create 'index.html' with a GET booking form (fields 'name' and 'desk'), 'robots.txt' disallowing '/staff_only/', and '/staff_only/desk_prices.html'. Serve it with `python3 -m http.server 8080 --directory /srv/cowork_site` and open it once from your laptop browser.</p>
+=>/srv/cowork_site/index.html:
+
+html
+<!DOCTYPE html>
+<html>
+<head><title>Ahmedabad Co-Working — Book a Desk</title></head>
+<body>
+  <h1>Book Your Desk</h1>
+  <form method="GET" action="/book">
+    <label>Name: <input type="text" name="name"></label><br>
+    <label>Desk: <input type="text" name="desk"></label><br>
+    <button type="submit">Book</button>
+  </form>
+</body>
+</html>
+
+/srv/cowork_site/robots.txt:
+
+User-agent: *
+Disallow: /staff_only/
+
+/srv/cowork_site/staff_only/desk_prices.html:
+
+html
+<!DOCTYPE html>
+<html>
+<head><title>Internal — Desk Pricing</title></head>
+<body><h1>Staff Only: Desk Price List</h1><p>DESK-01: ₹500/day ... (fictional data)</p></body>
+</html>
+
+Serve it:
+
+cd /srv/cowork_site
+python3 -m http.server 8080 --directory /srv/cowork_site &
+
+2 p>Use your class-installed Burp Suite Community Edition and its built-in browser to open the site, submit the form with fictional values and browse '/robots.txt', so at least six requests appear in Proxy HTTP history. Save a screenshot 'burp_history.png'. Constraint: Capture traffic to your lab server's IP only.</p>3.
+=>Launch Burp Suite Community → open Burp's built-in Chromium browser (Proxy → Intercept → Open Browser).
+Navigate to http://<lab_server01-ip>:8080/.
+Submit the booking form with fictional values, e.g. name=Test User, desk=DESK-01.
+Manually browse to http://<lab_server01-ip>:8080/robots.txt.
+Also hit a couple more pages/reloads (e.g., revisit /, then /staff_only/desk_prices.html directly) to comfortably clear six logged requests.
+Go to Proxy → HTTP history, confirm ≥6 entries all pointing at your lab server's IP, and take the screenshot → save as burp_history.png.
+
+Scope constraint: In Burp, set Proxy → Options → Scope (or the target scope settings) to only include your lab server's IP, so nothing else gets captured even if the browser pings something else in the background.
+
+3.<p>Use Burp's Proxy Intercept to change the 'desk' value of one booking request to 'DESK-999' before forwarding it, then send `GET /staff_only/desk_prices.html` from Repeater. Save screenshots 'burp_intercept.png' and 'burp_repeater.png' showing the modified request and the server's response. Hint: Right-click a history item and choose Send to Repeater.</p>
+=>Turn Intercept is on (Proxy tab).
+In the browser, submit the booking form again.
+In the intercepted request, find the desk= parameter in the request line/query string and edit its value to DESK-999.
+Click Forward to send the modified request.
+Screenshot the intercept view showing the edited parameter → save as burp_intercept.png.
+Go back to Proxy → HTTP history, right-click the /robots.txt or any prior request entry, choose Send to Repeater.
+In Repeater, change the request line to:
+GET /staff_only/desk_prices.html HTTP/1.1
+Host: <lab_server01-ip>:8080
+Click Send, confirm you get a 200 OK with the staff-only page content back (proving the robots.txt disallow line is advisory only, not an access control).
+Screenshot the request + response pane → save as burp_repeater.png.
+
+4.<p>Finish by writing 'owasp_findings.txt' with three findings from your Burp evidence: the Server header banner, the missing security headers in the response, and the exposed '/staff_only/' path. Give each the matching OWASP Top 10 category name (for example Security Misconfiguration or Broken Access Control), the screenshot that proves it and one fix. Submit all files.</p>sudo mkdir -p /srv/cowork_site/staff_only
+=>OWASP Findings — Ahmedabad Co-Working Test Site
+================================================
+
+Finding 1: Server header reveals software/version banner
+OWASP Category: Security Misconfiguration (A05:2021)
+Evidence: burp_history.png (response headers pane, "Server:" line —
+          e.g. "SimpleHTTP/0.6 Python/3.x")
+Fix: Suppress or genericize the Server header at the web server/reverse
+     proxy layer; don't run production traffic through Python's
+     built-in dev server, which exposes exact language/version info.
+
+Finding 2: Missing security response headers
+OWASP Category: Security Misconfiguration (A05:2021)
+Evidence: burp_repeater.png (response headers pane — no
+          Content-Security-Policy, X-Content-Type-Options,
+          X-Frame-Options, Strict-Transport-Security present)
+Fix: Add standard security headers (CSP, X-Content-Type-Options: nosniff,
+     X-Frame-Options: DENY, HSTS) at the server/framework level.
+
+Finding 3: /staff_only/ path accessible despite robots.txt disallow
+OWASP Category: Broken Access Control (A01:2021)
+Evidence: burp_repeater.png (GET /staff_only/desk_prices.html -> 200 OK
+          with internal pricing content returned)
+Fix: robots.txt is not an access control mechanism — it's a crawler
+     courtesy convention, publicly readable by anyone. Enforce real
+     authentication/authorization (e.g., server-side login check or
+     network-level restriction) on /staff_only/, and never rely on
+     "hidden by omission" paths for anything sensitive.
