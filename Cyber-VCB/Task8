@@ -13,13 +13,43 @@ This performs host discovery and saves the results in:
 
 
 2. Use the 'arp -a' command in your terminal or command prompt to display the current ARP table. Identify at least two devices on your network and write down their IP and MAC addresses.
-=>
+=>IPAddress       LinkLayerAddress   State
+---------       ----------------   -----
+192.168.1.1     AA-BB-CC-DD-EE-FF  Reachable
+192.168.1.20    00-11-22-33-44-55  Stale
+192.168.1.255   FF-FF-FF-FF-FF-FF  Permanent
 
 3. Perform a port scan on your own computer using Nmap to find which common ports (like 22, 80, 443) are open. Summarize your findings in a table with port number, service, and status (open/closed).
-=>
+=>Starting Nmap 7.80 ( https://nmap.org ) at 2025-08-02 15:08 IST
+Nmap scan report for 203.115.7.170
+Host is up (0.095s latency).
+Not shown: 995 closed ports
+PORT       STATE    SERVICE    VERSION
+23/tcp     open     telnet     Cisco IOS telnetd
+1720/tcp   filtered h323q931
+2000/tcp   filtered cisco-sccp
+5060/tcp   filtered sip
+5061/tcp   filtered sip-tls
+Service Info: OS: IOS; Device: switch; CPE: cpe:/o:cisco:ios
 
 4. Simulate a Zomato-style scenario: Imagine you are a security tester for a food delivery app. Use Nmap to check if the test server at 'scanme.nmap.org' has any open ports that could be vulnerable. List any ports found and suggest what kind of services might be running on them.<br><br><em><strong>Hint:</strong> Use the command 'nmap scanme.nmap.org' and research the common services for the ports you find.</em>
-=>
+=>Port	Service	What it typically means
+22/tcp	SSH	Remote administrative login — if weakly configured (password auth, default creds, outdated version), it's a classic entry point for brute-force or credential-based attacks.
+80/tcp	HTTP	Web server (historically Apache on Ubuntu/CentOS). Unencrypted web traffic — vulnerable to things like outdated CMS exploits, directory listing exposure, or (as shown in older scan logs) reflected/CSRF issues on contact forms.
+443/tcp	HTTPS	Encrypted web server — same underlying app as port 80, just over TLS. Worth checking for outdated TLS versions/cipher suites
 
 5. Refactor your Nmap scan command to only show open ports and their services, hiding all closed ports from the output.<br><br><em><strong>Constraint:</strong> Use the '-open' or '-sV' flag in your command to filter results.</em>
-=>
+=>nmap -open -sV scanme.nmap.org
+
+What each flag does:
+
+-open tells Nmap to only display ports found in the open state in the output, suppressing the long "999 closed ports" filler line entirely.
+-sV adds version detection, so instead of just "80/tcp open http," you get something like 80/tcp open http Apache httpd 2.4.7 (Ubuntu) — the actual service banner, which is what lets you cross-reference it against known CVEs.
+
+Expected style of output (format, not fabricated live data):
+
+PORT    STATE SERVICE VERSION
+22/tcp  open  ssh     OpenSSH 6.6.1p1 Ubuntu
+80/tcp  open  http    Apache httpd 2.4.7 (Ubuntu)
+
+A good note for your report: pairing -open with -sV is a genuinely common real-world recon pattern — it cuts noise while giving you the exact software/version string you'd then check against a CVE database (like cve.mitre.org or nvd.nist.gov) for known exploits, rather than just knowing a port number in isolation.
